@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">My Application</string>
+
+    <string name="onboarding_button_let_s_go">Let\'s go</string>
+    <string name="onboarding_start_title_message">Hello, food app</string>
+    <string name="onboarding_start_intro_message">Lorem ipsum hahahahahahaha hahaha hahaha ha ha ahahhah hahahha</string>
+    <string name="onboarding_login">Login</string>
+    <string name="onboarding_email">Email</string>
+    <string name="onboarding_email_example">email@example.com</string>
+    <string name="onboarding_password">Password</string>
+    <string name="onboarding_pass_placeholder">enter password</string>
+    <string name="onboarding_forgot_pass">Forgot your password?</string>
+    <string name="onboarding_continue_options">continue with</string>
+    <string name="onboarding_sign_up_prompt">Don\'t have an account?</string>
+    <string name="onboarding_sign_up">Sign up</string>
+
+    <string name="generic_or">or</string>
+</resources>
