@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -50,7 +51,9 @@ fun StartScreen() {
         )
 
         Text(
+            modifier = Modifier.padding(horizontal = 20.dp),
             text = stringResource(id = R.string.onboarding_start_intro_message),
+            textAlign = TextAlign.Center,
             fontSize = 16.sp,
             fontFamily = Poppins,
             color = SecondaryText

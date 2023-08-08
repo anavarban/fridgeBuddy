@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "835229504494",
+    "project_id": "fooday-9eb1a",
+    "storage_bucket": "fooday-9eb1a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:835229504494:android:854aece96bbf2707fbf4ff",
+        "android_client_info": {
+          "package_name": "com.mready.fooday"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "835229504494-228oa534qthjun48rr48obm7ns2nitam.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfUHLekZA8s31-7fIkR_Ix9pRFKq751Ls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "835229504494-228oa534qthjun48rr48obm7ns2nitam.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

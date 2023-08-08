@@ -8,11 +8,31 @@
     <string name="onboarding_email">Email</string>
     <string name="onboarding_email_example">email@example.com</string>
     <string name="onboarding_password">Password</string>
-    <string name="onboarding_pass_placeholder">enter password</string>
+    <string name="onboarding_pass_placeholder">Enter password</string>
     <string name="onboarding_forgot_pass">Forgot your password?</string>
     <string name="onboarding_continue_options">continue with</string>
     <string name="onboarding_sign_up_prompt">Don\'t have an account?</string>
     <string name="onboarding_sign_up">Sign up</string>
+    <string name="onboarding_sign_up_name">Name</string>
+    <string name="onboarding_name_placeholder">Enter your name</string>
+    <string name="onboarding_sign_up_options">sign up with</string>
+    <string name="onboarding_login_prompt">Already have an account?</string>
+
+    <string name="dashboard_hello_msg">Hi, %1s!</string>
+    <string name="dashboard_title_prompt">What do you feel like cooking today?</string>
+    <string name="dashboard_previous_recipes">Previous recipes</string>
+    <string name="dashboard_your_fridge">Your fridge</string>
+    <string name="dashboard_popular_recipes">Popular recipes</string>
+
+    <string name="recipe_item_time_format">%1d minutes</string>
+
+    <string name="ingredient_item_best_before">Best before: </string>
+    <string name="ingredient_item_exp_date">%1d.%2d.%3d</string>
+
+    <string name="fridge_add">Add</string>
 
     <string name="generic_or">or</string>
+    <string name="generic_see_all">See all</string>
+    <string name="generic_see_more">See more</string>
+    <string name="generic_ok">Ok</string>
 </resources>

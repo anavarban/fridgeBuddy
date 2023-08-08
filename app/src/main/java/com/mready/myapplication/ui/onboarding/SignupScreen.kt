@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -51,7 +52,7 @@ import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 
 @Composable
-fun LoginScreen() {
+fun SignUpScreen() {
 
     var email by remember {
         mutableStateOf("")
@@ -65,6 +66,10 @@ fun LoginScreen() {
         mutableStateOf(false)
     }
 
+    var name by remember {
+        mutableStateOf("")
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,12 +81,55 @@ fun LoginScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 40.dp),
-            text = stringResource(id = R.string.onboarding_login),
+            text = stringResource(id = R.string.onboarding_sign_up),
             textAlign = TextAlign.Center,
             fontSize = 24.sp,
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
             color = MainText
+        )
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp),
+            text = stringResource(id = R.string.onboarding_sign_up_name),
+            textAlign = TextAlign.Left,
+            fontSize = 16.sp,
+            fontFamily = Poppins,
+            fontWeight = FontWeight.SemiBold,
+            color = SecondaryText
+        )
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth(),
+            value = TextFieldValue(""),
+            onValueChange = {/* TODO */ },
+            textStyle = TextStyle(
+                fontFamily = Poppins,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MainText
+            ),
+            placeholder = {
+                Text(
+                    modifier = Modifier.alpha(.6f),
+                    text = stringResource(id = R.string.onboarding_name_placeholder),
+                    textAlign = TextAlign.Left,
+                    fontSize = 14.sp,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    color = SecondaryText
+                )
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Background,
+                unfocusedContainerColor = Background,
+                errorContainerColor = Background,
+                focusedIndicatorColor = MainAccent,
+                unfocusedIndicatorColor = LightAccent,
+                errorIndicatorColor = Error,
+            )
         )
 
         Text(
@@ -98,8 +146,8 @@ fun LoginScreen() {
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth(),
-            value = email,
-            onValueChange = { email = it },
+            value = TextFieldValue(""),
+            onValueChange = {/* TODO */ },
             textStyle = TextStyle(
                 fontFamily = Poppins,
                 fontSize = 20.sp,
@@ -141,8 +189,8 @@ fun LoginScreen() {
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth(),
-            value = password,
-            onValueChange = { password = it },
+            value = TextFieldValue(""),
+            onValueChange = {/* TODO */ },
             textStyle = TextStyle(
                 fontFamily = Poppins,
                 fontSize = 20.sp,
@@ -181,23 +229,6 @@ fun LoginScreen() {
             }
         )
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = { /*TODO*/ }
-                ),
-            text = stringResource(id = R.string.onboarding_forgot_pass),
-            textAlign = TextAlign.Right,
-            fontSize = 14.sp,
-            fontFamily = Poppins,
-            fontWeight = FontWeight.SemiBold,
-            color = SecondaryText
-        )
-
         Spacer(
             modifier = Modifier.height(80.dp)
         )
@@ -213,7 +244,7 @@ fun LoginScreen() {
             shape = RoundedCornerShape(8.dp)
         ) {
             Text(
-                text = stringResource(id = R.string.onboarding_login),
+                text = stringResource(id = R.string.onboarding_sign_up),
                 fontSize = 20.sp,
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
@@ -246,7 +277,7 @@ fun LoginScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
-            text = stringResource(id = R.string.onboarding_continue_options),
+            text = stringResource(id = R.string.onboarding_sign_up_options),
             textAlign = TextAlign.Center,
             fontSize = 16.sp,
             fontFamily = Poppins,
@@ -292,7 +323,7 @@ fun LoginScreen() {
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = stringResource(id = R.string.onboarding_sign_up_prompt),
+                text = stringResource(id = R.string.onboarding_login_prompt),
                 fontSize = 16.sp,
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
@@ -305,8 +336,8 @@ fun LoginScreen() {
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
                         onClick = { /*TODO*/ }
-                    ),
-                text = stringResource(id = R.string.onboarding_sign_up),
+                    ) ,
+                text = stringResource(id = R.string.onboarding_login),
                 fontSize = 16.sp,
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,

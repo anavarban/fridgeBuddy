@@ -11,8 +11,11 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val Background = Color.White
+val Background40 = Color(255, 255, 255, 200)
 val MainText = Color(0xFF283739)
 val MainAccent = Color(0xFF56C569)
 val SecondaryText = Color(0xFF83827C)
 val LightAccent = Color(0xFFbFD9BD)
 val Error = Color(0xFFC8767F)
+val Surface = Color(0xFFECF5EB)
+val AlternateBackground = Color(0xFFF4F9F4)
