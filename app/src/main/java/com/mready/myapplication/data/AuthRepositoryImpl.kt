@@ -5,10 +5,13 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+import kotlin.random.Random
 
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth
@@ -32,7 +35,20 @@ class AuthRepositoryImpl @Inject constructor(
     ): Resource<FirebaseUser> {
         return try {
             val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-            result?.user?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build())?.await()
+            result?.user?.updateProfile(
+                UserProfileChangeRequest.Builder().setDisplayName(name).build()
+            )?.await()
+
+            val storage = Firebase.storage
+            val profilePictureIdx = Random.nextInt(from = 0, until = 6)
+            val storageRef = storage.reference.child("profile/profile_$profilePictureIdx.png")
+
+            result?.user?.updateProfile(
+                UserProfileChangeRequest.Builder().setPhotoUri(
+                    storageRef.downloadUrl.await()
+                ).build()
+            )?.await()
+
             Resource.Success(result.user!!)
         } catch (e: Exception) {
             Resource.Error(e)

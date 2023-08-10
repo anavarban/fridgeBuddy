@@ -47,8 +47,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import com.mready.myapplication.R
 import com.mready.myapplication.models.mockedIngredients
 import com.mready.myapplication.ui.onboarding.OnboardingViewModel
@@ -60,11 +58,7 @@ import com.mready.myapplication.ui.utils.BackPress
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-import com.mready.myapplication.ui.utils.DoubleBackPressToExit
-import com.mready.myapplication.ui.utils.getProfilePicture
 import kotlinx.coroutines.delay
-import kotlin.random.Random
-import kotlin.system.exitProcess
 
 @Composable
 fun DashboardScreen(
@@ -92,17 +86,12 @@ fun DashboardScreen(
                 backPressState = BackPress.InitialTouch
                 Toast.makeText(context, "Press back again to exit", Toast.LENGTH_SHORT).show()
             }
+
             BackPress.InitialTouch -> {
                 onExit()
             }
         }
     }
-
-    val storage = Firebase.storage
-
-    val profilePictureIdx = Random.nextInt(from = 0, until = 6)
-
-    val storageRef = storage.reference.child("profile/profile_$profilePictureIdx.png")
 
     Column(
         modifier = Modifier
@@ -126,13 +115,16 @@ fun DashboardScreen(
                         indication = null,
                         onClick = onProfileClick
                     ),
-                model = getProfilePicture(storageRef),
+                model = onboardingViewModel.currentUser?.photoUrl ?: "",
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
             Text(
                 modifier = Modifier.padding(start = 12.dp),
-                text = stringResource(id = R.string.dashboard_hello_msg, onboardingViewModel.currentUser?.displayName ?: ""),
+                text = stringResource(
+                    id = R.string.dashboard_hello_msg,
+                    onboardingViewModel.currentUser?.displayName ?: ""
+                ),
                 fontSize = 16.sp,
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
@@ -177,7 +169,7 @@ fun DashboardScreen(
 
             Row(
                 modifier = Modifier
-                    .clickable (
+                    .clickable(
                         interactionSource = MutableInteractionSource(),
                         indication = null,
                         onClick = { /*TODO*/ },
@@ -276,7 +268,7 @@ fun DashboardPrevRecipes(
 
         Row(
             modifier = Modifier
-                .clickable (
+                .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = null,
                     onClick = onSeeRecipesClick
@@ -334,7 +326,7 @@ fun DashboardYourFridge(
 
         Row(
             modifier = Modifier
-                .clickable (
+                .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = null,
                     onClick = onSeeFridgeClick

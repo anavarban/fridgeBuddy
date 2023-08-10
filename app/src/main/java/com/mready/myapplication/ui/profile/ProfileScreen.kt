@@ -1,5 +1,6 @@
 package com.mready.myapplication.ui.profile
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,15 +25,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import com.mready.myapplication.R
 import com.mready.myapplication.ui.onboarding.OnboardingViewModel
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
-import com.mready.myapplication.ui.utils.getProfilePicture
-import kotlin.random.Random
 
 @Composable
 fun ProfileScreen(
@@ -40,11 +37,7 @@ fun ProfileScreen(
     onboardingViewModel: OnboardingViewModel,
 ) {
 
-    val storage = Firebase.storage
-
-    val profilePictureIdx = Random.nextInt(from = 0, until = 6)
-
-    val storageRef = storage.reference.child("profile/profile_$profilePictureIdx.png")
+    Log.d("ProfileScreen", "ProfileScreen: ${onboardingViewModel.currentUser?.photoUrl}")
 
     Column(
         modifier = Modifier
@@ -61,7 +54,7 @@ fun ProfileScreen(
                     .border(1.dp, MainAccent, CircleShape)
                     .clip(CircleShape)
                     .size(120.dp),
-                model = getProfilePicture(storageRef),
+                model = onboardingViewModel.currentUser?.photoUrl ?: "",
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )

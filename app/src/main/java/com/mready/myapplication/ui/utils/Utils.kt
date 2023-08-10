@@ -1,5 +1,8 @@
 package com.mready.myapplication.ui.utils
 
+import android.content.Context
+import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
@@ -12,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 import kotlin.system.exitProcess
@@ -56,21 +60,3 @@ sealed class BackPress {
     }
 }
 
-@Composable
-fun getProfilePicture(imageRef: StorageReference): String {
-
-
-
-    val downloadUrlState = remember { mutableStateOf<String?>(null) }
-
-    val context =  LocalContext.current
-    imageRef.downloadUrl
-        .addOnSuccessListener { uri ->
-            downloadUrlState.value = uri.toString()
-        }
-        .addOnFailureListener { exception ->
-            Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
-        }
-
-    return downloadUrlState.value ?: ""
-}
