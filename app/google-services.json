@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:835229504494:android:854aece96bbf2707fbf4ff",
+        "mobilesdk_app_id": "1:835229504494:android:c7fa8772b8b84919fbf4ff",
         "android_client_info": {
-          "package_name": "com.mready.fooday"
+          "package_name": "com.mready.myapplication"
         }
       },
       "oauth_client": [

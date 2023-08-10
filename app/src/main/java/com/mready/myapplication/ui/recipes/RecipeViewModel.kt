@@ -26,7 +26,7 @@ class RecipeViewModel @Inject constructor(
         uiState.update {
             val recipe = Recipe(
                 id = 1,
-                name = "Test",
+                name = "TestTest long test name very long",
                 thumbnailUrl = "https://spoonacular.com/recipeImages/716429-556x370.jpg",
                 ingredients = listOf(
                     RecipeIngredient(

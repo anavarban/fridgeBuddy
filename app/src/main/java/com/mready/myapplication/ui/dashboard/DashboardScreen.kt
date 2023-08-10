@@ -1,5 +1,10 @@
 package com.mready.myapplication.ui.dashboard
 
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,6 +29,11 @@ import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,19 +47,62 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.mready.myapplication.R
 import com.mready.myapplication.models.mockedIngredients
+import com.mready.myapplication.ui.onboarding.OnboardingViewModel
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.BackPress
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import com.mready.myapplication.ui.utils.DoubleBackPressToExit
+import com.mready.myapplication.ui.utils.getProfilePicture
+import kotlinx.coroutines.delay
+import kotlin.random.Random
+import kotlin.system.exitProcess
 
 @Composable
-fun DashboardScreen() {
+fun DashboardScreen(
+    onSeeRecipesClick: () -> Unit,
+    onSeeFridgeClick: () -> Unit,
+    onIngredientEditClick: (Int) -> Unit,
+    onRecipeClick: (String) -> Unit,
+    onProfileClick: () -> Unit,
+    onboardingViewModel: OnboardingViewModel,
+    onExit: () -> Unit
+) {
+    var backPressState by remember { mutableStateOf<BackPress>(BackPress.Idle) }
+    val context = LocalContext.current
 
+    LaunchedEffect(key1 = backPressState) {
+        if (backPressState == BackPress.InitialTouch) {
+            delay(2000)
+            backPressState = BackPress.Idle
+        }
+    }
+
+    BackHandler {
+        when (backPressState) {
+            BackPress.Idle -> {
+                backPressState = BackPress.InitialTouch
+                Toast.makeText(context, "Press back again to exit", Toast.LENGTH_SHORT).show()
+            }
+            BackPress.InitialTouch -> {
+                onExit()
+            }
+        }
+    }
+
+    val storage = Firebase.storage
+
+    val profilePictureIdx = Random.nextInt(from = 0, until = 6)
+
+    val storageRef = storage.reference.child("profile/profile_$profilePictureIdx.png")
 
     Column(
         modifier = Modifier
@@ -65,15 +118,21 @@ fun DashboardScreen() {
         ) {
             AsyncImage(
                 modifier = Modifier
+                    .border(1.dp, MainAccent, CircleShape)
                     .clip(CircleShape)
-                    .size(56.dp),
-                model = "https://i.pinimg.com/564x/f9/7e/47/f97e470c007a70200633fcabcbf0a302.jpg",
+                    .size(56.dp)
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null,
+                        onClick = onProfileClick
+                    ),
+                model = getProfilePicture(storageRef),
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
             Text(
                 modifier = Modifier.padding(start = 12.dp),
-                text = stringResource(id = R.string.dashboard_hello_msg, "username"),
+                text = stringResource(id = R.string.dashboard_hello_msg, onboardingViewModel.currentUser?.displayName ?: ""),
                 fontSize = 16.sp,
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
@@ -93,11 +152,11 @@ fun DashboardScreen() {
             color = MainText
         )
 
-        DashboardPrevRecipes()
+        DashboardPrevRecipes(onSeeRecipesClick)
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        DashboardYourFridge()
+        DashboardYourFridge(onSeeFridgeClick)
 
 
         Row(
@@ -117,6 +176,12 @@ fun DashboardScreen() {
             )
 
             Row(
+                modifier = Modifier
+                    .clickable (
+                        interactionSource = MutableInteractionSource(),
+                        indication = null,
+                        onClick = { /*TODO*/ },
+                    ),
                 verticalAlignment = CenterVertically
             ) {
                 Text(
@@ -190,7 +255,9 @@ fun YoutubeScreen(
 
 
 @Composable
-fun DashboardPrevRecipes() {
+fun DashboardPrevRecipes(
+    onSeeRecipesClick: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -208,7 +275,14 @@ fun DashboardPrevRecipes() {
         )
 
         Row(
+            modifier = Modifier
+                .clickable (
+                    interactionSource = MutableInteractionSource(),
+                    indication = null,
+                    onClick = onSeeRecipesClick
+                ),
             verticalAlignment = CenterVertically
+
         ) {
             Text(
                 modifier = Modifier.padding(top = 4.dp),
@@ -240,7 +314,9 @@ fun DashboardPrevRecipes() {
 }
 
 @Composable
-fun DashboardYourFridge() {
+fun DashboardYourFridge(
+    onSeeFridgeClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -257,6 +333,12 @@ fun DashboardYourFridge() {
         )
 
         Row(
+            modifier = Modifier
+                .clickable (
+                    interactionSource = MutableInteractionSource(),
+                    indication = null,
+                    onClick = onSeeFridgeClick
+                ),
             verticalAlignment = CenterVertically
         ) {
             Text(

@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -28,11 +30,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mready.myapplication.R
 import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.Error
 import com.mready.myapplication.ui.theme.LightAccent
@@ -44,7 +48,9 @@ import com.mready.myapplication.ui.theme.Surface
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddType() {
+fun AddType(
+    onNextClick: (String) -> Unit,
+) {
 
     val ingredientOptions = listOf(
         "Milk",
@@ -74,6 +80,10 @@ fun AddType() {
         mutableStateOf("")
     }
     var expandedMenu by remember {
+        mutableStateOf(false)
+    }
+
+    var picked by remember {
         mutableStateOf(false)
     }
 
@@ -109,7 +119,8 @@ fun AddType() {
                     .fillMaxWidth(.8f)
                     .menuAnchor(),
                 value = selectedType,
-                onValueChange = {},
+                onValueChange = {
+                },
                 readOnly = true,
                 textStyle = TextStyle(
                     fontFamily = Poppins,
@@ -162,6 +173,7 @@ fun AddType() {
                         onClick = {
                             selectedType = it
                             expandedMenu = false
+                            picked = true
                         },
                         colors = MenuDefaults.itemColors(
                             textColor = MainText,
@@ -204,6 +216,27 @@ fun AddType() {
                 fontWeight = FontWeight.SemiBold,
                 color = LightAccent
             )
+        }
+
+        if (picked) {
+            Button(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth(.8f)
+                    .padding(top = 40.dp),
+                onClick = { onNextClick(selectedType) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MainAccent
+                ),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.generic_next),
+                    fontSize = 20.sp,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
         }
     }
 

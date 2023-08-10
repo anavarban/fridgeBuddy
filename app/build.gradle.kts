@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
-//    id("com.google.gms.google-services")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -80,6 +80,7 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-insets:0.30.1")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+    implementation("com.google.android.gms:play-services-auth:20.6.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -109,8 +110,11 @@ dependencies {
     releaseImplementation("com.github.chuckerteam.chucker:library:4.0.0")
 
     // Firebase
-//    implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
-//    implementation("com.google.firebase:firebase-analytics-ktx")
-//    implementation("com.google.firebase:firebase-auth-ktx")
-//    implementation("com.google.firebase:firebase-firestore-ktx")
+
+    implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation ("com.google.firebase:firebase-core:21.1.1")
+    implementation("com.google.firebase:firebase-storage-ktx")
 }

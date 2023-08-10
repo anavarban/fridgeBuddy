@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -151,7 +153,7 @@ fun RecipeScreen(
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(.7f)
+                        .fillMaxHeight(.75f)
                         .align(Alignment.BottomCenter),
                     shape = RoundedCornerShape(20.dp),
                     color = Background,
@@ -170,6 +172,8 @@ fun RecipeScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
+                                modifier = Modifier
+                                    .fillMaxWidth(.5f),
                                 text = recipe.name,
                                 textAlign = TextAlign.Left,
                                 fontSize = 24.sp,
@@ -195,7 +199,7 @@ fun RecipeScreen(
                                 Text(
                                     modifier = Modifier
                                         .padding(top = 4.dp, start = 4.dp, end = 4.dp),
-                                    text = recipe.time.toString() + "h",
+                                    text = recipe.time.toString() + "m",
                                     textAlign = TextAlign.Left,
                                     fontSize = 24.sp,
                                     fontFamily = Poppins,
@@ -208,7 +212,7 @@ fun RecipeScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxHeight()
-                                .padding(start = 20.dp, end = 20.dp),
+                                .padding(top = 20.dp, start = 20.dp, end = 20.dp),
                             verticalArrangement = Arrangement.SpaceEvenly,
                         ) {
                             recipe.instructions.sortedBy {
@@ -218,6 +222,7 @@ fun RecipeScreen(
                                     stepNo = it.position,
                                     stepDirections = it.displayText,
                                 )
+                                Spacer(modifier = Modifier.height(20.dp))
                             }
                         }
                     }
@@ -235,6 +240,7 @@ fun RecipeStepElement(
     stepDirections: String,
 ) {
     var expanded by remember {
+        //todo first index could start expanded?
         mutableStateOf(false)
     }
 

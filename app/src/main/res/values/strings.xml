@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">FridgeBuddy</string>
 
     <string name="onboarding_button_let_s_go">Let\'s go</string>
-    <string name="onboarding_start_title_message">Hello, food app</string>
-    <string name="onboarding_start_intro_message">Lorem ipsum hahahahahahaha hahaha hahaha ha ha ahahhah hahahha</string>
+    <string name="onboarding_start_title_message">Hello, Buddy!</string>
+    <string name="onboarding_start_intro_message">Say hello to your FridgeBuddy and cook delicious meals together</string>
     <string name="onboarding_login">Login</string>
     <string name="onboarding_email">Email</string>
     <string name="onboarding_email_example">email@example.com</string>
@@ -20,7 +20,7 @@
 
     <string name="dashboard_hello_msg">Hi, %1s!</string>
     <string name="dashboard_title_prompt">What do you feel like cooking today?</string>
-    <string name="dashboard_previous_recipes">Previous recipes</string>
+    <string name="dashboard_previous_recipes">Recommended recipes</string>
     <string name="dashboard_your_fridge">Your fridge</string>
     <string name="dashboard_popular_recipes">Popular recipes</string>
 
@@ -30,9 +30,19 @@
     <string name="ingredient_item_exp_date">%1d.%2d.%3d</string>
 
     <string name="fridge_add">Add</string>
+    <string name="fridge_title">Your fridge</string>
 
     <string name="generic_or">or</string>
     <string name="generic_see_all">See all</string>
     <string name="generic_see_more">See more</string>
     <string name="generic_ok">Ok</string>
+    <string name="fridge_soon_to_expire">Soon to expire</string>
+    <string name="fridge_all_ingredients">All ingredients</string>
+    <string name="generic_next">Next</string>
+    <string name="fridge_done">Done</string>
+    <string name="onboarding_email_error">Enter a valid email address!</string>
+    <string name="onboarding_name_error">Please enter a valid name!</string>
+    <string name="onboarding_pass_error">Password must be at least 8 chrs. long!</string>
+    <string name="generic_error">An error occured!</string>
+    <string name="onboarding_logout">Logout</string>
 </resources>

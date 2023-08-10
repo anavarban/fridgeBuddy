@@ -1,5 +1,8 @@
 package com.mready.myapplication.ui.onboarding
 
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,14 +20,18 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -41,7 +49,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 import com.mready.myapplication.R
+import com.mready.myapplication.data.Resource
 import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.Error
 import com.mready.myapplication.ui.theme.LightAccent
@@ -49,9 +62,20 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.LoginFields
+import com.mready.myapplication.ui.utils.clientId
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onboardingViewModel: OnboardingViewModel,
+    onLoginClick: @Composable () -> Unit,
+    onSignUpClick: () -> Unit,
+) {
+    val loginFlow = onboardingViewModel.loginFlow.collectAsState()
+
+    val googleFlow = onboardingViewModel.googleFlow.collectAsState()
+
+    val context = LocalContext.current
 
     var email by remember {
         mutableStateOf("")
@@ -64,6 +88,38 @@ fun LoginScreen() {
     var passwordVisibility by remember {
         mutableStateOf(false)
     }
+
+    var emailError by remember {
+        mutableStateOf(false)
+    }
+
+    var passwordError by remember {
+        mutableStateOf(false)
+    }
+
+    fun validate(text: String, type: LoginFields) {
+        when (type) {
+            LoginFields.EMAIL -> {
+                emailError = !android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches()
+            }
+
+            LoginFields.PASSWORD -> {
+                passwordError = text.length < 8
+            }
+        }
+    }
+
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+            val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+            try {
+                val result = account.getResult(ApiException::class.java)
+                val credential = GoogleAuthProvider.getCredential(result?.idToken, null)
+                onboardingViewModel.googleSignIn(credential)
+            } catch (e: ApiException) {
+                Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+            }
+        }
 
     Column(
         modifier = Modifier
@@ -108,10 +164,12 @@ fun LoginScreen() {
             ),
             placeholder = {
                 Text(
-                    modifier = Modifier.alpha(.6f),
+                    modifier = Modifier
+                        .alpha(.6f)
+                        .padding(top = 4.dp),
                     text = stringResource(id = R.string.onboarding_email_example),
                     textAlign = TextAlign.Left,
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     color = SecondaryText
@@ -124,7 +182,25 @@ fun LoginScreen() {
                 focusedIndicatorColor = MainAccent,
                 unfocusedIndicatorColor = LightAccent,
                 errorIndicatorColor = Error,
-            )
+            ),
+            isError = emailError,
+            keyboardActions = KeyboardActions {
+                validate(email, LoginFields.EMAIL)
+            },
+            supportingText = {
+                if (emailError) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp),
+                        text = stringResource(id = R.string.onboarding_email_error),
+                        textAlign = TextAlign.Left,
+                        fontSize = 12.sp,
+                        fontFamily = Poppins,
+                        color = Error
+                    )
+                }
+            },
         )
 
         Text(
@@ -151,10 +227,12 @@ fun LoginScreen() {
             ),
             placeholder = {
                 Text(
-                    modifier = Modifier.alpha(.6f),
+                    modifier = Modifier
+                        .alpha(.6f)
+                        .padding(top = 4.dp),
                     text = stringResource(id = R.string.onboarding_pass_placeholder),
                     textAlign = TextAlign.Left,
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     color = SecondaryText
@@ -171,14 +249,40 @@ fun LoginScreen() {
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 Icon(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { passwordVisibility = !passwordVisibility }
+                        )
+                        .padding(8.dp),
                     painter = if (passwordVisibility)
                         painterResource(id = R.drawable.ic_visibility_off)
                     else
                         painterResource(id = R.drawable.ic_visibility),
                     contentDescription = null,
-                    tint = MainAccent
+                    tint = if (!passwordError) MainAccent else Error
                 )
-            }
+            },
+            isError = passwordError,
+            keyboardActions = KeyboardActions {
+                validate(password, LoginFields.PASSWORD)
+            },
+            supportingText = {
+                if (passwordError) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp),
+                        text = stringResource(id = R.string.onboarding_pass_error),
+                        textAlign = TextAlign.Left,
+                        fontSize = 12.sp,
+                        fontFamily = Poppins,
+                        color = Error
+                    )
+                }
+            },
         )
 
         Text(
@@ -206,7 +310,14 @@ fun LoginScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 40.dp),
-            onClick = {/*TODO*/ },
+            onClick = {
+                validate(email, LoginFields.EMAIL)
+                validate(password, LoginFields.PASSWORD)
+                if (!emailError && !passwordError) {
+                    onboardingViewModel.login(email, password)
+                    //onLoginClick()
+                }
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MainAccent
             ),
@@ -263,7 +374,22 @@ fun LoginScreen() {
             Icon(
                 modifier = Modifier
                     .padding(end = 8.dp)
-                    .size(32.dp),
+                    .size(32.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = {
+                            val gso = GoogleSignInOptions
+                                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .requestEmail()
+                                .requestIdToken(clientId)
+                                .build()
+
+                            val googleSignInClient = GoogleSignIn.getClient(context, gso)
+
+                            launcher.launch(googleSignInClient.signInIntent)
+                        }
+                    ),
                 painter = painterResource(id = R.drawable.ic_google),
                 contentDescription = null,
                 tint = MainAccent
@@ -304,7 +430,7 @@ fun LoginScreen() {
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                        onClick = { /*TODO*/ }
+                        onClick = onSignUpClick
                     ),
                 text = stringResource(id = R.string.onboarding_sign_up),
                 fontSize = 16.sp,
@@ -312,6 +438,56 @@ fun LoginScreen() {
                 fontWeight = FontWeight.SemiBold,
                 color = MainAccent
             )
+        }
+
+        loginFlow.value.let {
+            when (it) {
+                is Resource.Error -> {
+                    val context = LocalContext.current
+                    val error = stringResource(id = R.string.generic_error)
+                    LaunchedEffect(key1 = null) {
+                        Toast.makeText(
+                            context,
+                            it.exception.message ?: error,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                Resource.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+
+                is Resource.Success -> onLoginClick()
+                null -> {}
+            }
+        }
+
+        googleFlow.value.let {
+            when (it) {
+                is Resource.Error -> {
+                    val context = LocalContext.current
+                    val error = stringResource(id = R.string.generic_error)
+                    LaunchedEffect(key1 = null) {
+                        Toast.makeText(
+                            context,
+                            it.exception.message ?: error,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                Resource.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+
+                is Resource.Success -> onLoginClick()
+                null -> {}
+            }
         }
     }
 

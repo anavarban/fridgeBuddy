@@ -13,15 +13,15 @@ import net.mready.json.Json
 @Singleton
 class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient) {
 
-    suspend fun getRecipe(ingredients: String): Recipe? {
-        return apiClient.get(
-            endpoint = "/recipes/list",
-            query = mapOf("from" to 0, "to" to 1,"q" to ingredients),
-            headers = mapOf("X-RapidAPI-Key" to "3f4d1155c6msh66d70d2a24e50a9p1dc35fjsne99d6ec86d23", "X-RapidAPI-Host" to "tasty.p.rapidapi.com")
-        ) { json ->
-            json["results"].array[0].toRecipe()
-        }
-    }
+//    suspend fun getRecipe(ingredients: String): Recipe? {
+//        return apiClient.get(
+//            endpoint = "/recipes/list",
+//            query = mapOf("from" to 0, "to" to 1,"q" to ingredients),
+//            headers = mapOf("X-RapidAPI-Key" to "3f4d1155c6msh66d70d2a24e50a9p1dc35fjsne99d6ec86d23", "X-RapidAPI-Host" to "tasty.p.rapidapi.com")
+//        ) { json ->
+//            json["results"].array[0].toRecipe()
+//        }
+//    }
 
 
 }

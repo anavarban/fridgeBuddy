@@ -35,7 +35,10 @@ import com.mready.myapplication.ui.theme.SecondaryText
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddExpireDate(
-    ingredientName: String
+    ingredientName: String,
+    unit: String,
+    amount: Int,
+    onDoneClick: (String, String, Int, Long) -> Unit,
 ) {
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = 1578096000000)
 
@@ -94,14 +97,14 @@ fun AddExpireDate(
             Button(
                 modifier = Modifier
                     .fillMaxWidth(.8f),
-                onClick = { /* TODO navigate */ },
+                onClick = { onDoneClick(ingredientName, unit, amount, datePickerState.selectedDateMillis ?: 0) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MainAccent
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = stringResource(id = R.string.fridge_add),
+                    text = stringResource(id = R.string.fridge_done),
                     fontSize = 18.sp,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold

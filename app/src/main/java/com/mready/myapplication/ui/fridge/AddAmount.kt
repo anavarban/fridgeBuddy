@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -26,12 +28,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mready.myapplication.R
 import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.Error
 import com.mready.myapplication.ui.theme.LightAccent
@@ -44,7 +48,8 @@ import com.mready.myapplication.ui.theme.Surface
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddAmount(
-    ingredientName: String
+    ingredientName: String,
+    onNextClick: (String, String, Int) -> Unit,
 ) {
 
     val measurementUnits = listOf("grams", "milliliters", "tsp")
@@ -58,6 +63,14 @@ fun AddAmount(
 
     var amountEntered by remember {
         mutableStateOf("")
+    }
+
+    var enteredAmount by remember {
+        mutableStateOf(false)
+    }
+
+    var pickedUnit by remember {
+        mutableStateOf(false)
     }
 
     Box(
@@ -78,7 +91,7 @@ fun AddAmount(
         )
 
 
-        Row (
+        Row(
             modifier = Modifier
                 .padding(top = 80.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth(),
@@ -90,7 +103,10 @@ fun AddAmount(
                     .padding(end = 16.dp)
                     .fillMaxWidth(.5f),
                 value = amountEntered,
-                onValueChange = {amountEntered = it},
+                onValueChange = {
+                    amountEntered = it
+                    enteredAmount = it.isNotEmpty()
+                },
                 textStyle = TextStyle(
                     fontFamily = Poppins,
                     fontSize = 20.sp,
@@ -183,6 +199,7 @@ fun AddAmount(
                             onClick = {
                                 selectedUnit = it
                                 expandedMenu = false
+                                pickedUnit = true
                             },
                             colors = MenuDefaults.itemColors(
                                 textColor = MainText,
@@ -229,6 +246,28 @@ fun AddAmount(
                 fontWeight = FontWeight.SemiBold,
                 color = LightAccent
             )
+        }
+
+
+        if (pickedUnit && enteredAmount) {
+            Button(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth(.8f)
+                    .padding(top = 40.dp),
+                onClick = { onNextClick(ingredientName, selectedUnit, amountEntered.toInt()) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MainAccent
+                ),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.generic_next),
+                    fontSize = 20.sp,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
         }
     }
 

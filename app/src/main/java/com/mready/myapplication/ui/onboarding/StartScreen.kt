@@ -27,7 +27,9 @@ import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 
 @Composable
-fun StartScreen() {
+fun StartScreen(
+    onClick: () -> Unit
+) {
 
     Column (
         modifier = Modifier.fillMaxSize(),
@@ -61,7 +63,7 @@ fun StartScreen() {
         
         Button(
             modifier = Modifier.fillMaxWidth(.7f),
-            onClick = { /* TODO navigate to login */ },
+            onClick = onClick,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MainAccent
             ),
