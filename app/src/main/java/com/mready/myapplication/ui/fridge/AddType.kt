@@ -3,12 +3,9 @@ package com.mready.myapplication.ui.fridge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,36 +42,16 @@ import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.theme.Surface
+import com.mready.myapplication.ui.utils.ingredientToUrl
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddType(
-    onNextClick: (String) -> Unit,
+    onNextClick: (String, String) -> Unit,
+    user: String,
 ) {
 
-    val ingredientOptions = listOf(
-        "Milk",
-        "Chicken",
-        "Yogurt",
-        "Cheese",
-        "Berries",
-        "Chicken",
-        "Yogurt",
-        "Cheese",
-        "Berries",
-        "Chicken",
-        "Yogurt",
-        "Cheese",
-        "Berries",
-        "Chicken",
-        "Yogurt",
-        "Cheese",
-        "Berries",
-        "Chicken",
-        "Yogurt",
-        "Cheese",
-        "Berries"
-    )
+    val ingredientOptions = ingredientToUrl.keys.toList()
 
     var selectedType by remember {
         mutableStateOf("")
@@ -221,10 +198,10 @@ fun AddType(
         if (picked) {
             Button(
                 modifier = Modifier
-                    .align(Alignment.Center)
+                    .align(Alignment.BottomCenter)
                     .fillMaxWidth(.8f)
-                    .padding(top = 40.dp),
-                onClick = { onNextClick(selectedType) },
+                    .padding(bottom = 120.dp),
+                onClick = { onNextClick(user, selectedType) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MainAccent
                 ),

@@ -24,7 +24,7 @@
     <string name="dashboard_your_fridge">Your fridge</string>
     <string name="dashboard_popular_recipes">Popular recipes</string>
 
-    <string name="recipe_item_time_format">%1d minutes</string>
+    <string name="recipe_item_time_format">%1s minutes</string>
 
     <string name="ingredient_item_best_before">Best before: </string>
     <string name="ingredient_item_exp_date">%1d.%2d.%3d</string>
@@ -42,7 +42,8 @@
     <string name="fridge_done">Done</string>
     <string name="onboarding_email_error">Enter a valid email address!</string>
     <string name="onboarding_name_error">Please enter a valid name!</string>
-    <string name="onboarding_pass_error">Password must be at least 8 chrs. long!</string>
-    <string name="generic_error">An error occured!</string>
+    <string name="onboarding_pass_error">Password must be at least 8 characters long!</string>
+    <string name="generic_error">An error occurred!</string>
     <string name="onboarding_logout">Logout</string>
+    <string name="dashboard_rec_recipes_subtitle">Based on the ingredients soon to expire</string>
 </resources>

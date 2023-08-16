@@ -1,4 +1,4 @@
-package com.mready.myapplication.data
+package com.mready.myapplication.auth
 
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseUser

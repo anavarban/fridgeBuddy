@@ -48,8 +48,9 @@ import com.mready.myapplication.ui.theme.Surface
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddAmount(
+    user: String,
     ingredientName: String,
-    onNextClick: (String, String, Int) -> Unit,
+    onNextClick: (String, String, String, Int) -> Unit,
 ) {
 
     val measurementUnits = listOf("grams", "milliliters", "tsp")
@@ -213,6 +214,26 @@ fun AddAmount(
         }
 
 
+        if (pickedUnit && enteredAmount) {
+            Button(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth(.8f)
+                    .padding(bottom = 120.dp),
+                onClick = { onNextClick(user, ingredientName, selectedUnit, amountEntered.toInt()) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MainAccent
+                ),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.generic_next),
+                    fontSize = 20.sp,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        }
 
         Row(
             modifier = Modifier
@@ -249,26 +270,6 @@ fun AddAmount(
         }
 
 
-        if (pickedUnit && enteredAmount) {
-            Button(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .fillMaxWidth(.8f)
-                    .padding(top = 40.dp),
-                onClick = { onNextClick(ingredientName, selectedUnit, amountEntered.toInt()) },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MainAccent
-                ),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.generic_next),
-                    fontSize = 20.sp,
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            }
-        }
     }
 
 

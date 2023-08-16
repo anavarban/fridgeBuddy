@@ -7,9 +7,13 @@ import javax.inject.Singleton
 
 @Singleton
 class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
-
+//
 //    suspend fun getRecipe(ingredients: String): Recipe? {
 //        return recipeAPI.getRecipe(ingredients)
+//    }
+//
+//    suspend fun getRecipesByFirstExpired(firstExpired: List<String>): List<Recipe>? {
+//        return recipeAPI.getRecipesByFirstExpired(firstExpired)
 //    }
 
 }

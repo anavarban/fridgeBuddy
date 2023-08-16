@@ -9,6 +9,7 @@ import com.mready.myapplication.ui.dashboard.DashboardScreen
 import com.mready.myapplication.ui.fridge.AddAmount
 import com.mready.myapplication.ui.fridge.AddExpireDate
 import com.mready.myapplication.ui.fridge.AddType
+import com.mready.myapplication.ui.fridge.FridgeViewModel
 import com.mready.myapplication.ui.fridge.YourFridgeScreen
 import com.mready.myapplication.ui.onboarding.LoginScreen
 import com.mready.myapplication.ui.onboarding.OnboardingViewModel
@@ -17,11 +18,11 @@ import com.mready.myapplication.ui.onboarding.SplashScreen
 import com.mready.myapplication.ui.onboarding.StartScreen
 import com.mready.myapplication.ui.profile.ProfileScreen
 import com.mready.myapplication.ui.recipes.RecipeScreen
-import kotlinx.coroutines.delay
 
 @Composable
 fun Navigation(
     onboardingViewModel: OnboardingViewModel,
+    fridgeViewModel: FridgeViewModel,
     onExitFromDashboard: () -> Unit
 ) {
     val navController = rememberNavController()
@@ -77,8 +78,6 @@ fun Navigation(
 
         composable(route = Screens.DashboardScreen.route) {
             DashboardScreen(
-                onboardingViewModel = onboardingViewModel,
-                onSeeRecipesClick = { navController.navigate(Screens.RecipeScreen.route) },
                 onSeeFridgeClick = { navController.navigate(Screens.FridgeScreen.route) },
                 onIngredientEditClick = {},
                 onRecipeClick = { navController.navigate(Screens.RecipeScreen.route + "/${it}") },
@@ -96,44 +95,57 @@ fun Navigation(
 
         composable(route = Screens.RecipeScreen.route + "/{ingredients}") {
             val recipeIngredients = it.arguments?.getString("ingredients")
-            RecipeScreen(ingredients = recipeIngredients ?: "")
+            RecipeScreen(
+                ingredients = recipeIngredients ?: "",
+                onBackClick = { navController.navigate(Screens.DashboardScreen.route) },
+            )
         }
 
         composable(route = Screens.FridgeScreen.route) {
+            val user = onboardingViewModel.currentUser?.email ?: ""
             YourFridgeScreen(
-                onAddClick = { navController.navigate(Screens.AddType.route) },
+                userEmail = onboardingViewModel.currentUser?.email ?: "",
+                onAddClick = { navController.navigate(Screens.AddType.route + "/${user}") },
                 onBackClick = { navController.navigate(Screens.DashboardScreen.route) },
             )
 
         }
 
-        composable(route = Screens.AddType.route) {
+        composable(route = Screens.AddType.route + "/{user}") {
+            val user = it.arguments?.getString("user")
             AddType(
-                onNextClick = { navController.navigate(Screens.AddAmount.route + "/${it}") },
+                user = user ?: "",
+                onNextClick = { user, type ->
+                    navController.navigate(Screens.AddAmount.route + "/${user}/${type}")
+                              },
             )
         }
 
-        composable(route = Screens.AddAmount.route + "/{type}") {
+        composable(route = Screens.AddAmount.route + "/{user}/{type}") {
             val type = it.arguments?.getString("type")
+            val user = it.arguments?.getString("user")
             AddAmount(
+                user = user ?: "",
                 ingredientName = type ?: "",
-                onNextClick = { ingredientName, unit, amount ->
-                    navController.navigate(Screens.AddExpireDate.route + "/${ingredientName}/${unit}/${amount}")
+                onNextClick = { usr, ingredientName, unit, amount ->
+                    navController.navigate(Screens.AddExpireDate.route + "/${usr}/${ingredientName}/${unit}/${amount}")
                 },
             )
         }
 
-        composable(route = Screens.AddExpireDate.route + "/{ingredientName}/{unit}/{amount}") {
+        composable(route = Screens.AddExpireDate.route + "/{user}/{ingredientName}/{unit}/{amount}") {
             val ingredientName = it.arguments?.getString("ingredientName")
             val unit = it.arguments?.getString("unit")
             val amount = it.arguments?.getInt("amount")
+            val user = it.arguments?.getString("user")
             AddExpireDate(
+                fridgeViewModel = fridgeViewModel,
                 ingredientName = ingredientName ?: "",
                 unit = unit ?: "",
-                amount = amount ?: 0
-            ) { _, _, _, _ ->
-                navController.navigate(Screens.FridgeScreen.route)
-            }
+                amount = amount ?: 0,
+                user = user ?: "",
+                onDoneClick = { navController.navigate(Screens.FridgeScreen.route) },
+            )
         }
 
     }

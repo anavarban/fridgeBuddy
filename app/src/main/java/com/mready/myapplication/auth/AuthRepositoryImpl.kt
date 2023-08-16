@@ -1,4 +1,4 @@
-package com.mready.myapplication.data
+package com.mready.myapplication.auth
 
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
@@ -8,11 +8,13 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 import kotlin.random.Random
 
+@Singleton
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth
 ) : AuthRepository {
@@ -72,12 +74,6 @@ class AuthRepositoryImpl @Inject constructor(
 
 suspend fun <T> Task<T>.await(): T {
     return suspendCoroutine { continuation ->
-//        addOnSuccessListener { result ->
-//            continuation.resume(result)
-//        }
-//        addOnFailureListener { exception ->
-//            continuation.resumeWithException(exception)
-//        }
         addOnCompleteListener {
             if (isSuccessful) {
                 continuation.resume(result)

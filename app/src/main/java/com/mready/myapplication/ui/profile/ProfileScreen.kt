@@ -2,6 +2,7 @@ package com.mready.myapplication.ui.profile
 
 import android.util.Log
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,6 +44,8 @@ fun ProfileScreen(
         modifier = Modifier
             .fillMaxSize()
             .safeDrawingPadding()
+            .padding(top = 20.dp, bottom = 16.dp),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
             modifier = Modifier

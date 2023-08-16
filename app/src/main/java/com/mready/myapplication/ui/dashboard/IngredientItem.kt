@@ -43,6 +43,7 @@ fun IngredientItem(
     modifier: Modifier = Modifier.width(160.dp),
     ingredient: Ingredient,
     showEditButton: Boolean = true,
+    onEditClick: () -> Unit = {}
 ) {
 
     Card(
@@ -66,7 +67,7 @@ fun IngredientItem(
                     .aspectRatio(3/4f),
                 model = ingredient.image,
                 contentDescription = null,
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Crop
             )
 
             Column(
@@ -123,7 +124,7 @@ fun IngredientItem(
                         .padding(12.dp)
                         .align(Alignment.TopEnd)
                         .size(40.dp),
-                    onClick = { /*TODO*/ },
+                    onClick = onEditClick,
                     shape = RoundedCornerShape(8.dp),
                     containerColor = MainAccent,
                     contentColor = Color.White

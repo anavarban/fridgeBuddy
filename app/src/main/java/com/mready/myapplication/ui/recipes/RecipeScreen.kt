@@ -20,7 +20,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -60,6 +59,7 @@ import com.mready.myapplication.ui.theme.SecondaryText
 @Composable
 fun RecipeScreen(
     ingredients: String,
+    onBackClick: () -> Unit
 ) {
     val recipeViewModel: RecipeViewModel = hiltViewModel()
 
@@ -122,7 +122,7 @@ fun RecipeScreen(
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(top = 32.dp, start = 20.dp),
-                    onClick = { /*TODO*/ },
+                    onClick = onBackClick,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = Background,
                         contentColor = MainAccent
@@ -130,22 +130,6 @@ fun RecipeScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.KeyboardArrowLeft,
-                        contentDescription = null
-                    )
-                }
-
-                IconButton(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(top = 32.dp, end = 20.dp),
-                    onClick = { /*TODO*/ },
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = Background,
-                        contentColor = MainAccent
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder,
                         contentDescription = null
                     )
                 }
@@ -199,7 +183,7 @@ fun RecipeScreen(
                                 Text(
                                     modifier = Modifier
                                         .padding(top = 4.dp, start = 4.dp, end = 4.dp),
-                                    text = recipe.time.toString() + "m",
+                                    text = (recipe.time?.toString() ?: "? ") + "m",
                                     textAlign = TextAlign.Left,
                                     fontSize = 24.sp,
                                     fontFamily = Poppins,

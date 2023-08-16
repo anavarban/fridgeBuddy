@@ -12,7 +12,19 @@ import net.mready.json.Json
 
 @Singleton
 class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient) {
-
+//    suspend fun getRecipesByFirstExpired(firstExpired: List<String>): List<Recipe>? {
+//        var recipeList = mutableListOf<Recipe>()
+//
+//        firstExpired.forEach{
+//            val rec = getRecipe(it)
+//            if (rec != null) {
+//                recipeList.add(rec)
+//            }
+//        }
+//
+//        return recipeList
+//    }
+//
 //    suspend fun getRecipe(ingredients: String): Recipe? {
 //        return apiClient.get(
 //            endpoint = "/recipes/list",
@@ -32,7 +44,7 @@ private fun Json.toRecipe() = Recipe(
     description = this["description"].string,
     yields = this["yields"].string,
     time = this["total_time_minutes"].intOrNull,
-    videoUrl = this["original_video_url"].string,
+    videoUrl = this["original_video_url"].stringOrNull,
     thumbnailUrl = this["thumbnail_url"].string,
     instructions = this["instructions"].toInstructions(),
     ingredients = this["sections"].toIngredients()
