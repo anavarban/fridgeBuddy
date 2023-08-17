@@ -1,6 +1,7 @@
-package com.mready.myapplication.ui.fridge
+package com.mready.myapplication.ui.fridge.addingredient
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.mready.myapplication.R
 import com.mready.myapplication.models.Date
 import com.mready.myapplication.models.Ingredient
+import com.mready.myapplication.ui.fridge.FridgeViewModel
 import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
@@ -40,14 +42,20 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddExpireDate(
-    fridgeViewModel: FridgeViewModel,
     user: String,
     ingredientName: String,
     unit: String,
     amount: Int,
+    onDateSelected: (Long) -> Unit,
     onDoneClick: () -> Unit,
 ) {
+
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = Calendar.getInstance().timeInMillis)
+
+    fun dateValidator(date: Long): Boolean {
+        val today = Calendar.getInstance()
+        return date >= today.timeInMillis
+    }
 
     Box(
         modifier = Modifier
@@ -91,7 +99,7 @@ fun AddExpireDate(
                     dayContentColor = MainText,
                     disabledDayContentColor = SecondaryText,
                     selectedDayContentColor = Background,
-                    disabledSelectedDayContentColor = MainAccent,
+                    disabledSelectedDayContentColor = MainText,
                     selectedDayContainerColor = MainAccent,
                     disabledSelectedDayContainerColor = MainAccent,
                     todayContentColor = MainText,
@@ -99,30 +107,15 @@ fun AddExpireDate(
                     dayInSelectionRangeContentColor = MainText,
                     dayInSelectionRangeContainerColor = MainAccent,
 
-                    )
+                ),
+                dateValidator = ::dateValidator,
             )
 
             Button(
                 modifier = Modifier
                     .fillMaxWidth(.8f),
                 onClick = {
-                    val calendar = Calendar.getInstance().apply {
-                        timeInMillis = datePickerState.selectedDateMillis ?: 0
-                    }
-                    val ingredient = Ingredient(
-                        name = ingredientName,
-                        unit = unit,
-                        quantity = amount,
-                        expireDate = Date(
-                            year = calendar.get(Calendar.YEAR),
-                            month = calendar.get(Calendar.MONTH) + 1,
-                            date = calendar.get(Calendar.DAY_OF_MONTH)
-                        ),
-                        image = ingredientToUrl[ingredientName] ?: "",
-                        id = 0
-                        )
-                    Log.d("AddExpireDate", "name: ${ingredient.name}, url: ${ingredient.image}")
-                    fridgeViewModel.insertIngredient(ingredient, user)
+                    onDateSelected(datePickerState.selectedDateMillis?: 0)
                     onDoneClick()
                 },
                 colors = ButtonDefaults.buttonColors(

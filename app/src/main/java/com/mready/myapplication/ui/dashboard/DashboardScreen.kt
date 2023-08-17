@@ -1,6 +1,5 @@
 package com.mready.myapplication.ui.dashboard
 
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
@@ -10,25 +9,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,12 +28,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -50,23 +38,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.mready.myapplication.R
-import com.mready.myapplication.models.Ingredient
-import com.mready.myapplication.models.Recipe
-import com.mready.myapplication.ui.fridge.FridgeIngredientsUiState
-import com.mready.myapplication.ui.fridge.FridgeViewModel
-import com.mready.myapplication.ui.onboarding.OnboardingViewModel
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.utils.BackPress
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import kotlinx.coroutines.delay
 
 @Composable
@@ -123,8 +102,7 @@ fun DashboardScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .windowInsetsPadding(WindowInsets.safeDrawing)
-                    .padding(top = 20.dp)
-                    .verticalScroll(rememberScrollState())
+                    .padding(top = 20.dp),
             ) {
                 Row(
                     modifier = Modifier
@@ -170,21 +148,43 @@ fun DashboardScreen(
                     color = MainText
                 )
 
-                RecommendedRecipes(
-                    recipes = dashboardViewModel.getRecommendedRecipes(),
-                    ingredientsToExpire = dashboardViewModel.getSoonToExpireIngredients(),
-                    onRecipeClick = onRecipeClick
-                )
+                val items = (dashboardState.value as DashboardState.Success).widgets.sortedBy {
+                    when (it) {
+                        is RecommendedWidgetItemViewModel -> 0
+                        is FridgeWidgetItemViewModel -> 1
+                        else -> 2
+                    }
+                }
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(bottom = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    items(items) {
+                        when (it) {
+                            is RecommendedWidgetItemViewModel -> {
+                                RecommendedRecipes(
+                                    recipes = it.displayRecipes,
+                                    ingredientsToExpire = it.soonToExpireIngredients,
+                                    onRecipeClick = onRecipeClick
+                                )
+                            }
 
-                FridgeIngredients(
-                    ingredients = dashboardViewModel.getIngredients(),
-                    onSeeFridgeClick = onSeeFridgeClick
-                )
+                            is PopularWidgetItemViewModel -> {
+                                PopularRecipes(recipeUrls = it.displayRecipes)
+                            }
 
-                PopularRecipes(recipeUrls = dashboardViewModel.getPopularRecipes())
+                            is FridgeWidgetItemViewModel -> {
+                                FridgeIngredients(
+                                    ingredients = it.displayIngredients,
+                                    onSeeFridgeClick = onSeeFridgeClick
+                                )
+                            }
+                        }
+                    }
 
+                }
             }
-
         }
 
         DashboardState.Error -> {

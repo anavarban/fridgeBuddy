@@ -5,6 +5,8 @@ class FridgeIngredientsRepoImpl (private val ingredientsDao: FridgeIngredientsDa
     override fun getUserIngredients(email: String) = ingredientsDao.getUserIngredients(email)
     override suspend fun insertIngredient(ingredient: FridgeIngredients) = ingredientsDao.insertIngredient(ingredient)
     override suspend fun updateIngredient(ingredient: FridgeIngredients) = ingredientsDao.updateIngredient(ingredient)
-    override suspend fun deleteIngredient(ingredient: FridgeIngredients) = ingredientsDao.deleteIngredient(ingredient)
+    override suspend fun deleteIngredient(id: Int) {
+        ingredientsDao.deleteIngredient(id)
+    }
 
 }

@@ -11,5 +11,7 @@ sealed class Screens (val route: String) {
     object AddType: Screens("add_type")
     object AddAmount: Screens("add_amount")
     object AddExpireDate: Screens("add_expire_date")
+
+    object AddIngredientScreen: Screens("add_ingredient_screen")
     object ProfileScreen: Screens("profile_screen")
 }

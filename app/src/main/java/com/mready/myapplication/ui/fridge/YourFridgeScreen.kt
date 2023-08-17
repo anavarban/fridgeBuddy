@@ -1,6 +1,8 @@
 package com.mready.myapplication.ui.fridge
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -18,13 +21,14 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -43,7 +47,6 @@ import com.mready.myapplication.ui.theme.SecondaryText
 
 @Composable
 fun YourFridgeScreen(
-    userEmail: String,
     onAddClick: (String) -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -57,16 +60,18 @@ fun YourFridgeScreen(
     val fridgeState = fridgeViewModel.fridgeFlow.collectAsState()
 
     LaunchedEffect(key1 = null) {
-        fridgeViewModel.loadIngredients(userEmail)
+        fridgeViewModel.loadIngredients()
     }
 
     when (fridgeState.value) {
         FridgeIngredientsUiState.Error -> {
 
         }
+
         FridgeIngredientsUiState.Loading -> {
 
         }
+
         is FridgeIngredientsUiState.Success -> {
 
             val ingredients = (fridgeState.value as FridgeIngredientsUiState.Success).ingredients
@@ -83,16 +88,36 @@ fun YourFridgeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
 
                 ) {
-                    Text(
+                    Row (
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 32.dp, start = 20.dp),
-                        text = stringResource(id = R.string.fridge_title),
-                        fontSize = 28.sp,
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MainText
-                    )
+                            .padding(top = 32.dp, start = 20.dp, end = 20.dp),
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .padding(top = 2.dp, end = 8.dp)
+                                .size(40.dp)
+                                .clickable (
+                                    interactionSource = MutableInteractionSource(),
+                                    indication = null,
+                                    onClick = {
+                                        onBackClick()
+                                    }
+                                ),
+                            imageVector = Icons . Outlined . KeyboardArrowLeft,
+                            contentDescription = null,
+                            tint = MainText
+                        )
+
+                        Text(
+                            modifier = Modifier,
+                            text = stringResource(id = R.string.fridge_title),
+                            fontSize = 28.sp,
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MainText
+                        )
+                    }
 
                     Row(
                         modifier = Modifier
@@ -120,7 +145,7 @@ fun YourFridgeScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
                     ) {
-                        items(ingredients?.sortedWith{ o1, o2 ->
+                        items(ingredients?.sortedWith { o1, o2 ->
                             if (o1.expireDate.year == o2.expireDate.year) {
                                 if (o1.expireDate.month == o2.expireDate.month) {
                                     o1.expireDate.date - o2.expireDate.date
@@ -163,15 +188,20 @@ fun YourFridgeScreen(
                         columns = GridCells.Fixed(2),
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         verticalArrangement = Arrangement.spacedBy(20.dp),
-                        contentPadding = PaddingValues(top = 1.dp, start = 20.dp, end = 20.dp, bottom = 40.dp)
+                        contentPadding = PaddingValues(
+                            top = 1.dp,
+                            start = 20.dp,
+                            end = 20.dp,
+                            bottom = 40.dp
+                        )
                     ) {
-                        items(ingredients?: emptyList()) {
+                        items(ingredients ?: emptyList()) {
                             IngredientItem(
                                 modifier = Modifier.width(120.dp),
                                 ingredient = it,
                                 showEditButton = true,
                                 onEditClick = {
-                                    fridgeViewModel.deleteIngredient(it, userEmail)
+                                    fridgeViewModel.deleteIngredient(it)
                                 }
                             )
                         }
@@ -183,7 +213,7 @@ fun YourFridgeScreen(
                     modifier = Modifier
                         .fillMaxWidth(.7f)
                         .align(Alignment.BottomCenter),
-                    onClick = { onAddClick(userEmail) },
+                    onClick = { onAddClick(fridgeViewModel.currentUser?.email ?: "") },
                     containerColor = MainAccent,
                     contentColor = Background,
                     shape = RoundedCornerShape(8.dp)
@@ -199,8 +229,6 @@ fun YourFridgeScreen(
 
         }
     }
-
-
 
 
 }

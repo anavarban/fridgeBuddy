@@ -1,4 +1,4 @@
-package com.mready.myapplication.ui.fridge
+package com.mready.myapplication.ui.fridge.addingredient
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -50,9 +50,8 @@ import com.mready.myapplication.ui.theme.Surface
 fun AddAmount(
     user: String,
     ingredientName: String,
-    onNextClick: (String, String, String, Int) -> Unit,
+    onNextClick: (String, String, String, Int) -> Unit
 ) {
-
     val measurementUnits = listOf("grams", "milliliters", "tsp")
 
     var selectedUnit by remember {

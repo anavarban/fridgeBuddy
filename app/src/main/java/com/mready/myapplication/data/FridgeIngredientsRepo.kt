@@ -11,6 +11,6 @@ interface FridgeIngredientsRepo {
 
     suspend fun updateIngredient(ingredient: FridgeIngredients)
 
-    suspend fun deleteIngredient(ingredient: FridgeIngredients)
+    suspend fun deleteIngredient(id: Int)
 
 }

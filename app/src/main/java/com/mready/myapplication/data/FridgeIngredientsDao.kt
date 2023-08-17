@@ -17,8 +17,8 @@ interface FridgeIngredientsDao {
     @Update
     suspend fun updateIngredient(ingredient: FridgeIngredients)
 
-    @Delete
-    suspend fun deleteIngredient(ingredient: FridgeIngredients)
+    @Query("DELETE FROM fridge_contents WHERE id = :id")
+    suspend fun deleteIngredient(id: Int)
 
     @Query("SELECT * FROM fridge_contents WHERE user_email = :email")
     fun getUserIngredients(email: String): Flow<List<FridgeIngredients>>

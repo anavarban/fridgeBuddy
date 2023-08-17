@@ -1,4 +1,4 @@
-package com.mready.myapplication.ui.fridge
+package com.mready.myapplication.ui.fridge.addingredient
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -47,8 +47,8 @@ import com.mready.myapplication.ui.utils.ingredientToUrl
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddType(
-    onNextClick: (String, String) -> Unit,
     user: String,
+    onNextClick: (String, String) -> Unit,
 ) {
 
     val ingredientOptions = ingredientToUrl.keys.toList()

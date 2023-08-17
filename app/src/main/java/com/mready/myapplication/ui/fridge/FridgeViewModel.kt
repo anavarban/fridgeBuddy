@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
+import com.mready.myapplication.auth.AuthRepository
 import com.mready.myapplication.models.toFridgeIngredient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
@@ -18,17 +19,23 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class FridgeViewModel @Inject constructor(private val fridgeIngredientsRepo: FridgeIngredientsRepo): ViewModel() {
+class FridgeViewModel @Inject constructor(
+    private val fridgeIngredientsRepo: FridgeIngredientsRepo,
+    private val authRepository: AuthRepository
+): ViewModel() {
 
     private var _fridgeFlow = MutableStateFlow<FridgeIngredientsUiState>(FridgeIngredientsUiState.Loading)
     val fridgeFlow = _fridgeFlow
 
+    val currentUser = authRepository.currentUser
+
     init {
         _fridgeFlow.update { FridgeIngredientsUiState.Loading }
+        loadIngredients()
     }
 
-    fun loadIngredients(email: String) {
-        fridgeIngredientsRepo.getUserIngredients(email).onEach {list ->
+    fun loadIngredients() {
+        fridgeIngredientsRepo.getUserIngredients(currentUser?.email ?: "").onEach {list ->
             _fridgeFlow.update {
                 FridgeIngredientsUiState.Success(list.map { it.toIngredient() })
             }
@@ -39,23 +46,21 @@ class FridgeViewModel @Inject constructor(private val fridgeIngredientsRepo: Fri
         viewModelScope.launch {
             fridgeIngredientsRepo.insertIngredient(ingredient.toFridgeIngredient(user))
         }
-        loadIngredients(user)
+        loadIngredients()
     }
 
-    //todo edit, delete
-
-    fun deleteIngredient(ingredient: Ingredient, user: String) {
+    fun deleteIngredient(ingredient: Ingredient) {
         viewModelScope.launch {
-            fridgeIngredientsRepo.deleteIngredient(ingredient.toFridgeIngredient(user))
+            fridgeIngredientsRepo.deleteIngredient(ingredient.id)
+            loadIngredients()
         }
-        loadIngredients(user)
     }
 
-    fun editIngredient(ingredient: Ingredient, user: String) {
+    fun editIngredient(ingredient: Ingredient) {
         viewModelScope.launch {
-            fridgeIngredientsRepo.updateIngredient(ingredient.toFridgeIngredient(user))
+            fridgeIngredientsRepo.updateIngredient(ingredient.toFridgeIngredient(currentUser?.email ?: ""))
+            loadIngredients()
         }
-        loadIngredients(user)
     }
 
 }
