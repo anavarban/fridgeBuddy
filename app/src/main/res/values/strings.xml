@@ -46,4 +46,6 @@
     <string name="generic_error">An error occurred!</string>
     <string name="onboarding_logout">Logout</string>
     <string name="dashboard_rec_recipes_subtitle">Based on the ingredients soon to expire</string>
+    <string name="fridge_add_amount">Add %1s to your fridge</string>
+    <string name="fridge_add_amount_unit">unit</string>
 </resources>

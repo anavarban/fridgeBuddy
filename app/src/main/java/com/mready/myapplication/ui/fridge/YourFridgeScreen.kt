@@ -1,6 +1,7 @@
 package com.mready.myapplication.ui.fridge
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -45,6 +46,7 @@ import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun YourFridgeScreen(
     onAddClick: (String) -> Unit,
@@ -184,7 +186,8 @@ fun YourFridgeScreen(
                     }
 
                     LazyVerticalGrid(
-                        modifier = Modifier.padding(top = 20.dp),
+                        modifier = Modifier
+                            .padding(top = 20.dp),
                         columns = GridCells.Fixed(2),
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -195,9 +198,11 @@ fun YourFridgeScreen(
                             bottom = 40.dp
                         )
                     ) {
-                        items(ingredients ?: emptyList()) {
+                        items(ingredients ?: emptyList(), key = { it.id }) {
                             IngredientItem(
-                                modifier = Modifier.width(120.dp),
+                                modifier = Modifier
+                                    .width(120.dp)
+                                    .animateItemPlacement(),
                                 ingredient = it,
                                 showEditButton = true,
                                 onEditClick = {

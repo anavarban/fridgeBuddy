@@ -52,7 +52,7 @@ fun AddAmount(
     ingredientName: String,
     onNextClick: (String, String, String, Int) -> Unit
 ) {
-    val measurementUnits = listOf("grams", "milliliters", "tsp")
+    val measurementUnits = listOf("grams", "milliliters", "tsp", "pieces")
 
     var selectedUnit by remember {
         mutableStateOf("")
@@ -82,7 +82,7 @@ fun AddAmount(
 
         Text(
             modifier = Modifier.align(Alignment.TopCenter),
-            text = "Add $ingredientName to your fridge",
+            text = stringResource(id = R.string.fridge_add_amount, ingredientName),
             textAlign = TextAlign.Center,
             fontSize = 24.sp,
             fontFamily = Poppins,
@@ -158,7 +158,7 @@ fun AddAmount(
                     placeholder = {
                         Text(
                             modifier = Modifier.alpha(.6f),
-                            text = "unit",
+                            text = stringResource(id = R.string.fridge_add_amount_unit),
                             textAlign = TextAlign.Left,
                             fontSize = 20.sp,
                             fontFamily = Poppins,
@@ -233,40 +233,40 @@ fun AddAmount(
                 )
             }
         }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "1",
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-                color = LightAccent
-            )
-            Text(
-                modifier = Modifier.padding(48.dp),
-                text = "2",
-                textAlign = TextAlign.Center,
-                fontSize = 28.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-                color = MainAccent
-            )
-            Text(
-                text = "3",
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-                color = LightAccent
-            )
-        }
+//
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .align(Alignment.BottomCenter),
+//            horizontalArrangement = Arrangement.Center,
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Text(
+//                text = "1",
+//                textAlign = TextAlign.Center,
+//                fontSize = 24.sp,
+//                fontFamily = Poppins,
+//                fontWeight = FontWeight.SemiBold,
+//                color = LightAccent
+//            )
+//            Text(
+//                modifier = Modifier.padding(48.dp),
+//                text = "2",
+//                textAlign = TextAlign.Center,
+//                fontSize = 28.sp,
+//                fontFamily = Poppins,
+//                fontWeight = FontWeight.SemiBold,
+//                color = MainAccent
+//            )
+//            Text(
+//                text = "3",
+//                textAlign = TextAlign.Center,
+//                fontSize = 24.sp,
+//                fontFamily = Poppins,
+//                fontWeight = FontWeight.SemiBold,
+//                color = LightAccent
+//            )
+//        }
 
 
     }

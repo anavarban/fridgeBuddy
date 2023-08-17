@@ -35,6 +35,22 @@ class RecipeViewModel @Inject constructor(
                         ingredient = "Test",
                         position = 1
                     ),
+                    RecipeIngredient(
+                        ingredient = "Test",
+                        position = 2
+                    ),
+                    RecipeIngredient(
+                        ingredient = "Test",
+                        position = 3
+                    ),
+                    RecipeIngredient(
+                        ingredient = "Test",
+                        position = 4
+                    ),
+                    RecipeIngredient(
+                        ingredient = "Test",
+                        position = 5
+                    ),
                 ),
                 instructions = listOf(
                     RecipeInstruction(
@@ -48,6 +64,18 @@ class RecipeViewModel @Inject constructor(
                     RecipeInstruction(
                         displayText = "Preheat a nonstick electric griddle to 300°F (150°C). (Alternatively, heat a large nonstick skillet over medium-low heat.)",
                         position = 3
+                    ),
+                    RecipeInstruction(
+                        displayText = "Preheat a nonstick electric griddle to 300°F (150°C). (Alternatively, heat a large nonstick skillet over medium-low heat.)",
+                        position = 4
+                    ),
+                    RecipeInstruction(
+                        displayText = "Preheat a nonstick electric griddle to 300°F (150°C). (Alternatively, heat a large nonstick skillet over medium-low heat.)",
+                        position = 5
+                    ),
+                    RecipeInstruction(
+                        displayText = "Preheat a nonstick electric griddle to 300°F (150°C). (Alternatively, heat a large nonstick skillet over medium-low heat.)",
+                        position = 6
                     )
                 ),
                 description = "Test",

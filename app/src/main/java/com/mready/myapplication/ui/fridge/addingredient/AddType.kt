@@ -161,39 +161,39 @@ fun AddType(
             }
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "1",
-                textAlign = TextAlign.Center,
-                fontSize = 28.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-                color = MainAccent
-            )
-            Text(
-                modifier = Modifier.padding(48.dp),
-                text = "2",
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-                color = LightAccent
-            )
-            Text(
-                text = "3",
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-                color = LightAccent
-            )
-        }
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .align(Alignment.BottomCenter),
+//            horizontalArrangement = Arrangement.Center,
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Text(
+//                text = "1",
+//                textAlign = TextAlign.Center,
+//                fontSize = 28.sp,
+//                fontFamily = Poppins,
+//                fontWeight = FontWeight.SemiBold,
+//                color = MainAccent
+//            )
+//            Text(
+//                modifier = Modifier.padding(48.dp),
+//                text = "2",
+//                textAlign = TextAlign.Center,
+//                fontSize = 24.sp,
+//                fontFamily = Poppins,
+//                fontWeight = FontWeight.SemiBold,
+//                color = LightAccent
+//            )
+//            Text(
+//                text = "3",
+//                textAlign = TextAlign.Center,
+//                fontSize = 24.sp,
+//                fontFamily = Poppins,
+//                fontWeight = FontWeight.SemiBold,
+//                color = LightAccent
+//            )
+//        }
 
         if (picked) {
             Button(

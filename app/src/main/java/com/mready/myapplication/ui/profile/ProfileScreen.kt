@@ -137,14 +137,18 @@ fun ProfileScreen(
                         fontWeight = FontWeight.SemiBold,
                     )
                 }
-
-
             }
-
         }
 
         ProfileUiState.Error -> {
-
+            Text(
+                text = stringResource(id = R.string.generic_error),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp,
+                fontFamily = Poppins,
+                fontWeight = FontWeight.SemiBold,
+                color = MainText
+            )
         }
     }
 
