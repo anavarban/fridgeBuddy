@@ -12,16 +12,28 @@ import net.mready.json.Json
 
 @Singleton
 class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient) {
-
-    suspend fun getRecipe(ingredients: String): Recipe? {
-        return apiClient.get(
-            endpoint = "/recipes/list",
-            query = mapOf("from" to 0, "to" to 1,"q" to ingredients),
-            headers = mapOf("X-RapidAPI-Key" to "3f4d1155c6msh66d70d2a24e50a9p1dc35fjsne99d6ec86d23", "X-RapidAPI-Host" to "tasty.p.rapidapi.com")
-        ) { json ->
-            json["results"].array[0].toRecipe()
-        }
-    }
+//    suspend fun getRecipesByFirstExpired(firstExpired: List<String>): List<Recipe>? {
+//        var recipeList = mutableListOf<Recipe>()
+//
+//        firstExpired.forEach{
+//            val rec = getRecipe(it)
+//            if (rec != null) {
+//                recipeList.add(rec)
+//            }
+//        }
+//
+//        return recipeList
+//    }
+//
+//    suspend fun getRecipe(ingredients: String): Recipe? {
+//        return apiClient.get(
+//            endpoint = "/recipes/list",
+//            query = mapOf("from" to 0, "to" to 1,"q" to ingredients),
+//            headers = mapOf("X-RapidAPI-Key" to "3f4d1155c6msh66d70d2a24e50a9p1dc35fjsne99d6ec86d23", "X-RapidAPI-Host" to "tasty.p.rapidapi.com")
+//        ) { json ->
+//            json["results"].array[0].toRecipe()
+//        }
+//    }
 
 
 }
@@ -32,7 +44,7 @@ private fun Json.toRecipe() = Recipe(
     description = this["description"].string,
     yields = this["yields"].string,
     time = this["total_time_minutes"].intOrNull,
-    videoUrl = this["original_video_url"].string,
+    videoUrl = this["original_video_url"].stringOrNull,
     thumbnailUrl = this["thumbnail_url"].string,
     instructions = this["instructions"].toInstructions(),
     ingredients = this["sections"].toIngredients()

@@ -1,9 +1,11 @@
 package com.mready.myapplication.ui.dashboard
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -20,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -30,31 +33,38 @@ import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.Surface
 
 @Composable
-fun RecipeItem(recipe: Recipe) {
-    Card (
-        modifier = Modifier.shadow(
-            elevation = 4.dp,
-            shape = RoundedCornerShape(12.dp)
-        ),
+fun RecipeItem(
+    recipe: Recipe,
+    baseIngredient: String,
+    modifier: Modifier = Modifier.width(240.dp),
+    onClick: (String) -> Unit
+) {
+    Card(
+        modifier = modifier
+            .shadow(
+                elevation = 4.dp,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .clickable { onClick(baseIngredient) },
         colors = CardDefaults.cardColors(
             containerColor = Surface,
             contentColor = MainText
         )
-    ){
-        Row (
+    ) {
+        Row(
             modifier = Modifier.padding(vertical = 20.dp, horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(76.dp)
                     .clip(CircleShape),
                 model = recipe.thumbnailUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
 
-            Column (
+            Column(
                 modifier = Modifier.padding(start = 8.dp)
             ) {
                 Text(
@@ -64,12 +74,15 @@ fun RecipeItem(recipe: Recipe) {
                     fontSize = 16.sp,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
-                    color = MainText
+                    color = MainText,
+                    minLines = 3,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
                 )
 
-                Row (
+                Row(
                     verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_time),
                         contentDescription = null,
@@ -78,7 +91,10 @@ fun RecipeItem(recipe: Recipe) {
 
                     Text(
                         modifier = Modifier.padding(top = 2.dp, start = 4.dp),
-                        text = stringResource(id = R.string.recipe_item_time_format, recipe.time?.toString() ?: "0"),
+                        text = stringResource(
+                            id = R.string.recipe_item_time_format,
+                            recipe.time?.toString() ?: "?"
+                        ),
                         textAlign = TextAlign.Left,
                         fontSize = 12.sp,
                         fontFamily = Poppins,

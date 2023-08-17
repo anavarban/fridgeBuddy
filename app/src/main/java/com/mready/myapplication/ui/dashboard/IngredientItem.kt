@@ -39,11 +39,15 @@ import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 
 @Composable
-fun IngredientItem(ingredient: Ingredient) {
+fun IngredientItem(
+    modifier: Modifier = Modifier.width(160.dp),
+    ingredient: Ingredient,
+    showEditButton: Boolean = true,
+    onEditClick: () -> Unit = {}
+) {
 
     Card(
-        modifier = Modifier
-            .width(160.dp)
+        modifier = modifier
             .shadow(
                 elevation = 4.dp,
                 shape = RoundedCornerShape(12.dp)
@@ -63,7 +67,7 @@ fun IngredientItem(ingredient: Ingredient) {
                     .aspectRatio(3/4f),
                 model = ingredient.image,
                 contentDescription = null,
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Crop
             )
 
             Column(
@@ -114,19 +118,22 @@ fun IngredientItem(ingredient: Ingredient) {
                 }
             }
 
-            FloatingActionButton(
-                modifier = Modifier
-                    .padding(12.dp)
-                    .align(Alignment.TopEnd)
-                    .size(40.dp),
-                onClick = { /*TODO*/ },
-                shape = RoundedCornerShape(8.dp),
-                containerColor = MainAccent,
-                contentColor = Color.White
+            if (showEditButton) {
+                FloatingActionButton(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .align(Alignment.TopEnd)
+                        .size(40.dp),
+                    onClick = onEditClick,
+                    shape = RoundedCornerShape(8.dp),
+                    containerColor = MainAccent,
+                    contentColor = Color.White
 
-            ) {
-                Icon(imageVector = Icons.Outlined.Edit, contentDescription = null )
+                ) {
+                    Icon(imageVector = Icons.Outlined.Edit, contentDescription = null )
+                }
             }
+
 
         }
     }

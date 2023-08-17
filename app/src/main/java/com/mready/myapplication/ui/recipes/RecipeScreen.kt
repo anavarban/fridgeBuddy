@@ -10,15 +10,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,7 +32,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -47,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.mready.myapplication.R
+import com.mready.myapplication.models.RecipeIngredient
 import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
@@ -58,6 +64,7 @@ import com.mready.myapplication.ui.theme.SecondaryText
 @Composable
 fun RecipeScreen(
     ingredients: String,
+    onBackClick: () -> Unit
 ) {
     val recipeViewModel: RecipeViewModel = hiltViewModel()
 
@@ -102,10 +109,7 @@ fun RecipeScreen(
 
             val recipe = (uiState.value as RecipeUiState.Success).recipe
 
-            val sheetState = rememberModalBottomSheetState()
-            LaunchedEffect(key1 = null) {
-                sheetState.show()
-            }
+
 
             Box(
                 modifier = Modifier.fillMaxSize()
@@ -120,7 +124,7 @@ fun RecipeScreen(
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(top = 32.dp, start = 20.dp),
-                    onClick = { /*TODO*/ },
+                    onClick = onBackClick,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = Background,
                         contentColor = MainAccent
@@ -132,26 +136,10 @@ fun RecipeScreen(
                     )
                 }
 
-                IconButton(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(top = 32.dp, end = 20.dp),
-                    onClick = { /*TODO*/ },
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = Background,
-                        contentColor = MainAccent
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder,
-                        contentDescription = null
-                    )
-                }
-
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(.7f)
+                        .fillMaxHeight(.75f)
                         .align(Alignment.BottomCenter),
                     shape = RoundedCornerShape(20.dp),
                     color = Background,
@@ -160,7 +148,7 @@ fun RecipeScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .verticalScroll(rememberScrollState())
+
                     ) {
                         Row(
                             modifier = Modifier
@@ -170,6 +158,8 @@ fun RecipeScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
+                                modifier = Modifier
+                                    .fillMaxWidth(.5f),
                                 text = recipe.name,
                                 textAlign = TextAlign.Left,
                                 fontSize = 24.sp,
@@ -195,7 +185,7 @@ fun RecipeScreen(
                                 Text(
                                     modifier = Modifier
                                         .padding(top = 4.dp, start = 4.dp, end = 4.dp),
-                                    text = recipe.time.toString() + "h",
+                                    text = (recipe.time?.toString() ?: "? ") + "m",
                                     textAlign = TextAlign.Left,
                                     fontSize = 24.sp,
                                     fontFamily = Poppins,
@@ -205,10 +195,20 @@ fun RecipeScreen(
                             }
                         }
 
+                        LazyVerticalGrid(
+                            modifier = Modifier.padding(top = 20.dp, start = 20.dp),
+                            columns = GridCells.Fixed(2)
+                        ) {
+                            items(recipe.ingredients.sortedBy { it.position }) { ingredient ->
+                                RecipeIngredientElement(ingredient)
+                            }
+                        }
+
                         Column(
                             modifier = Modifier
                                 .fillMaxHeight()
-                                .padding(start = 20.dp, end = 20.dp),
+                                .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+                                .verticalScroll(rememberScrollState()),
                             verticalArrangement = Arrangement.SpaceEvenly,
                         ) {
                             recipe.instructions.sortedBy {
@@ -218,6 +218,7 @@ fun RecipeScreen(
                                     stepNo = it.position,
                                     stepDirections = it.displayText,
                                 )
+                                Spacer(modifier = Modifier.height(8.dp))
                             }
                         }
                     }
@@ -225,7 +226,32 @@ fun RecipeScreen(
             }
         }
     }
+}
 
+@Composable
+fun RecipeIngredientElement(
+    ingredient: RecipeIngredient
+) {
+    Row (
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            modifier = Modifier,
+            imageVector = Icons.Outlined.Check,
+            contentDescription = null,
+            tint = MainAccent
+        )
+        Text(
+            modifier = Modifier
+                .padding(top = 4.dp, start = 4.dp, end = 4.dp),
+            text = ingredient.ingredient,
+            textAlign = TextAlign.Left,
+            fontSize = 16.sp,
+            fontFamily = Poppins,
+            fontWeight = FontWeight.SemiBold,
+            color = MainText
+        )
+    }
 }
 
 @Composable
@@ -235,6 +261,7 @@ fun RecipeStepElement(
     stepDirections: String,
 ) {
     var expanded by remember {
+        //todo first index could start expanded?
         mutableStateOf(false)
     }
 

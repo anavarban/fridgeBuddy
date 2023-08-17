@@ -1,5 +1,7 @@
-package com.mready.myapplication.ui.fridge
+package com.mready.myapplication.ui.fridge.addingredient
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,19 +27,35 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mready.myapplication.R
+import com.mready.myapplication.models.Date
+import com.mready.myapplication.models.Ingredient
+import com.mready.myapplication.ui.fridge.FridgeViewModel
 import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.ingredientToUrl
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddExpireDate(
-    ingredientName: String
+    user: String,
+    ingredientName: String,
+    unit: String,
+    amount: Int,
+    onDateSelected: (Long) -> Unit,
+    onDoneClick: () -> Unit,
 ) {
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = 1578096000000)
+
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = Calendar.getInstance().timeInMillis)
+
+    fun dateValidator(date: Long): Boolean {
+        val today = Calendar.getInstance()
+        return date >= today.timeInMillis
+    }
 
     Box(
         modifier = Modifier
@@ -58,9 +76,10 @@ fun AddExpireDate(
                 fontSize = 24.sp,
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
-                color = MainText
+                color = MainText,
+                minLines = 2,
 
-            )
+                )
 
             DatePicker(
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp),
@@ -80,7 +99,7 @@ fun AddExpireDate(
                     dayContentColor = MainText,
                     disabledDayContentColor = SecondaryText,
                     selectedDayContentColor = Background,
-                    disabledSelectedDayContentColor = MainAccent,
+                    disabledSelectedDayContentColor = MainText,
                     selectedDayContainerColor = MainAccent,
                     disabledSelectedDayContainerColor = MainAccent,
                     todayContentColor = MainText,
@@ -88,20 +107,24 @@ fun AddExpireDate(
                     dayInSelectionRangeContentColor = MainText,
                     dayInSelectionRangeContainerColor = MainAccent,
 
-                )
+                ),
+                dateValidator = ::dateValidator,
             )
 
             Button(
                 modifier = Modifier
                     .fillMaxWidth(.8f),
-                onClick = { /* TODO navigate */ },
+                onClick = {
+                    onDateSelected(datePickerState.selectedDateMillis?: 0)
+                    onDoneClick()
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MainAccent
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = stringResource(id = R.string.fridge_add),
+                    text = stringResource(id = R.string.fridge_done),
                     fontSize = 18.sp,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold
@@ -110,38 +133,38 @@ fun AddExpireDate(
         }
 
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "1",
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-                color = LightAccent
-            )
-            Text(
-                modifier = Modifier.padding(48.dp),
-                text = "2",
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-                color = LightAccent
-            )
-            Text(
-                text = "3",
-                textAlign = TextAlign.Center,
-                fontSize = 28.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-                color = MainAccent
-            )
-        }
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .align(Alignment.BottomCenter),
+//            horizontalArrangement = Arrangement.Center,
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Text(
+//                text = "1",
+//                textAlign = TextAlign.Center,
+//                fontSize = 24.sp,
+//                fontFamily = Poppins,
+//                fontWeight = FontWeight.SemiBold,
+//                color = LightAccent
+//            )
+//            Text(
+//                modifier = Modifier.padding(48.dp),
+//                text = "2",
+//                textAlign = TextAlign.Center,
+//                fontSize = 24.sp,
+//                fontFamily = Poppins,
+//                fontWeight = FontWeight.SemiBold,
+//                color = LightAccent
+//            )
+//            Text(
+//                text = "3",
+//                textAlign = TextAlign.Center,
+//                fontSize = 28.sp,
+//                fontFamily = Poppins,
+//                fontWeight = FontWeight.SemiBold,
+//                color = MainAccent
+//            )
+//        }
     }
 }

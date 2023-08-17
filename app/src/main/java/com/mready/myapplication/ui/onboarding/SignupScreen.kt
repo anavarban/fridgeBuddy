@@ -1,5 +1,8 @@
 package com.mready.myapplication.ui.onboarding
 
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,14 +20,18 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,17 +39,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 import com.mready.myapplication.R
+import com.mready.myapplication.auth.Resource
 import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.Error
 import com.mready.myapplication.ui.theme.LightAccent
@@ -50,9 +62,20 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.clientId
+import com.mready.myapplication.ui.utils.signUpFields
 
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(
+    onLoginClick: () -> Unit,
+    onSignUpClick: @Composable () -> Unit,
+    onboardingViewModel: OnboardingViewModel
+) {
+    val context = LocalContext.current
+
+    val signUpFlow = onboardingViewModel.signUpFlow.collectAsState()
+
+    val googleFlow = onboardingViewModel.googleFlow.collectAsState()
 
     var email by remember {
         mutableStateOf("")
@@ -69,6 +92,46 @@ fun SignUpScreen() {
     var name by remember {
         mutableStateOf("")
     }
+
+    var nameError by remember {
+        mutableStateOf(false)
+    }
+
+    var emailError by remember {
+        mutableStateOf(false)
+    }
+
+    var passwordError by remember {
+        mutableStateOf(false)
+    }
+
+    fun validate(text: String, type: signUpFields) {
+        when (type) {
+            signUpFields.NAME -> {
+                nameError = text.length < 3
+            }
+
+            signUpFields.EMAIL -> {
+                emailError = !android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches()
+            }
+
+            signUpFields.PASSWORD -> {
+                passwordError = text.length < 8
+            }
+        }
+    }
+
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+            val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+            try {
+                val result = account.getResult(ApiException::class.java)
+                val credential = GoogleAuthProvider.getCredential(result?.idToken, null)
+                onboardingViewModel.googleSignIn(credential)
+            } catch (e: ApiException) {
+                Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+            }
+        }
 
     Column(
         modifier = Modifier
@@ -103,8 +166,8 @@ fun SignUpScreen() {
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth(),
-            value = TextFieldValue(""),
-            onValueChange = {/* TODO */ },
+            value = name,
+            onValueChange = { name = it },
             textStyle = TextStyle(
                 fontFamily = Poppins,
                 fontSize = 20.sp,
@@ -113,10 +176,12 @@ fun SignUpScreen() {
             ),
             placeholder = {
                 Text(
-                    modifier = Modifier.alpha(.6f),
+                    modifier = Modifier
+                        .alpha(.6f)
+                        .padding(top = 4.dp),
                     text = stringResource(id = R.string.onboarding_name_placeholder),
                     textAlign = TextAlign.Left,
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     color = SecondaryText
@@ -129,7 +194,26 @@ fun SignUpScreen() {
                 focusedIndicatorColor = MainAccent,
                 unfocusedIndicatorColor = LightAccent,
                 errorIndicatorColor = Error,
-            )
+            ),
+            isError = nameError,
+            keyboardActions = KeyboardActions {
+                validate(name, signUpFields.NAME)
+            },
+            supportingText = {
+                if (nameError) {
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 4.dp),
+                        text = stringResource(id = R.string.onboarding_name_error),
+                        textAlign = TextAlign.Left,
+                        fontSize = 12.sp,
+                        fontFamily = Poppins,
+                        color = Error
+                    )
+                }
+            }
+
+
         )
 
         Text(
@@ -146,8 +230,8 @@ fun SignUpScreen() {
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth(),
-            value = TextFieldValue(""),
-            onValueChange = {/* TODO */ },
+            value = email,
+            onValueChange = { email = it },
             textStyle = TextStyle(
                 fontFamily = Poppins,
                 fontSize = 20.sp,
@@ -156,14 +240,32 @@ fun SignUpScreen() {
             ),
             placeholder = {
                 Text(
-                    modifier = Modifier.alpha(.6f),
+                    modifier = Modifier
+                        .alpha(.6f)
+                        .padding(top = 4.dp),
                     text = stringResource(id = R.string.onboarding_email_example),
                     textAlign = TextAlign.Left,
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     color = SecondaryText
                 )
+            },
+            supportingText = {
+                if (emailError) {
+                    Text(
+                        modifier = Modifier,
+                        text = stringResource(id = R.string.onboarding_email_error),
+                        textAlign = TextAlign.Left,
+                        fontSize = 12.sp,
+                        fontFamily = Poppins,
+                        color = Error
+                    )
+                }
+            },
+            isError = emailError,
+            keyboardActions = KeyboardActions {
+                validate(email, signUpFields.EMAIL)
             },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Background,
@@ -189,8 +291,8 @@ fun SignUpScreen() {
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth(),
-            value = TextFieldValue(""),
-            onValueChange = {/* TODO */ },
+            value = password,
+            onValueChange = { password = it },
             textStyle = TextStyle(
                 fontFamily = Poppins,
                 fontSize = 20.sp,
@@ -199,10 +301,12 @@ fun SignUpScreen() {
             ),
             placeholder = {
                 Text(
-                    modifier = Modifier.alpha(.6f),
+                    modifier = Modifier
+                        .alpha(.6f)
+                        .padding(top = 4.dp),
                     text = stringResource(id = R.string.onboarding_pass_placeholder),
                     textAlign = TextAlign.Left,
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     color = SecondaryText
@@ -219,14 +323,40 @@ fun SignUpScreen() {
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 Icon(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { passwordVisibility = !passwordVisibility }
+                        )
+                        .padding(8.dp),
                     painter = if (passwordVisibility)
                         painterResource(id = R.drawable.ic_visibility_off)
                     else
                         painterResource(id = R.drawable.ic_visibility),
                     contentDescription = null,
-                    tint = MainAccent
+                    tint = if (!passwordError) MainAccent else Error
                 )
+            },
+            keyboardActions = KeyboardActions {
+                validate(password, signUpFields.PASSWORD)
+            },
+            isError = passwordError,
+            supportingText = {
+                if (passwordError) {
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 4.dp),
+                        text = stringResource(id = R.string.onboarding_pass_error),
+                        textAlign = TextAlign.Left,
+                        fontSize = 12.sp,
+                        fontFamily = Poppins,
+                        color = Error
+                    )
+                }
             }
+
         )
 
         Spacer(
@@ -237,7 +367,15 @@ fun SignUpScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 40.dp),
-            onClick = {/*TODO*/ },
+            onClick = {
+                validate(name, signUpFields.NAME)
+                validate(email, signUpFields.EMAIL)
+                validate(password, signUpFields.PASSWORD)
+                if (!nameError && !emailError && !passwordError) {
+//                    onSignUpClick()
+                    onboardingViewModel.signUp(name, email, password)
+                }
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MainAccent
             ),
@@ -294,7 +432,22 @@ fun SignUpScreen() {
             Icon(
                 modifier = Modifier
                     .padding(end = 8.dp)
-                    .size(32.dp),
+                    .size(32.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = {
+                            val gso = GoogleSignInOptions
+                                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .requestEmail()
+                                .requestIdToken(clientId)
+                                .build()
+
+                            val googleSignInClient = GoogleSignIn.getClient(context, gso)
+
+                            launcher.launch(googleSignInClient.signInIntent)
+                        }
+                    ),
                 painter = painterResource(id = R.drawable.ic_google),
                 contentDescription = null,
                 tint = MainAccent
@@ -335,8 +488,8 @@ fun SignUpScreen() {
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                        onClick = { /*TODO*/ }
-                    ) ,
+                        onClick = onLoginClick
+                    ),
                 text = stringResource(id = R.string.onboarding_login),
                 fontSize = 16.sp,
                 fontFamily = Poppins,
@@ -344,6 +497,57 @@ fun SignUpScreen() {
                 color = MainAccent
             )
         }
+
+        signUpFlow.value.let {
+            when (it) {
+                is Resource.Error -> {
+                    val context = LocalContext.current
+                    val error = stringResource(id = R.string.generic_error)
+                    LaunchedEffect(key1 = null) {
+                        Toast.makeText(
+                            context,
+                            it.exception.message ?: error,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                Resource.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+                is Resource.Success -> {
+                    onSignUpClick()
+                }
+                null -> {}
+            }
+        }
+
+        googleFlow.value.let {
+            when (it) {
+                is Resource.Error -> {
+                    val context = LocalContext.current
+                    val error = stringResource(id = R.string.generic_error)
+                    LaunchedEffect(key1 = null) {
+                        Toast.makeText(
+                            context,
+                            it.exception.message ?: error,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                Resource.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+
+                is Resource.Success -> onSignUpClick()
+                null -> {}
+            }
+        }
+
     }
 
 }
