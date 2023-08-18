@@ -59,4 +59,5 @@
     <string name="details_edit">Edit</string>
     <string name="details_edit_title">Edit details for %1s</string>
     <string name="generic_save">Save</string>
+    <string name="recipe_item_yields_format">"%1s "</string>
 </resources>

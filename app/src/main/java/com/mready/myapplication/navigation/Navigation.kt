@@ -83,6 +83,7 @@ fun Navigation(
                 },
                 onExit = onExitFromDashboard,
                 onIngredientClick = { navController.navigate(Screens.DetailsScreen.route + "/${it}") },
+                notificationManager = notificationManager
             )
         }
 

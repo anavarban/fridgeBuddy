@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import com.mready.myapplication.models.Date
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import kotlin.random.Random
@@ -85,3 +86,7 @@ val ingredientToUrl = mapOf(
     "Spinach" to "https://images.unsplash.com/photo-1578283326173-fbb0f83b59b2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8c3BpbmFjaHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
     "Peas" to "https://images.unsplash.com/photo-1596564823703-d28706a620e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVhc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
 )
+
+fun Date.toMillis(): Long {
+    return (this.date + this.month * 30 + (this.year - 1970) * 365).toLong() * 24 * 60 * 60 * 1000
+}

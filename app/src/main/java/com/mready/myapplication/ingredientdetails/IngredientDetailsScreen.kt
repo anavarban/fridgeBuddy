@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -73,7 +71,6 @@ fun IngredientDetailsScreen(
     ingredientId: Int,
     onBackButtonClick: () -> Unit
 ) {
-
     val ingredientDetailsViewModel: IngredientDetailsViewModel = hiltViewModel()
 
     val detailsUiState = ingredientDetailsViewModel.ingredientDetailsFlow.collectAsState()
@@ -260,7 +257,7 @@ fun EditBottomSheet(
     onDismissRequest: () -> Unit,
     onEditClick: (Ingredient) -> Unit
 ) {
-    var amountEntered by remember { mutableStateOf("") }
+    var amountEntered by remember { mutableStateOf("${ingredient.quantity}") }
 
     var enteredAmount by remember { mutableStateOf(false) }
 

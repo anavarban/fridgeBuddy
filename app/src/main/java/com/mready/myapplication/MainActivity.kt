@@ -46,16 +46,6 @@ class MainActivity : ComponentActivity() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        val intent = Intent(this, MainActivity::class.java)
-        val contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-        val notification = NotificationCompat.Builder(this, channelId)
-            .setContentTitle("My Notification")
-            .setContentText("This is a notification")
-            .setSmallIcon(R.drawable.ic_utensils)
-            .setContentIntent(contentIntent)
-            .setAutoCancel(true)
-            .build()
 
         setContent {
             MyApplicationTheme {

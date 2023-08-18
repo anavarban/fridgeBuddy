@@ -2,8 +2,15 @@ package com.mready.myapplication.ui.dashboard
 
 import android.Manifest
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -40,10 +47,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
+import com.mready.myapplication.MainActivity
 import com.mready.myapplication.R
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
@@ -51,7 +62,9 @@ import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.utils.BackPress
 import kotlinx.coroutines.delay
+import java.util.Calendar
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun DashboardScreen(
@@ -88,13 +101,39 @@ fun DashboardScreen(
         }
     }
 
-    val notificationPermissionState = rememberPermissionState(permission = Manifest.permission.ACCESS_NOTIFICATION_POLICY)
+    var canLaunchNotifications by remember {
+        mutableStateOf(false)
+    }
 
-    LaunchedEffect(Unit) {
-        if (!notificationPermissionState.permission.isNullOrEmpty()) {
-            notificationPermissionState.launchPermissionRequest()
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        canLaunchNotifications = isGranted
+    }
+
+    if (ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    ) {
+        canLaunchNotifications = true
+    } else {
+        LaunchedEffect(key1 = null) {
+            launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
+
+    val intent = Intent(LocalContext.current, MainActivity::class.java)
+    val contentIntent =
+        PendingIntent.getActivity(LocalContext.current, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+    val notification = NotificationCompat.Builder(LocalContext.current, "fridge_channel")
+        .setContentTitle("FridgeBuddy")
+        .setContentText("Your ingredients will expire soon!")
+        .setSmallIcon(R.drawable.ic_utensils)
+        .setContentIntent(contentIntent)
+        .setAutoCancel(true)
+        .build()
 
 
     LaunchedEffect(key1 = null) {
@@ -193,10 +232,38 @@ fun DashboardScreen(
                                     onSeeFridgeClick = onSeeFridgeClick,
                                     onIngredientClick = onIngredientClick
                                 )
+
+                                val date = Calendar.getInstance()
+                                val formattedDate = com.mready.myapplication.models.Date(
+                                    year = date.get(Calendar.YEAR),
+                                    month = date.get(Calendar.MONTH) + 1,
+                                    date = date.get(Calendar.DAY_OF_MONTH)
+                                )
+
+                                if (it.displayIngredients.isNotEmpty()) {
+
+                                    val first = it.displayIngredients.first()
+                                    val compareDates =
+                                        if (first.expireDate.year == formattedDate.year) {
+                                            if (first.expireDate.month == formattedDate.month) {
+                                                first.expireDate.date - formattedDate.date - 2
+                                            } else {
+                                                first.expireDate.month - formattedDate.month
+                                            }
+                                        } else {
+                                            first.expireDate.year - formattedDate.year
+                                        }
+                                    // TODO: make it so it only notifies once
+                                    if ( (compareDates <= 0) && canLaunchNotifications) {
+                                        notificationManager.notify(
+                                            it.displayIngredients.first().id,
+                                            notification
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
-
                 }
             }
         }

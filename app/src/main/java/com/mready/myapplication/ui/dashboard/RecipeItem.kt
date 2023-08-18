@@ -1,8 +1,12 @@
 package com.mready.myapplication.ui.dashboard
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -17,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.mready.myapplication.R
 import com.mready.myapplication.models.Recipe
+import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.Surface
@@ -51,26 +58,35 @@ fun RecipeItem(
             contentColor = MainText
         )
     ) {
-        Row(
-            modifier = Modifier.padding(vertical = 20.dp, horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+//            modifier = Modifier.padding(vertical = 20.dp, horizontal = 12.dp),
+//            verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
                 modifier = Modifier
-                    .size(76.dp)
-                    .clip(CircleShape),
+                    .fillMaxWidth(),
                 model = recipe.thumbnailUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
 
             Column(
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier
+                    .matchParentSize()
+                    .fillMaxSize()
+                    .background(Brush.horizontalGradient(0.0f to Color.Transparent, 1.0f to Surface))
+                    .padding(start = 28.dp)
+                    .align(Alignment.CenterEnd)
             ) {
                 Text(
-                    modifier = Modifier.padding(start = 4.dp),
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .fillMaxWidth(.6f)
+                        .padding(top = 12.dp, end = 8.dp),
                     text = recipe.name,
-                    textAlign = TextAlign.Left,
+                    textAlign = TextAlign.Right,
                     fontSize = 16.sp,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
@@ -81,7 +97,10 @@ fun RecipeItem(
                 )
 
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(top = 8.dp, end = 8.dp),
+//                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_time),
@@ -95,12 +114,37 @@ fun RecipeItem(
                             id = R.string.recipe_item_time_format,
                             recipe.time?.toString() ?: "?"
                         ),
-                        textAlign = TextAlign.Left,
+                        textAlign = TextAlign.Right,
                         fontSize = 12.sp,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         color = MainText
                     )
+                }
+
+                if (recipe.yields.isNotEmpty() && recipe.yields != "null") {
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 8.dp, end = 8.dp),
+//                    verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_utensils),
+                            contentDescription = null,
+                            tint = MainText
+                        )
+
+                        Text(
+                            modifier = Modifier.padding(top = 2.dp, start = 4.dp),
+                            text = recipe.yields,
+                            textAlign = TextAlign.Right,
+                            fontSize = 12.sp,
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MainText
+                        )
+                    }
                 }
             }
         }
