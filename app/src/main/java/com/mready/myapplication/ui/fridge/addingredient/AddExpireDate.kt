@@ -15,7 +15,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DateRangePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -49,13 +51,16 @@ fun AddExpireDate(
     onDateSelected: (Long) -> Unit,
     onDoneClick: () -> Unit,
 ) {
+    val today = Calendar.getInstance()
 
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = Calendar.getInstance().timeInMillis)
-
-    fun dateValidator(date: Long): Boolean {
-        val today = Calendar.getInstance()
-        return date >= today.timeInMillis
-    }
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = Calendar.getInstance().timeInMillis,
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return (utcTimeMillis >= today.timeInMillis)
+            }
+        }
+    )
 
     Box(
         modifier = Modifier
@@ -77,9 +82,8 @@ fun AddExpireDate(
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
                 color = MainText,
-                minLines = 2,
-
-                )
+                minLines = 2
+            )
 
             DatePicker(
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp),
@@ -108,7 +112,6 @@ fun AddExpireDate(
                     dayInSelectionRangeContainerColor = MainAccent,
 
                 ),
-                dateValidator = ::dateValidator,
             )
 
             Button(
@@ -131,40 +134,5 @@ fun AddExpireDate(
                 )
             }
         }
-
-
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .align(Alignment.BottomCenter),
-//            horizontalArrangement = Arrangement.Center,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Text(
-//                text = "1",
-//                textAlign = TextAlign.Center,
-//                fontSize = 24.sp,
-//                fontFamily = Poppins,
-//                fontWeight = FontWeight.SemiBold,
-//                color = LightAccent
-//            )
-//            Text(
-//                modifier = Modifier.padding(48.dp),
-//                text = "2",
-//                textAlign = TextAlign.Center,
-//                fontSize = 24.sp,
-//                fontFamily = Poppins,
-//                fontWeight = FontWeight.SemiBold,
-//                color = LightAccent
-//            )
-//            Text(
-//                text = "3",
-//                textAlign = TextAlign.Center,
-//                fontSize = 28.sp,
-//                fontFamily = Poppins,
-//                fontWeight = FontWeight.SemiBold,
-//                color = MainAccent
-//            )
-//        }
     }
 }

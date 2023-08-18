@@ -9,8 +9,20 @@ interface FridgeIngredientsRepo {
 
     suspend fun insertIngredient(ingredient: FridgeIngredients)
 
-    suspend fun updateIngredient(ingredient: FridgeIngredients)
+    suspend fun updateIngredient(
+        id: Int,
+        userEmail: String,
+        name: String,
+        quantity: Int,
+        unit: String,
+        expireDay: Int,
+        expireMonth: Int,
+        expireYear: Int,
+        imgUrl: String
+    )
 
     suspend fun deleteIngredient(id: Int)
+
+    suspend fun getIngredient(id: Int): FridgeIngredients?
 
 }

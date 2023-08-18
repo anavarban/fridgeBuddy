@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.mready.myapplication.ingredientdetails.IngredientDetailsScreen
 import com.mready.myapplication.ui.dashboard.DashboardScreen
 import com.mready.myapplication.ui.fridge.YourFridgeScreen
 import com.mready.myapplication.ui.fridge.addingredient.AddIngredientScreen
@@ -74,12 +75,12 @@ fun Navigation(
         composable(route = Screens.DashboardScreen.route) {
             DashboardScreen(
                 onSeeFridgeClick = { navController.navigate(Screens.FridgeScreen.route) },
-                onIngredientEditClick = {},
                 onRecipeClick = { navController.navigate(Screens.RecipeScreen.route + "/${it}") },
                 onProfileClick = {
                     navController.navigate(Screens.ProfileScreen.route)
-                                 },
-                onExit = onExitFromDashboard
+                },
+                onExit = onExitFromDashboard,
+                onIngredientClick = { navController.navigate(Screens.DetailsScreen.route + "/${it}") },
             )
         }
 
@@ -102,6 +103,7 @@ fun Navigation(
             YourFridgeScreen(
                 onAddClick = { navController.navigate(Screens.AddIngredientScreen.route) },
                 onBackClick = { navController.navigate(Screens.DashboardScreen.route) },
+                onCardClick = { navController.navigate(Screens.DetailsScreen.route + "/${it}") },
             )
 
         }
@@ -109,6 +111,14 @@ fun Navigation(
         composable(route = Screens.AddIngredientScreen.route) {
             AddIngredientScreen(
                 onDone = { navController.navigate(Screens.FridgeScreen.route) }
+            )
+        }
+
+        composable(route = Screens.DetailsScreen.route + "/{id}") {
+            val id = it.arguments?.getString("id")?.toInt() ?: 0
+            IngredientDetailsScreen(
+                ingredientId = id,
+                onBackButtonClick = { navController.popBackStack() },
             )
         }
 

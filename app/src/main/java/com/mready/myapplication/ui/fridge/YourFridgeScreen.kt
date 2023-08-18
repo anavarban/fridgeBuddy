@@ -29,7 +29,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -50,7 +49,8 @@ import com.mready.myapplication.ui.theme.SecondaryText
 @Composable
 fun YourFridgeScreen(
     onAddClick: (String) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onCardClick: (Int) -> Unit
 ) {
     BackHandler {
         onBackClick()
@@ -159,7 +159,10 @@ fun YourFridgeScreen(
                             }
                         }?.take(3) ?: emptyList()) {
                             IngredientItem(
-                                modifier = Modifier.width(120.dp),
+                                modifier = Modifier
+                                    .width(120.dp)
+                                    .clickable { onCardClick(it.id) },
+                                showDeleteButton = false,
                                 ingredient = it
                             )
                         }
@@ -202,10 +205,11 @@ fun YourFridgeScreen(
                             IngredientItem(
                                 modifier = Modifier
                                     .width(120.dp)
-                                    .animateItemPlacement(),
+                                    .animateItemPlacement()
+                                    .clickable { onCardClick(it.id) },
                                 ingredient = it,
-                                showEditButton = true,
-                                onEditClick = {
+                                showDeleteButton = true,
+                                onDeleteClick = {
                                     fridgeViewModel.deleteIngredient(it)
                                 }
                             )

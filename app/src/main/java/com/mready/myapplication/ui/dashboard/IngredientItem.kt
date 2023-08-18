@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -42,8 +42,8 @@ import com.mready.myapplication.ui.theme.Poppins
 fun IngredientItem(
     modifier: Modifier = Modifier.width(160.dp),
     ingredient: Ingredient,
-    showEditButton: Boolean = true,
-    onEditClick: () -> Unit = {}
+    showDeleteButton: Boolean = true,
+    onDeleteClick: () -> Unit = {}
 ) {
 
     Card(
@@ -118,19 +118,19 @@ fun IngredientItem(
                 }
             }
 
-            if (showEditButton) {
+            if (showDeleteButton) {
                 FloatingActionButton(
                     modifier = Modifier
                         .padding(12.dp)
                         .align(Alignment.TopEnd)
                         .size(40.dp),
-                    onClick = onEditClick,
+                    onClick = onDeleteClick,
                     shape = RoundedCornerShape(8.dp),
                     containerColor = MainAccent,
                     contentColor = Color.White
 
                 ) {
-                    Icon(imageVector = Icons.Outlined.Edit, contentDescription = null )
+                    Icon(imageVector = Icons.Outlined.Delete, contentDescription = null )
                 }
             }
 

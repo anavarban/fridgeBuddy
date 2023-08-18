@@ -56,13 +56,6 @@ class FridgeViewModel @Inject constructor(
         }
     }
 
-    fun editIngredient(ingredient: Ingredient) {
-        viewModelScope.launch {
-            fridgeIngredientsRepo.updateIngredient(ingredient.toFridgeIngredient(currentUser?.email ?: ""))
-            loadIngredients()
-        }
-    }
-
 }
 
 sealed class FridgeIngredientsUiState {

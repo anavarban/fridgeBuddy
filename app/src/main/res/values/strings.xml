@@ -48,4 +48,15 @@
     <string name="dashboard_rec_recipes_subtitle">Based on the ingredients soon to expire</string>
     <string name="fridge_add_amount">Add %1s to your fridge</string>
     <string name="fridge_add_amount_unit">unit</string>
+    <string name="fridge_add_ingredient">Add ingredient to your fridge</string>
+    <string name="fridge_pick_ingredient">Pick ingredient</string>
+    <string name="fridge_add_amount_error">Add a valid amount!</string>
+    <string name="fridge_add_amount_unit_error">Pick unit!</string>
+    <string name="cancel_adding_ingredient">Are you sure you want to cancel adding ingredient?</string>
+    <string name="generic_exit">Exit</string>
+    <string name="details_expires_on">Expires on: %1d.%2d.%3d</string>
+    <string name="details_quantity">Quantity: %1d %2s</string>
+    <string name="details_edit">Edit</string>
+    <string name="details_edit_title">Edit details for %1s</string>
+    <string name="generic_save">Save</string>
 </resources>

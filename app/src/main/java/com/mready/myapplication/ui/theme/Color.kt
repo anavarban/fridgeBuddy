@@ -19,4 +19,5 @@ val LightAccent = Color(0xFFbFD9BD)
 val Error = Color(0xFFC8767F)
 val Surface = Color(0xFFECF5EB)
 val AlternateBackground = Color(0xFFF4F9F4)
+val DarkAccent = Color(0xFF2a7a38)
 

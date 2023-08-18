@@ -48,13 +48,14 @@ import com.mready.myapplication.ui.utils.ingredientToUrl
 @Composable
 fun AddType(
     user: String,
+    startingType: String = "",
     onNextClick: (String, String) -> Unit,
 ) {
 
     val ingredientOptions = ingredientToUrl.keys.toList()
 
     var selectedType by remember {
-        mutableStateOf("")
+        mutableStateOf(startingType)
     }
     var expandedMenu by remember {
         mutableStateOf(false)
@@ -74,7 +75,7 @@ fun AddType(
 
         Text(
             modifier = Modifier.align(Alignment.TopCenter),
-            text = "Add ingredient to your fridge",
+            text = stringResource(id = R.string.fridge_add_ingredient),
             textAlign = TextAlign.Center,
             fontSize = 24.sp,
             fontFamily = Poppins,
@@ -109,7 +110,7 @@ fun AddType(
                 placeholder = {
                     Text(
                         modifier = Modifier.alpha(.6f),
-                        text = "Pick ingredient",
+                        text = stringResource(id = R.string.fridge_pick_ingredient),
                         textAlign = TextAlign.Left,
                         fontSize = 20.sp,
                         fontFamily = Poppins,
@@ -161,46 +162,12 @@ fun AddType(
             }
         }
 
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .align(Alignment.BottomCenter),
-//            horizontalArrangement = Arrangement.Center,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Text(
-//                text = "1",
-//                textAlign = TextAlign.Center,
-//                fontSize = 28.sp,
-//                fontFamily = Poppins,
-//                fontWeight = FontWeight.SemiBold,
-//                color = MainAccent
-//            )
-//            Text(
-//                modifier = Modifier.padding(48.dp),
-//                text = "2",
-//                textAlign = TextAlign.Center,
-//                fontSize = 24.sp,
-//                fontFamily = Poppins,
-//                fontWeight = FontWeight.SemiBold,
-//                color = LightAccent
-//            )
-//            Text(
-//                text = "3",
-//                textAlign = TextAlign.Center,
-//                fontSize = 24.sp,
-//                fontFamily = Poppins,
-//                fontWeight = FontWeight.SemiBold,
-//                color = LightAccent
-//            )
-//        }
-
         if (picked) {
             Button(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(.8f)
-                    .padding(bottom = 120.dp),
+                    .padding(bottom = 32.dp),
                 onClick = { onNextClick(user, selectedType) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MainAccent
@@ -216,5 +183,4 @@ fun AddType(
             }
         }
     }
-
 }

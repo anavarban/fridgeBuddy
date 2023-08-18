@@ -199,7 +199,8 @@ fun RecommendedRecipes(
 @Composable
 fun FridgeIngredients(
     ingredients: List<Ingredient>,
-    onSeeFridgeClick: () -> Unit
+    onSeeFridgeClick: () -> Unit,
+    onIngredientClick: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -255,8 +256,10 @@ fun FridgeIngredients(
         ingredients.forEach {
             IngredientItem(
                 modifier = Modifier
-                    .width(160.dp),
-                ingredient = it
+                    .width(160.dp)
+                    .clickable { onIngredientClick(it.id) },
+                ingredient = it,
+                showDeleteButton = false
             )
         }
         Spacer(modifier = Modifier.height(20.dp))

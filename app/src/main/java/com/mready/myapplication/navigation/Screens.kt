@@ -8,10 +8,7 @@ sealed class Screens (val route: String) {
     object DashboardScreen: Screens("dashboard_screen")
     object RecipeScreen: Screens("recipe_screen")
     object FridgeScreen: Screens("fridge_screen")
-    object AddType: Screens("add_type")
-    object AddAmount: Screens("add_amount")
-    object AddExpireDate: Screens("add_expire_date")
-
     object AddIngredientScreen: Screens("add_ingredient_screen")
     object ProfileScreen: Screens("profile_screen")
+    object DetailsScreen: Screens("details_screen")
 }

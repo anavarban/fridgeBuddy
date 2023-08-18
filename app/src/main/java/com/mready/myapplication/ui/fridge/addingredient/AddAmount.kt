@@ -1,5 +1,6 @@
 package com.mready.myapplication.ui.fridge.addingredient
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -73,13 +76,24 @@ fun AddAmount(
         mutableStateOf(false)
     }
 
+    var amountError: Boolean by remember {
+        mutableStateOf(false)
+    }
+
+    fun validate(text: String) {
+        amountError = if (text.isEmpty()) {
+            true
+        } else if (text.contains(".") || text.contains(",") || text.contains("-")) {
+            true
+        } else text.toInt() <= 0
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .safeDrawingPadding()
             .padding(top = 64.dp)
     ) {
-
         Text(
             modifier = Modifier.align(Alignment.TopCenter),
             text = stringResource(id = R.string.fridge_add_amount, ingredientName),
@@ -89,7 +103,6 @@ fun AddAmount(
             fontWeight = FontWeight.SemiBold,
             color = MainText
         )
-
 
         Row(
             modifier = Modifier
@@ -133,9 +146,24 @@ fun AddAmount(
                     unfocusedIndicatorColor = LightAccent,
                     errorIndicatorColor = Error,
                 ),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                isError = amountError,
+                supportingText = {
+                    if (amountError) {
+                        Text(
+                            text = stringResource(id = R.string.fridge_add_amount_error),
+                            textAlign = TextAlign.Left,
+                            fontSize = 12.sp,
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Error
+                        )
+                    }
+                },
+                keyboardActions = KeyboardActions {
+                    validate(amountEntered)
+                },
             )
-
 
             ExposedDropdownMenuBox(
                 modifier = Modifier,
@@ -176,6 +204,19 @@ fun AddAmount(
                     ),
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedMenu)
+                    },
+                    isError = amountError,
+                    supportingText = {
+                        if (amountError) {
+                            Text(
+                                text = "secret",
+                                textAlign = TextAlign.Left,
+                                fontSize = 12.sp,
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.Transparent
+                            )
+                        }
                     }
                 )
 
@@ -211,15 +252,20 @@ fun AddAmount(
             }
 
         }
-
-
+        Log.d("AddAmount", "pickedUnit: $pickedUnit, enteredAmount: $enteredAmount")
         if (pickedUnit && enteredAmount) {
             Button(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(.8f)
-                    .padding(bottom = 120.dp),
-                onClick = { onNextClick(user, ingredientName, selectedUnit, amountEntered.toInt()) },
+                    .padding(bottom = 32.dp),
+                onClick = {
+                    validate(amountEntered)
+                    Log.d("AddAmount", "amountError: $amountError")
+                    if (!amountError) {
+                        onNextClick(user, ingredientName, selectedUnit, amountEntered.toInt())
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MainAccent
                 ),
@@ -233,43 +279,5 @@ fun AddAmount(
                 )
             }
         }
-//
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .align(Alignment.BottomCenter),
-//            horizontalArrangement = Arrangement.Center,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Text(
-//                text = "1",
-//                textAlign = TextAlign.Center,
-//                fontSize = 24.sp,
-//                fontFamily = Poppins,
-//                fontWeight = FontWeight.SemiBold,
-//                color = LightAccent
-//            )
-//            Text(
-//                modifier = Modifier.padding(48.dp),
-//                text = "2",
-//                textAlign = TextAlign.Center,
-//                fontSize = 28.sp,
-//                fontFamily = Poppins,
-//                fontWeight = FontWeight.SemiBold,
-//                color = MainAccent
-//            )
-//            Text(
-//                text = "3",
-//                textAlign = TextAlign.Center,
-//                fontSize = 24.sp,
-//                fontFamily = Poppins,
-//                fontWeight = FontWeight.SemiBold,
-//                color = LightAccent
-//            )
-//        }
-
-
     }
-
-
 }

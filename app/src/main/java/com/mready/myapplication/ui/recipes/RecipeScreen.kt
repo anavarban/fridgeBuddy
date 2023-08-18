@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,9 +18,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -60,7 +63,6 @@ import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeScreen(
     ingredients: String,
@@ -69,6 +71,8 @@ fun RecipeScreen(
     val recipeViewModel: RecipeViewModel = hiltViewModel()
 
     val uiState = recipeViewModel.uiState.collectAsState()
+
+    val sections = listOf("title", "ingredients", "instructions")
 
     LaunchedEffect(key1 = null) {
         recipeViewModel.loadRecipe(ingredients)
@@ -109,8 +113,6 @@ fun RecipeScreen(
 
             val recipe = (uiState.value as RecipeUiState.Success).recipe
 
-
-
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -145,80 +147,96 @@ fun RecipeScreen(
                     color = Background,
 
                     ) {
-                    Column(
+                    LazyColumn(
                         modifier = Modifier
-                            .fillMaxWidth()
-
+                            .fillMaxWidth(),
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 32.dp, start = 20.dp, end = 20.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth(.5f),
-                                text = recipe.name,
-                                textAlign = TextAlign.Left,
-                                fontSize = 24.sp,
-                                fontFamily = Poppins,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MainText,
-                                minLines = 2,
-                            )
+                        items(sections) { section ->
+                            when (section) {
+                                "title" -> {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 32.dp, start = 20.dp, end = 20.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            modifier = Modifier
+                                                .fillMaxWidth(.5f),
+                                            text = recipe.name,
+                                            textAlign = TextAlign.Left,
+                                            fontSize = 24.sp,
+                                            fontFamily = Poppins,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = MainText,
+                                            minLines = 2,
+                                        )
 
-                            Row(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(MainAccent),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    modifier = Modifier
-                                        .padding(start = 4.dp),
-                                    painter = painterResource(id = R.drawable.ic_time),
-                                    contentDescription = null,
-                                    tint = Background
-                                )
-                                Text(
-                                    modifier = Modifier
-                                        .padding(top = 4.dp, start = 4.dp, end = 4.dp),
-                                    text = (recipe.time?.toString() ?: "? ") + "m",
-                                    textAlign = TextAlign.Left,
-                                    fontSize = 24.sp,
-                                    fontFamily = Poppins,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Background
-                                )
-                            }
-                        }
+                                        Row(
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(12.dp))
+                                                .background(MainAccent),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Icon(
+                                                modifier = Modifier
+                                                    .padding(start = 4.dp),
+                                                painter = painterResource(id = R.drawable.ic_time),
+                                                contentDescription = null,
+                                                tint = Background
+                                            )
+                                            Text(
+                                                modifier = Modifier
+                                                    .padding(top = 4.dp, start = 4.dp, end = 4.dp),
+                                                text = (recipe.time?.toString() ?: "? ") + "m",
+                                                textAlign = TextAlign.Left,
+                                                fontSize = 24.sp,
+                                                fontFamily = Poppins,
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = Background
+                                            )
+                                        }
+                                    }
 
-                        LazyVerticalGrid(
-                            modifier = Modifier.padding(top = 20.dp, start = 20.dp),
-                            columns = GridCells.Fixed(2)
-                        ) {
-                            items(recipe.ingredients.sortedBy { it.position }) { ingredient ->
-                                RecipeIngredientElement(ingredient)
-                            }
-                        }
-
-                        Column(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .padding(top = 20.dp, start = 20.dp, end = 20.dp)
-                                .verticalScroll(rememberScrollState()),
-                            verticalArrangement = Arrangement.SpaceEvenly,
-                        ) {
-                            recipe.instructions.sortedBy {
-                                it.position
-                            }.forEach {
-                                RecipeStepElement(
-                                    stepNo = it.position,
-                                    stepDirections = it.displayText,
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
+                                }
+                                "ingredients" -> {
+                                    Column(
+                                        modifier = Modifier.padding(top = 20.dp, start = 20.dp)
+                                    ) {
+                                        val ingredients = recipe.ingredients.sortedBy { it.position }
+                                        ingredients.chunked(2).forEach { chunk ->
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(start = 20.dp, end = 40.dp),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                            ) {
+                                                chunk.forEach { ingredient ->
+                                                    RecipeIngredientElement(ingredient)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                "instructions" -> {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 20.dp, start = 20.dp, end = 20.dp),
+                                        verticalArrangement = Arrangement.SpaceEvenly,
+                                    ) {
+                                        recipe.instructions.sortedBy {
+                                            it.position
+                                        }.forEach {
+                                            RecipeStepElement(
+                                                stepNo = it.position,
+                                                stepDirections = it.displayText,
+                                            )
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

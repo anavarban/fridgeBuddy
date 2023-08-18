@@ -51,10 +51,10 @@ import kotlinx.coroutines.delay
 @Composable
 fun DashboardScreen(
     onSeeFridgeClick: () -> Unit,
-    onIngredientEditClick: (Int) -> Unit,
     onRecipeClick: (String) -> Unit,
     onProfileClick: () -> Unit,
-    onExit: () -> Unit
+    onExit: () -> Unit,
+    onIngredientClick: (Int) -> Unit
 ) {
     val dashboardViewModel: DashboardViewModel = hiltViewModel()
     val dashboardState = dashboardViewModel.dashboardFlow.collectAsState()
@@ -177,7 +177,8 @@ fun DashboardScreen(
                             is FridgeWidgetItemViewModel -> {
                                 FridgeIngredients(
                                     ingredients = it.displayIngredients,
-                                    onSeeFridgeClick = onSeeFridgeClick
+                                    onSeeFridgeClick = onSeeFridgeClick,
+                                    onIngredientClick = onIngredientClick
                                 )
                             }
                         }
