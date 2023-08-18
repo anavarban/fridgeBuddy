@@ -125,4 +125,9 @@ dependencies {
     implementation ("androidx.compose.runtime:runtime-livedata:1.5.0")
     annotationProcessor ("androidx.room:room-compiler:2.5.2")
     kapt ("androidx.room:room-compiler:2.5.2")
+
+    //Accompanist & Notifications
+    implementation ("com.google.accompanist:accompanist-permissions:0.29.0-alpha")
+    implementation ("androidx.core:core-ktx:1.6.0")
+    implementation ("androidx.work:work-runtime-ktx:2.7.0")
 }

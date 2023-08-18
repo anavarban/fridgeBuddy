@@ -1,19 +1,16 @@
 package com.mready.myapplication.ingredientdetails
 
-import android.content.Context
-import android.view.WindowManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -23,6 +20,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -30,8 +30,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,7 +47,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -53,10 +54,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.allViews
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.mready.myapplication.R
+import com.mready.myapplication.models.Date
 import com.mready.myapplication.models.Ingredient
 import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.Error
@@ -65,6 +66,7 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import java.util.Calendar
 
 @Composable
 fun IngredientDetailsScreen(
@@ -272,8 +274,20 @@ fun EditBottomSheet(
         } else text.toInt() <= 0
     }
 
+    val today = Calendar.getInstance()
+
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = Calendar.getInstance().timeInMillis,
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return (utcTimeMillis >= today.timeInMillis)
+            }
+        },
+        initialDisplayMode = DisplayMode.Input
+    )
+
     ModalBottomSheet(
-        modifier = Modifier.imePadding(),
+        modifier = Modifier,
         onDismissRequest = onDismissRequest,
         containerColor = Background,
     ) {
@@ -281,7 +295,6 @@ fun EditBottomSheet(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 32.dp, start = 20.dp, end = 20.dp),
-            verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -292,8 +305,6 @@ fun EditBottomSheet(
                 fontWeight = FontWeight.SemiBold,
                 color = MainText,
             )
-
-            Spacer(modifier = Modifier.height(32.dp))
 
             Row(
                 modifier = Modifier
@@ -364,13 +375,69 @@ fun EditBottomSheet(
                 )
             }
 
+            DatePicker(
+                modifier = Modifier.fillMaxWidth(),
+                state = datePickerState,
+                title = {},
+                headline = {},
+                showModeToggle = false,
+                colors = DatePickerDefaults.colors(
+                    containerColor = Background,
+                    titleContentColor = Background,
+                    headlineContentColor = MainText,
+                    weekdayContentColor = SecondaryText,
+                    subheadContentColor = SecondaryText,
+                    yearContentColor = SecondaryText,
+                    currentYearContentColor = MainAccent,
+                    selectedYearContentColor = Background,
+                    selectedYearContainerColor = MainAccent,
+                    dayContentColor = MainText,
+                    disabledDayContentColor = SecondaryText,
+                    selectedDayContentColor = Background,
+                    disabledSelectedDayContentColor = MainText,
+                    selectedDayContainerColor = MainAccent,
+                    disabledSelectedDayContainerColor = MainAccent,
+                    todayContentColor = MainText,
+                    todayDateBorderColor = MainAccent,
+                    dayInSelectionRangeContentColor = MainText,
+                    dayInSelectionRangeContainerColor = MainAccent,
+                    dateTextFieldColors = TextFieldDefaults.colors(
+                        focusedContainerColor = Background,
+                        unfocusedContainerColor = Background,
+                        errorContainerColor = Background,
+                        focusedIndicatorColor = MainAccent,
+                        unfocusedIndicatorColor = LightAccent,
+                        errorIndicatorColor = Error,
+                        focusedLabelColor = MainAccent,
+                        unfocusedLabelColor = LightAccent,
+                        disabledLabelColor = SecondaryText,
+                        errorLabelColor = Error,
+                    ),
+                ),
+            )
+
             FloatingActionButton(
                 modifier = Modifier
                     .padding(bottom = 32.dp)
                     .fillMaxWidth(.7f),
                 onClick = {
-                    onEditClick(ingredient.copy(quantity = amountEntered.toInt()))
-                    onDismissRequest()
+                    validate(amountEntered)
+                    if (enteredAmount && !amountError) {
+                        val calendar = Calendar.getInstance().apply {
+                            timeInMillis = datePickerState.selectedDateMillis ?: 0
+                        }
+                        onEditClick(
+                            ingredient.copy(
+                                quantity = amountEntered.toInt(),
+                                expireDate = Date(
+                                    year = calendar.get(Calendar.YEAR),
+                                    month = calendar.get(Calendar.MONTH) + 1,
+                                    date = calendar.get(Calendar.DAY_OF_MONTH),
+                                )
+                            )
+                        )
+                        onDismissRequest()
+                    }
                 },
                 containerColor = MainAccent,
                 contentColor = Background,

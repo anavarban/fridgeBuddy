@@ -1,5 +1,6 @@
 package com.mready.myapplication.navigation
 
+import android.app.NotificationManager
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
@@ -20,7 +21,8 @@ import com.mready.myapplication.ui.recipes.RecipeScreen
 @Composable
 fun Navigation(
     onboardingViewModel: OnboardingViewModel,
-    onExitFromDashboard: () -> Unit
+    onExitFromDashboard: () -> Unit,
+    notificationManager: NotificationManager
 ) {
     val navController = rememberNavController()
 

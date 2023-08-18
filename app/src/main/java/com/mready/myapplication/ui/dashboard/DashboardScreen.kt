@@ -1,5 +1,7 @@
 package com.mready.myapplication.ui.dashboard
 
+import android.Manifest
+import android.app.NotificationManager
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
@@ -40,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.mready.myapplication.R
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
@@ -48,8 +52,10 @@ import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.utils.BackPress
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun DashboardScreen(
+    notificationManager: NotificationManager,
     onSeeFridgeClick: () -> Unit,
     onRecipeClick: (String) -> Unit,
     onProfileClick: () -> Unit,
@@ -82,6 +88,14 @@ fun DashboardScreen(
         }
     }
 
+    val notificationPermissionState = rememberPermissionState(permission = Manifest.permission.ACCESS_NOTIFICATION_POLICY)
+
+    LaunchedEffect(Unit) {
+        if (!notificationPermissionState.permission.isNullOrEmpty()) {
+            notificationPermissionState.launchPermissionRequest()
+        }
+    }
+
 
     LaunchedEffect(key1 = null) {
         dashboardViewModel.loadDashboardWidgets()
@@ -97,7 +111,6 @@ fun DashboardScreen(
         }
 
         is DashboardState.Success -> {
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()

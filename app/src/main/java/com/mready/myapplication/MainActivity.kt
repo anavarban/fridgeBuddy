@@ -1,6 +1,12 @@
 package com.mready.myapplication
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.app.NotificationCompat
 import androidx.core.view.WindowCompat
 import com.mready.myapplication.navigation.Navigation
 import com.mready.myapplication.ui.fridge.FridgeViewModel
@@ -30,10 +37,28 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val channelId = "fridge_channel"
+        val channelName = "FridgeBuddy"
+        val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val intent = Intent(this, MainActivity::class.java)
+        val contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setContentTitle("My Notification")
+            .setContentText("This is a notification")
+            .setSmallIcon(R.drawable.ic_utensils)
+            .setContentIntent(contentIntent)
+            .setAutoCancel(true)
+            .build()
+
         setContent {
-
             MyApplicationTheme {
-
                 WindowCompat.setDecorFitsSystemWindows(window, false)
 
                 Surface(
@@ -41,23 +66,12 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Scaffold(
                         containerColor = Background,
-//                       bottomBar = { BottomNavBar() }
                     ) {
-//                        RecipeScreen("Pasta")
-//                        DashboardScreen()
-                        //LoginScreen()
-//                        SignUpScreen()
-//                        StartScreen()
-//                        LoginScreen()
-//                        AddType()
-//                        AddAmount(ingredientName = "Cheese")
-//                    AddExpireDate(ingredientName = "Cheese")
-//                        YourFridgeScreen()
                         Navigation(
+                            notificationManager = notificationManager,
                             onboardingViewModel = onboardingViewModel,
                             onExitFromDashboard = { this@MainActivity.finish() }
                         )
-//                        ProfileScreen(onLogoutClick = { /*TODO*/ }, onboardingViewModel = onboardingViewModel)
                     }
                 }
             }
