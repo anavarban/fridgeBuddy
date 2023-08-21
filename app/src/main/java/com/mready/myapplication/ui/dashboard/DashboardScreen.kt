@@ -138,10 +138,6 @@ fun DashboardScreen(
         .build()
 
 
-//    LaunchedEffect(key1 = null) {
-//        dashboardViewModel.loadDashboardWidgets()
-//    }
-
     when (dashboardState.value) {
         DashboardState.Loading -> {
             Box (

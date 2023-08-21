@@ -130,4 +130,7 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-permissions:0.29.0-alpha")
     implementation ("androidx.core:core-ktx:1.6.0")
     implementation ("androidx.work:work-runtime-ktx:2.7.0")
+
+    //Splash screen
+    implementation("androidx.core:core-splashscreen:1.0.0")
 }

@@ -76,8 +76,6 @@ fun SignUpScreen(
 
     val signUpViewModel: SignUpViewModel = hiltViewModel()
 
-    val signUpFlow = signUpViewModel.signUpFlow.collectAsState()
-
     var email by remember {
         mutableStateOf("")
     }
