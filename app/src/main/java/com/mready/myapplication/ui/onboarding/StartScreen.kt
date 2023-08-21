@@ -1,5 +1,7 @@
 package com.mready.myapplication.ui.onboarding
 
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -11,9 +13,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,11 +32,28 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.BackPress
 
 @Composable
 fun StartScreen(
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onExit: () -> Unit
 ) {
+    var backPressState by remember { mutableStateOf<BackPress>(BackPress.Idle) }
+    val context = LocalContext.current
+
+    BackHandler {
+        when (backPressState) {
+            BackPress.Idle -> {
+                backPressState = BackPress.InitialTouch
+                Toast.makeText(context, "Press back again to exit", Toast.LENGTH_SHORT).show()
+            }
+
+            BackPress.InitialTouch -> {
+                onExit()
+            }
+        }
+    }
 
     Column (
         modifier = Modifier.fillMaxSize(),

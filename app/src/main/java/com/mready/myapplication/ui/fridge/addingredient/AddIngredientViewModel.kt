@@ -22,7 +22,7 @@ class AddIngredientViewModel @Inject constructor(
     private val fridgeIngredientsRepo: FridgeIngredientsRepo,
 ) : ViewModel() {
 
-    val currentUser = authRepository.currentUser
+    val currentUser = authRepository.currentUser.value
 
     private var _addIngredientUiState =
         MutableStateFlow<AddIngredientUiState>(AddIngredientUiState.Loading)

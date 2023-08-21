@@ -1,5 +1,6 @@
 package com.mready.myapplication.ui.profile
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -20,7 +21,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -37,6 +40,8 @@ import com.mready.myapplication.R
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
@@ -47,8 +52,22 @@ fun ProfileScreen(
 
     val profileState = profileViewModel.profileUiState.collectAsState()
 
+    LaunchedEffect(key1 = profileViewModel.profileUiEvent) {
+        profileViewModel.profileUiEvent.collect { event ->
+            when (event) {
+                is ProfileUiEvent.LoggedOut -> {
+                    onLogoutClick()
+                }
+                else -> {
+
+                }
+            }
+        }
+    }
+
     when (profileState.value) {
         ProfileUiState.Loading -> {
+            Log.d("ProfileScreen", "Loading")
             CircularProgressIndicator(
                 modifier = Modifier
                     .fillMaxSize()
@@ -69,7 +88,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .padding(top = 2.dp, start = 20.dp, end = 8.dp)
                         .size(40.dp)
-                        .clickable (
+                        .clickable(
                             interactionSource = MutableInteractionSource(),
                             indication = null,
                             onClick = {
@@ -84,7 +103,7 @@ fun ProfileScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = CenterHorizontally
                 ) {
                     AsyncImage(
                         modifier = Modifier
@@ -123,7 +142,6 @@ fun ProfileScreen(
                         .align(CenterHorizontally),
                     onClick = {
                         profileViewModel.logout()
-                        onLogoutClick()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MainAccent

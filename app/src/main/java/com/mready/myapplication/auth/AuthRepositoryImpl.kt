@@ -7,6 +7,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -17,9 +19,14 @@ import kotlin.random.Random
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth
-) : AuthRepository {
-    override val currentUser: FirebaseUser?
-        get() = firebaseAuth.currentUser
+) : AuthRepository, FirebaseAuth.AuthStateListener {
+
+    init {
+        firebaseAuth.addAuthStateListener(this)
+    }
+
+    override val currentUser: MutableStateFlow<FirebaseUser?> =
+        MutableStateFlow(firebaseAuth.currentUser)
 
     override suspend fun login(email: String, password: String): Resource<FirebaseUser> {
         return try {
@@ -68,6 +75,10 @@ class AuthRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Resource.Error(e)
         }
+    }
+
+    override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {
+        currentUser.update { firebaseAuth.currentUser }
     }
 
 }

@@ -15,6 +15,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -37,9 +38,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -65,7 +68,6 @@ import kotlinx.coroutines.delay
 import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun DashboardScreen(
     notificationManager: NotificationManager,
@@ -136,17 +138,23 @@ fun DashboardScreen(
         .build()
 
 
-    LaunchedEffect(key1 = null) {
-        dashboardViewModel.loadDashboardWidgets()
-    }
+//    LaunchedEffect(key1 = null) {
+//        dashboardViewModel.loadDashboardWidgets()
+//    }
 
     when (dashboardState.value) {
         DashboardState.Loading -> {
-            CircularProgressIndicator(
+            Box (
                 modifier = Modifier
-                    .padding(top = 32.dp),
-                color = MainAccent
-            )
+                    .fillMaxSize()
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .padding(top = 32.dp)
+                        .align(Center),
+                    color = Color.Red
+                )
+            }
         }
 
         is DashboardState.Success -> {
@@ -171,7 +179,7 @@ fun DashboardScreen(
                                 indication = null,
                                 onClick = onProfileClick
                             ),
-                        model = dashboardViewModel.currentUser?.photoUrl ?: "",
+                        model = dashboardViewModel.currentUser.value?.photoUrl ?: "",
                         contentDescription = null,
                         contentScale = ContentScale.Crop
                     )
@@ -179,7 +187,7 @@ fun DashboardScreen(
                         modifier = Modifier.padding(start = 12.dp),
                         text = stringResource(
                             id = R.string.dashboard_hello_msg,
-                            dashboardViewModel.currentUser?.displayName ?: ""
+                            dashboardViewModel.currentUser.value?.displayName ?: ""
                         ),
                         fontSize = 16.sp,
                         fontFamily = Poppins,

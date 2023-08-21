@@ -31,7 +31,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +48,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -56,6 +56,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.mready.myapplication.R
 import com.mready.myapplication.auth.Resource
 import com.mready.myapplication.ui.theme.Background
+import com.mready.myapplication.ui.theme.Background40
 import com.mready.myapplication.ui.theme.Error
 import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
@@ -67,15 +68,12 @@ import com.mready.myapplication.ui.utils.clientId
 
 @Composable
 fun LoginScreen(
-    onboardingViewModel: OnboardingViewModel,
-    onLoginClick: @Composable () -> Unit,
+    onLoginClick: () -> Unit,
     onSignUpClick: () -> Unit,
 ) {
-    val loginFlow = onboardingViewModel.loginFlow.collectAsState()
-
-    val googleFlow = onboardingViewModel.googleFlow.collectAsState()
-
     val context = LocalContext.current
+
+    val loginViewModel: LoginViewModel = hiltViewModel()
 
     var email by remember {
         mutableStateOf("")
@@ -97,6 +95,40 @@ fun LoginScreen(
         mutableStateOf(false)
     }
 
+    val error = stringResource(id = R.string.generic_error)
+
+    var isLoading by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = loginViewModel.loginFlow) {
+        loginViewModel.loginFlow.collect {
+            when (it) {
+                is Resource.Error -> {
+                    isLoading = false
+                    Toast.makeText(
+                        context,
+                        it.exception.message ?: error,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is Resource.Success -> {
+                    isLoading = false
+                    onLoginClick()
+                }
+
+                is Resource.Loading -> {
+                    isLoading = true
+                }
+
+                else -> {
+                    isLoading = false
+                }
+            }
+        }
+    }
+
     fun validate(text: String, type: LoginFields) {
         when (type) {
             LoginFields.EMAIL -> {
@@ -115,7 +147,7 @@ fun LoginScreen(
             try {
                 val result = account.getResult(ApiException::class.java)
                 val credential = GoogleAuthProvider.getCredential(result?.idToken, null)
-                onboardingViewModel.googleSignIn(credential)
+                loginViewModel.googleSignIn(credential)
             } catch (e: ApiException) {
                 Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
             }
@@ -314,8 +346,7 @@ fun LoginScreen(
                 validate(email, LoginFields.EMAIL)
                 validate(password, LoginFields.PASSWORD)
                 if (!emailError && !passwordError) {
-                    onboardingViewModel.login(email, password)
-                    //onLoginClick()
+                    loginViewModel.login(email, password)
                 }
             },
             colors = ButtonDefaults.buttonColors(
@@ -440,54 +471,20 @@ fun LoginScreen(
             )
         }
 
-        loginFlow.value.let {
-            when (it) {
-                is Resource.Error -> {
-                    val context = LocalContext.current
-                    val error = stringResource(id = R.string.generic_error)
-                    LaunchedEffect(key1 = null) {
-                        Toast.makeText(
-                            context,
-                            it.exception.message ?: error,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
 
-                Resource.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                }
+    }
 
-                is Resource.Success -> onLoginClick()
-                null -> {}
-            }
-        }
-
-        googleFlow.value.let {
-            when (it) {
-                is Resource.Error -> {
-                    val context = LocalContext.current
-                    val error = stringResource(id = R.string.generic_error)
-                    LaunchedEffect(key1 = null) {
-                        Toast.makeText(
-                            context,
-                            it.exception.message ?: error,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
-                Resource.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                }
-
-                is Resource.Success -> onLoginClick()
-                null -> {}
-            }
+    if (isLoading) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Background40)
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(48.dp),
+                color = MainAccent
+            )
         }
     }
 

@@ -14,34 +14,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class OnboardingViewModel @Inject constructor(private val authRepository: AuthRepository) :
+class SignUpViewModel @Inject constructor(private val authRepository: AuthRepository) :
     ViewModel() {
-
-    private val _loginFlow = MutableStateFlow<Resource<FirebaseUser>?>(null)
-    val loginFlow: StateFlow<Resource<FirebaseUser>?> = _loginFlow
 
     private val _signUpFlow = MutableStateFlow<Resource<FirebaseUser>?>(null)
     val signUpFlow: StateFlow<Resource<FirebaseUser>?> = _signUpFlow
 
-    private val _googleFlow = MutableStateFlow<Resource<FirebaseUser>?>(null)
-    val googleFlow: StateFlow<Resource<FirebaseUser>?> = _googleFlow
-
-    val currentUser: FirebaseUser?
-        get() = authRepository.currentUser
-
-    init {
-        if (authRepository.currentUser != null) {
-            _loginFlow.update { Resource.Success(authRepository.currentUser!!) }
-        }
-    }
-
-    fun login(email: String, password: String) {
-        viewModelScope.launch {
-            _loginFlow.update { Resource.Loading }
-            val result = authRepository.login(email, password)
-            _loginFlow.update { result }
-        }
-    }
+    val currentUser = authRepository.currentUser
 
     fun signUp(name: String, email: String, password: String) {
         viewModelScope.launch {
@@ -53,18 +32,9 @@ class OnboardingViewModel @Inject constructor(private val authRepository: AuthRe
 
     fun googleSignIn(credential: AuthCredential) {
         viewModelScope.launch {
-            _googleFlow.update { Resource.Loading }
+            _signUpFlow.update { Resource.Loading }
             val result = authRepository.googleSignIn(credential = credential)
-            _googleFlow.update { result }
-        }
-    }
-
-    fun logout() {
-        viewModelScope.launch {
-            authRepository.logout()
-            _loginFlow.update { null }
-            _signUpFlow.update { null }
-            _googleFlow.update { null }
+            _signUpFlow.update { result }
         }
     }
 

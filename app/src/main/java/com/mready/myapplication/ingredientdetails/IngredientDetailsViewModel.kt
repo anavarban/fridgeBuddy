@@ -44,7 +44,7 @@ class IngredientDetailsViewModel @Inject constructor(
     fun updateIngredient(ingredient: Ingredient) {
         viewModelScope.launch {
             val updatedIngredient = ingredient.toFridgeIngredient(
-                authRepository.currentUser?.email ?: ""
+                authRepository.currentUser.value?.email ?: ""
             ).copy(id = ingredient.id)
             fridgeIngredientsRepo.updateIngredient(
                 updatedIngredient.id,

@@ -27,7 +27,7 @@ class FridgeViewModel @Inject constructor(
     private var _fridgeFlow = MutableStateFlow<FridgeIngredientsUiState>(FridgeIngredientsUiState.Loading)
     val fridgeFlow = _fridgeFlow
 
-    val currentUser = authRepository.currentUser
+    val currentUser = authRepository.currentUser.value
 
     init {
         _fridgeFlow.update { FridgeIngredientsUiState.Loading }

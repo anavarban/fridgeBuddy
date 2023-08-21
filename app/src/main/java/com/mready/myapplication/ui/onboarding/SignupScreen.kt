@@ -49,6 +49,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -56,6 +57,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.mready.myapplication.R
 import com.mready.myapplication.auth.Resource
 import com.mready.myapplication.ui.theme.Background
+import com.mready.myapplication.ui.theme.Background40
 import com.mready.myapplication.ui.theme.Error
 import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
@@ -68,14 +70,13 @@ import com.mready.myapplication.ui.utils.signUpFields
 @Composable
 fun SignUpScreen(
     onLoginClick: () -> Unit,
-    onSignUpClick: @Composable () -> Unit,
-    onboardingViewModel: OnboardingViewModel
+    onSignUpClick: () -> Unit,
 ) {
     val context = LocalContext.current
 
-    val signUpFlow = onboardingViewModel.signUpFlow.collectAsState()
+    val signUpViewModel: SignUpViewModel = hiltViewModel()
 
-    val googleFlow = onboardingViewModel.googleFlow.collectAsState()
+    val signUpFlow = signUpViewModel.signUpFlow.collectAsState()
 
     var email by remember {
         mutableStateOf("")
@@ -105,6 +106,41 @@ fun SignUpScreen(
         mutableStateOf(false)
     }
 
+    val error = stringResource(id = R.string.generic_error)
+
+    var isLoading by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = signUpViewModel.signUpFlow) {
+        signUpViewModel.signUpFlow.collect {
+            when (it) {
+                is Resource.Error -> {
+                    isLoading = false
+                    Toast.makeText(
+                        context,
+                        it.exception.message ?: error,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is Resource.Success -> {
+                    isLoading = false
+                    onSignUpClick()
+                }
+
+                is Resource.Loading -> {
+                    isLoading = true
+                }
+
+                else -> {
+                    isLoading = false
+                }
+            }
+        }
+    }
+
+
     fun validate(text: String, type: signUpFields) {
         when (type) {
             signUpFields.NAME -> {
@@ -127,7 +163,7 @@ fun SignUpScreen(
             try {
                 val result = account.getResult(ApiException::class.java)
                 val credential = GoogleAuthProvider.getCredential(result?.idToken, null)
-                onboardingViewModel.googleSignIn(credential)
+                signUpViewModel.googleSignIn(credential)
             } catch (e: ApiException) {
                 Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
             }
@@ -372,8 +408,7 @@ fun SignUpScreen(
                 validate(email, signUpFields.EMAIL)
                 validate(password, signUpFields.PASSWORD)
                 if (!nameError && !emailError && !passwordError) {
-//                    onSignUpClick()
-                    onboardingViewModel.signUp(name, email, password)
+                    signUpViewModel.signUp(name, email, password)
                 }
             },
             colors = ButtonDefaults.buttonColors(
@@ -497,57 +532,19 @@ fun SignUpScreen(
                 color = MainAccent
             )
         }
-
-        signUpFlow.value.let {
-            when (it) {
-                is Resource.Error -> {
-                    val context = LocalContext.current
-                    val error = stringResource(id = R.string.generic_error)
-                    LaunchedEffect(key1 = null) {
-                        Toast.makeText(
-                            context,
-                            it.exception.message ?: error,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-                Resource.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                }
-                is Resource.Success -> {
-                    onSignUpClick()
-                }
-                null -> {}
-            }
-        }
-
-        googleFlow.value.let {
-            when (it) {
-                is Resource.Error -> {
-                    val context = LocalContext.current
-                    val error = stringResource(id = R.string.generic_error)
-                    LaunchedEffect(key1 = null) {
-                        Toast.makeText(
-                            context,
-                            it.exception.message ?: error,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
-                Resource.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                }
-
-                is Resource.Success -> onSignUpClick()
-                null -> {}
-            }
-        }
-
     }
 
+    if (isLoading) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Background40)
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(48.dp),
+                color = MainAccent
+            )
+        }
+    }
 }
