@@ -3,6 +3,7 @@ package com.mready.myapplication.ui.dashboard
 import android.Manifest
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -127,6 +128,9 @@ fun DashboardScreen(
         }
     }
 
+    val sharedPreferences = context.getSharedPreferences("NotificationPrefs", Context.MODE_PRIVATE)
+    val hasNotified = sharedPreferences.getBoolean("hasNotified", false)
+
     val intent = Intent(LocalContext.current, MainActivity::class.java)
     val contentIntent =
         PendingIntent.getActivity(LocalContext.current, 0, intent, PendingIntent.FLAG_IMMUTABLE)
@@ -139,7 +143,6 @@ fun DashboardScreen(
         .setAutoCancel(true)
         .build()
 
-    //temporary fix
     LaunchedEffect(key1 = null) {
         dashboardViewModel.loadDashboardWidgets()
     }
@@ -265,11 +268,13 @@ fun DashboardScreen(
                                             first.expireDate.year - formattedDate.year
                                         }
                                     // TODO: make it so it only notifies once
-                                    if ( (compareDates <= 0) && canLaunchNotifications) {
+                                    if ( (compareDates <= 0) && canLaunchNotifications && !hasNotified) {
                                         notificationManager.notify(
                                             it.displayIngredients.first().id,
                                             notification
                                         )
+
+                                        sharedPreferences.edit().putBoolean("hasNotified", true).apply()
                                     }
                                 }
                             }

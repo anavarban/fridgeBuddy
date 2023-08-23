@@ -603,7 +603,7 @@ fun EditBottomSheet(
                     .fillMaxWidth(.7f),
                 onClick = {
                     validate(amountEntered)
-                    if (!amountError) {
+                    if (!amountError && datePickerState.selectableDates.isSelectableDate(datePickerState.selectedDateMillis ?: 0)) {
                         val calendar = Calendar.getInstance().apply {
                             timeInMillis = datePickerState.selectedDateMillis ?: 0
                         }
