@@ -83,7 +83,7 @@ fun AddAmount(
     fun validate(text: String) {
         amountError = if (text.isEmpty()) {
             true
-        } else if (text.contains(".") || text.contains(",") || text.contains("-")) {
+        } else if (!text.all { it.isDigit() }) {
             true
         } else text.toInt() <= 0
     }
@@ -127,6 +127,7 @@ fun AddAmount(
                     color = MainText
                 ),
                 shape = RoundedCornerShape(8.dp),
+                maxLines = 1,
                 placeholder = {
                     Text(
                         modifier = Modifier.alpha(.6f),
@@ -250,9 +251,8 @@ fun AddAmount(
                     }
                 }
             }
-
         }
-        Log.d("AddAmount", "pickedUnit: $pickedUnit, enteredAmount: $enteredAmount")
+
         if (pickedUnit && enteredAmount) {
             Button(
                 modifier = Modifier

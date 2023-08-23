@@ -91,7 +91,7 @@ fun Navigation(
         composable(route = Screens.DashboardScreen.route) {
             DashboardScreen(
                 onSeeFridgeClick = { navController.navigate(Screens.FridgeScreen.route) },
-                onRecipeClick = { navController.navigate(Screens.RecipeScreen.route + "/${it}") },
+                onRecipeClick = { navController.navigate(Screens.RecipeScreen.route + "/${it}" + "/0") },
                 onProfileClick = {
                     navController.navigate(Screens.ProfileScreen.route)
                 },
@@ -108,11 +108,13 @@ fun Navigation(
             )
         }
 
-        composable(route = Screens.RecipeScreen.route + "/{ingredients}") {
+        composable(route = Screens.RecipeScreen.route + "/{ingredients}" + "/{offset}") {
             val recipeIngredients = it.arguments?.getString("ingredients")
+            val recipeOffset = it.arguments?.getString("offset")?.toInt()
             RecipeScreen(
+                offset = recipeOffset ?: 0,
                 ingredients = recipeIngredients ?: "",
-                onBackClick = { navController.navigate(Screens.DashboardScreen.route) },
+                onBackClick = { navController.popBackStack() },
             )
         }
 
@@ -135,7 +137,10 @@ fun Navigation(
             val id = it.arguments?.getString("id")?.toInt() ?: 0
             IngredientDetailsScreen(
                 ingredientId = id,
-                onBackButtonClick = { navController.popBackStack() },
+                onBackButtonClick = {
+                    navController.popBackStack()
+                },
+                onRecipeClick = { ing, offset -> navController.navigate(Screens.RecipeScreen.route + "/${ing}" + "/${offset}") }
             )
         }
 

@@ -9,9 +9,7 @@ data class RecommendedWidgetItemViewModel(
     private val ingredients: List<String>
 ) :
     WidgetItemViewModel() {
-
-    val displayRecipes = recipes
-
+    val displayRecipes = recipes.distinct()
     val soonToExpireIngredients = ingredients
 }
 
@@ -27,12 +25,11 @@ data class FridgeWidgetItemViewModel(private val ingredients: List<Ingredient>) 
         } else {
             o1.expireDate.year - o2.expireDate.year
         }
-    }?.take(3) ?: emptyList()
+    }.take(3)
 
 }
 
 data class PopularWidgetItemViewModel(private val recipes: List<String>) :
     WidgetItemViewModel() {
-
     val displayRecipes = recipes
 }

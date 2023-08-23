@@ -100,7 +100,6 @@ fun RecipeItem(
                     modifier = Modifier
                         .align(Alignment.End)
                         .padding(top = 8.dp, end = 8.dp),
-//                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_time),
@@ -127,7 +126,6 @@ fun RecipeItem(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(top = 8.dp, end = 8.dp),
-//                    verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_utensils),

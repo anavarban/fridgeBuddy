@@ -1,5 +1,6 @@
 package com.mready.myapplication.ui.recipes
 
+import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mready.myapplication.models.Recipe
@@ -18,10 +19,10 @@ class RecipeViewModel @Inject constructor(
 ) : ViewModel() {
     val uiState = MutableStateFlow<RecipeUiState>(RecipeUiState.Loading)
 
-    fun loadRecipe(ingredients: String) {
+    fun loadRecipe(ingredients: String, offset: Int) {
         viewModelScope.launch {
             uiState.update {
-                val recipe = recipeService.getRecipe(ingredients) ?: return@update RecipeUiState.Error
+                val recipe = recipeService.getRecipe(ingredients, offset) ?: return@update RecipeUiState.Error
                 RecipeUiState.Success(recipe)
             }
         }

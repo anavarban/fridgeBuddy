@@ -104,7 +104,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
 
-    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0")
+    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
 
     implementation("net.mready.apiclient:apiclient:1.0.0-rc05")
     debugImplementation("com.github.chuckerteam.chucker:library:4.0.0")
@@ -133,4 +133,7 @@ dependencies {
 
     //Splash screen
     implementation("androidx.core:core-splashscreen:1.0.0")
+
+    //ExoPlayer
+    implementation("com.google.android.exoplayer:exoplayer:2.19.1")
 }

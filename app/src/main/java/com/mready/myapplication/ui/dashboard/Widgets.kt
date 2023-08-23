@@ -1,10 +1,11 @@
 package com.mready.myapplication.ui.dashboard
 
-import android.util.Log
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,9 +18,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,28 +31,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
+import coil.compose.AsyncImage
 import com.mready.myapplication.R
 import com.mready.myapplication.models.Ingredient
 import com.mready.myapplication.models.Recipe
+import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.OpenYouTubeChannel
+import com.mready.myapplication.ui.utils.openYoutubeLink
 
 
 @Composable
 fun PopularRecipes(
     recipeUrls: List<String>
 ) {
+    val context = LocalContext.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -71,7 +78,9 @@ fun PopularRecipes(
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = null,
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        OpenYouTubeChannel("https://www.youtube.com/@JamilaCuisine", context)
+                    },
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -98,7 +107,6 @@ fun PopularRecipes(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 32.dp)
     ) {
-        Log.d("widgets", "is it me? the lazy row?")
         items(recipeUrls) {
             YoutubeScreen(
                 modifier = Modifier
@@ -120,21 +128,38 @@ fun YoutubeScreen(
     modifier: Modifier
 ) {
     val context = LocalContext.current
-    AndroidView(
-        modifier = modifier,
-        factory = {
-            val view = YouTubePlayerView(it)
-            view.addYouTubePlayerListener(
-                object : AbstractYouTubePlayerListener() {
-                    override fun onReady(youTubePlayer: YouTubePlayer) {
-                        super.onReady(youTubePlayer)
-                        youTubePlayer.loadVideo(videoId, 0f)
+    Box(modifier = modifier) {
+        val imgUrl = "https://i.ytimg.com/vi/${videoId}/hqdefault.jpg"
+        val intentUrl = "watch?v=${videoId}&pp=ygUGamFtaWxh"
+
+        AsyncImage(
+            modifier = modifier.matchParentSize(),
+            model = imgUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+
+        Icon(
+            modifier = Modifier
+                .size(48.dp)
+                .align(Alignment.Center)
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null,
+                    onClick = {
+                        openYoutubeLink(context, intentUrl)
                     }
-                }
-            )
-            view
-        }
-    )
+                )
+                .border(
+                    width = 4.dp,
+                    color = Background,
+                    shape = CircleShape
+                ),
+            imageVector = Icons.Outlined.PlayArrow,
+            contentDescription = null,
+            tint = Background
+        )
+    }
 }
 
 
@@ -179,12 +204,11 @@ fun RecommendedRecipes(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.height(20.dp))
-
-        Log.d("widgets", "is it me? the recipes row?")
         recipes.forEach {
             RecipeItem(
                 modifier = Modifier
-                    .width(240.dp),
+                    .width(240.dp)
+                    .height(180.dp),
                 recipe = it,
                 baseIngredient = if (ingredientsToExpire.isNotEmpty()) ingredientsToExpire[recipes.indexOf(
                     it
@@ -244,25 +268,37 @@ fun FridgeIngredients(
         }
     }
 
-    Row(
-        modifier = Modifier
-            .padding(top = 20.dp)
-            .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Spacer(modifier = Modifier.height(20.dp))
-        Log.d("widgets", "is it me? the ingredients row?")
-        ingredients.forEach {
-            IngredientItem(
-                modifier = Modifier
-                    .width(160.dp)
-                    .clickable { onIngredientClick(it.id) },
-                ingredient = it,
-                showDeleteButton = false
-            )
+    if (ingredients.isEmpty()) {
+        Text(
+            modifier = Modifier
+                .padding(top = 20.dp, start = 20.dp, end = 20.dp),
+            text = stringResource(id = R.string.dashboard_no_ingredients),
+            textAlign = TextAlign.Left,
+            fontSize = 16.sp,
+            fontFamily = Poppins,
+            fontWeight = FontWeight.SemiBold,
+            color = SecondaryText
+        )
+    } else {
+        Row(
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.height(20.dp))
+            ingredients.forEach {
+                IngredientItem(
+                    modifier = Modifier
+                        .width(160.dp)
+                        .clickable { onIngredientClick(it.id) },
+                    ingredient = it,
+                    showDeleteButton = false
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
         }
-        Spacer(modifier = Modifier.height(20.dp))
     }
 
 

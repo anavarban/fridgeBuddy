@@ -101,12 +101,24 @@ fun IngredientItem(
                         tint = MainText
                     )
 
+                    val dayFormatted = if (ingredient.expireDate.date < 10) {
+                        "0${ingredient.expireDate.date}"
+                    } else {
+                        "${ingredient.expireDate.date}"
+                    }
+
+                    val monthFormatted = if (ingredient.expireDate.month < 10) {
+                        "0${ingredient.expireDate.month}"
+                    } else {
+                        "${ingredient.expireDate.month}"
+                    }
+
                     Text(
                         modifier = Modifier.padding(top = 2.dp),
                         text = stringResource(
                             id = R.string.ingredient_item_exp_date,
-                            ingredient.expireDate.date,
-                            ingredient.expireDate.month,
+                            dayFormatted,
+                            monthFormatted,
                             ingredient.expireDate.year
                         ),
                         textAlign = TextAlign.Left,

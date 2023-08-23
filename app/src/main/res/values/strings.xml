@@ -17,6 +17,10 @@
     <string name="onboarding_name_placeholder">Enter your name</string>
     <string name="onboarding_sign_up_options">sign up with</string>
     <string name="onboarding_login_prompt">Already have an account?</string>
+    <string name="onboarding_email_error">Enter a valid email address!</string>
+    <string name="onboarding_name_error">Please enter a valid name!</string>
+    <string name="onboarding_pass_error">Password is invalid!</string>
+
 
     <string name="dashboard_hello_msg">Hi, %1s!</string>
     <string name="dashboard_title_prompt">What do you feel like cooking today?</string>
@@ -27,22 +31,21 @@
     <string name="recipe_item_time_format">%1s minutes</string>
 
     <string name="ingredient_item_best_before">Best before: </string>
-    <string name="ingredient_item_exp_date">%1d.%2d.%3d</string>
+    <string name="ingredient_item_exp_date">%1s.%2s.%3d</string>
 
     <string name="fridge_add">Add</string>
     <string name="fridge_title">Your fridge</string>
+    <string name="fridge_soon_to_expire">Soon to expire</string>
+    <string name="fridge_all_ingredients">All ingredients</string>
 
     <string name="generic_or">or</string>
     <string name="generic_see_all">See all</string>
     <string name="generic_see_more">See more</string>
     <string name="generic_ok">Ok</string>
-    <string name="fridge_soon_to_expire">Soon to expire</string>
-    <string name="fridge_all_ingredients">All ingredients</string>
     <string name="generic_next">Next</string>
-    <string name="fridge_done">Done</string>
-    <string name="onboarding_email_error">Enter a valid email address!</string>
-    <string name="onboarding_name_error">Please enter a valid name!</string>
-    <string name="onboarding_pass_error">Password must be at least 8 characters long!</string>
+    <string name="generic_done">Done</string>
+
+
     <string name="generic_error">An error occurred!</string>
     <string name="onboarding_logout">Logout</string>
     <string name="dashboard_rec_recipes_subtitle">Based on the ingredients soon to expire</string>
@@ -54,10 +57,17 @@
     <string name="fridge_add_amount_unit_error">Pick unit!</string>
     <string name="cancel_adding_ingredient">Are you sure you want to cancel adding ingredient?</string>
     <string name="generic_exit">Exit</string>
-    <string name="details_expires_on">Expires on: %1d.%2d.%3d</string>
+    <string name="details_expires_on">Expires on: %1s.%2s.%3d</string>
     <string name="details_quantity">Quantity: %1d %2s</string>
     <string name="details_edit">Edit</string>
     <string name="details_edit_title">Edit details for %1s</string>
     <string name="generic_save">Save</string>
     <string name="recipe_item_yields_format">"%1s "</string>
+    <string name="dashboard_no_ingredients">Go to your fridge to add ingredients!</string>
+    <string name="fridge_empty">Add ingredients to your fridge!</string>
+    <string name="delete_ingredient">Are you sure you want to delete this ingredient?</string>
+    <string name="generic_delete">Delete</string>
+    <string name="recipe_instructions">Instructions</string>
+    <string name="details_go_to_video">Go to video recipe</string>
+    <string name="details_recommended_recipes">Recipes with %1s</string>
 </resources>

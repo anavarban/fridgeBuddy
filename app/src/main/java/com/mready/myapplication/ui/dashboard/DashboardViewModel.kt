@@ -2,7 +2,6 @@ package com.mready.myapplication.ui.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseUser
 import com.mready.myapplication.auth.AuthRepository
 import com.mready.myapplication.data.FridgeIngredientsRepo
 import com.mready.myapplication.models.toIngredient
@@ -13,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class DashboardState {
@@ -34,25 +32,14 @@ class DashboardViewModel @Inject constructor(
     private var _dashboardFlow = MutableStateFlow<DashboardState>(DashboardState.Loading)
     val dashboardFlow: StateFlow<DashboardState> = _dashboardFlow
 
-    private val widgets = mutableListOf<WidgetItemViewModel>()
+    fun loadDashboardWidgets() {
+        val currentUser = authRepository.currentUser.value
+            ?: return _dashboardFlow.update { DashboardState.Success(emptyList()) }
 
-    init {
-        viewModelScope.launch {
-            authRepository.currentUser.collect {
-                widgets.clear()
-                if (it != null) {
-                    loadDashboardWidgets(it)
-                } else {
-                    _dashboardFlow.update { DashboardState.Success(emptyList()) }
-                }
-            }
-        }
-    }
-
-    private fun loadDashboardWidgets(currentUser: FirebaseUser) {
         _dashboardFlow.update { DashboardState.Loading }
-
         fridgeIngredientsRepo.getUserIngredients(currentUser.email ?: "").onEach { list ->
+            val widgets = mutableListOf<WidgetItemViewModel>()
+
             val ingredientsList = list.map { elem -> elem.toIngredient() }
             widgets.add(FridgeWidgetItemViewModel(ingredientsList))
 
@@ -63,8 +50,8 @@ class DashboardViewModel @Inject constructor(
             widgets.add(
                 PopularWidgetItemViewModel(
                     listOf(
-                        "https://www.youtube.com/watch?v=brqY65Hp15M&pp=ygUGamFtaWxh",
-                        "https://www.youtube.com/watch?v=df1QU5kQMyg&pp=ygUGamFtaWxh"
+                        "brqY65Hp15M",
+                        "df1QU5kQMyg"
                     )
                 )
             )

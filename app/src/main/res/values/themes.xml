@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme.MyApplication" parent="android:Theme.Material.Light.NoActionBar" >
-
+    <item name="windowSplashScreenBackground">@color/splash_bg</item>
 
     </style>
 </resources>

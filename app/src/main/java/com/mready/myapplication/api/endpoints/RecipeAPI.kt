@@ -16,7 +16,7 @@ class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient)
 //        var recipeList = mutableListOf<Recipe>()
 //
 //        firstExpired.forEach{
-//            val rec = getRecipe(it)
+//            val rec = getRecipe(it, 0)
 //            if (rec != null) {
 //                recipeList.add(rec)
 //            }
@@ -25,17 +25,31 @@ class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient)
 //        return recipeList
 //    }
 //
-//    suspend fun getRecipe(ingredients: String): Recipe? {
+//    suspend fun getRecipe(ingredients: String, offset: Int): Recipe? {
 //        return apiClient.get(
 //            endpoint = "/recipes/list",
-//            query = mapOf("from" to 0, "to" to 1,"q" to ingredients),
+//            query = mapOf("from" to offset, "size" to 1,"q" to ingredients),
 //            headers = mapOf("X-RapidAPI-Key" to "3f4d1155c6msh66d70d2a24e50a9p1dc35fjsne99d6ec86d23", "X-RapidAPI-Host" to "tasty.p.rapidapi.com")
 //        ) { json ->
 //            json["results"].array[0].toRecipe()
 //        }
 //    }
-
-
+//
+//    suspend fun getRecipesByIngredient(ingredient: String) : List<Recipe> {
+//        val recipes = mutableListOf<Recipe>()
+//
+//        apiClient.get(
+//            endpoint = "/recipes/list",
+//            query = mapOf("from" to 0, "size" to 3,"q" to ingredient),
+//            headers = mapOf("X-RapidAPI-Key" to "3f4d1155c6msh66d70d2a24e50a9p1dc35fjsne99d6ec86d23", "X-RapidAPI-Host" to "tasty.p.rapidapi.com")
+//        ) { json ->
+//            json["results"].array.forEach {
+//                recipes.add(it.toRecipe())
+//            }
+//        }
+//
+//        return recipes
+//    }
 }
 
 private fun Json.toRecipe() = Recipe(

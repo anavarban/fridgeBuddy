@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -43,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -136,7 +138,7 @@ fun LoginScreen(
             }
 
             LoginFields.PASSWORD -> {
-                passwordError = text.length < 8
+                passwordError = text.length < 8 || !text.all { it.isLetterOrDigit() }
             }
         }
     }
@@ -194,6 +196,7 @@ fun LoginScreen(
                 fontWeight = FontWeight.SemiBold,
                 color = MainText
             ),
+            maxLines = 1,
             placeholder = {
                 Text(
                     modifier = Modifier
@@ -219,6 +222,7 @@ fun LoginScreen(
             keyboardActions = KeyboardActions {
                 validate(email, LoginFields.EMAIL)
             },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
             supportingText = {
                 if (emailError) {
                     Text(
@@ -257,6 +261,7 @@ fun LoginScreen(
                 fontWeight = FontWeight.SemiBold,
                 color = MainText
             ),
+            maxLines = 1,
             placeholder = {
                 Text(
                     modifier = Modifier
@@ -301,6 +306,7 @@ fun LoginScreen(
             keyboardActions = KeyboardActions {
                 validate(password, LoginFields.PASSWORD)
             },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             supportingText = {
                 if (passwordError) {
                     Text(
@@ -475,9 +481,10 @@ fun LoginScreen(
     }
 
     if (isLoading) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(Background40)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Background40)
         ) {
             CircularProgressIndicator(
                 modifier = Modifier

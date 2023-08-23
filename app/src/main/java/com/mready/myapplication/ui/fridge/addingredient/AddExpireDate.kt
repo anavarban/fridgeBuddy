@@ -1,11 +1,8 @@
 package com.mready.myapplication.ui.fridge.addingredient
 
-import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,7 +12,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DateRangePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
@@ -29,16 +25,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mready.myapplication.R
-import com.mready.myapplication.models.Date
-import com.mready.myapplication.models.Ingredient
-import com.mready.myapplication.ui.fridge.FridgeViewModel
 import com.mready.myapplication.ui.theme.Background
-import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
-import com.mready.myapplication.ui.utils.ingredientToUrl
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -127,7 +118,7 @@ fun AddExpireDate(
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = stringResource(id = R.string.fridge_done),
+                    text = stringResource(id = R.string.generic_done),
                     fontSize = 18.sp,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold

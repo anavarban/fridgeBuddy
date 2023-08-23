@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -142,7 +143,7 @@ fun SignUpScreen(
     fun validate(text: String, type: signUpFields) {
         when (type) {
             signUpFields.NAME -> {
-                nameError = text.length < 3
+                nameError = text.length < 3 || !text.all {it.isLetterOrDigit()}
             }
 
             signUpFields.EMAIL -> {
@@ -150,7 +151,7 @@ fun SignUpScreen(
             }
 
             signUpFields.PASSWORD -> {
-                passwordError = text.length < 8
+                passwordError = text.length < 8 || !text.all{it.isLetterOrDigit()}
             }
         }
     }
@@ -208,6 +209,7 @@ fun SignUpScreen(
                 fontWeight = FontWeight.SemiBold,
                 color = MainText
             ),
+            maxLines = 1,
             placeholder = {
                 Text(
                     modifier = Modifier
@@ -272,6 +274,7 @@ fun SignUpScreen(
                 fontWeight = FontWeight.SemiBold,
                 color = MainText
             ),
+            maxLines = 1,
             placeholder = {
                 Text(
                     modifier = Modifier
@@ -301,6 +304,7 @@ fun SignUpScreen(
             keyboardActions = KeyboardActions {
                 validate(email, signUpFields.EMAIL)
             },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Background,
                 unfocusedContainerColor = Background,
@@ -333,6 +337,7 @@ fun SignUpScreen(
                 fontWeight = FontWeight.SemiBold,
                 color = MainText
             ),
+            maxLines = 1,
             placeholder = {
                 Text(
                     modifier = Modifier
@@ -376,6 +381,7 @@ fun SignUpScreen(
             keyboardActions = KeyboardActions {
                 validate(password, signUpFields.PASSWORD)
             },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             isError = passwordError,
             supportingText = {
                 if (passwordError) {
@@ -533,9 +539,10 @@ fun SignUpScreen(
     }
 
     if (isLoading) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(Background40)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Background40)
         ) {
             CircularProgressIndicator(
                 modifier = Modifier

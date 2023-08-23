@@ -1,8 +1,9 @@
 package com.mready.myapplication.ui.utils
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
@@ -12,13 +13,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.ktx.storage
 import com.mready.myapplication.models.Date
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
-import kotlin.random.Random
 import kotlin.system.exitProcess
 
 const val clientId = "835229504494-228oa534qthjun48rr48obm7ns2nitam.apps.googleusercontent.com"
@@ -30,6 +26,7 @@ internal enum class signUpFields {
 internal enum class LoginFields {
     EMAIL, PASSWORD
 }
+
 sealed class BackPress {
     object Idle : BackPress()
     object InitialTouch : BackPress()
@@ -37,7 +34,7 @@ sealed class BackPress {
 
 @Composable
 
- fun DoubleBackPressToExit() {
+fun DoubleBackPressToExit() {
     var backPressState by remember { mutableStateOf<BackPress>(BackPress.Idle) }
     val context = LocalContext.current
 
@@ -54,6 +51,7 @@ sealed class BackPress {
                 backPressState = BackPress.InitialTouch
                 Toast.makeText(context, "Press back again to exit", Toast.LENGTH_SHORT).show()
             }
+
             BackPress.InitialTouch -> {
                 exitProcess(0)
             }
@@ -89,4 +87,20 @@ val ingredientToUrl = mapOf(
 
 fun Date.toMillis(): Long {
     return (this.date + this.month * 30 + (this.year - 1970) * 365).toLong() * 24 * 60 * 60 * 1000
+}
+
+fun openYoutubeLink(context: Context, videoId: String) {
+    val appIntent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:$videoId"))
+    val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=$videoId"))
+    try {
+        context.startActivity(appIntent)
+    } catch (ex: ActivityNotFoundException) {
+        context.startActivity(webIntent)
+    }
+}
+
+fun OpenYouTubeChannel(channelUrl: String, context: Context) {
+    val intent = Intent(Intent.ACTION_VIEW)
+    intent.data = Uri.parse(channelUrl)
+    context.startActivity(intent)
 }

@@ -11,6 +11,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -59,6 +60,7 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import com.mready.myapplication.MainActivity
 import com.mready.myapplication.R
+import com.mready.myapplication.ui.theme.Background40
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
@@ -137,18 +139,23 @@ fun DashboardScreen(
         .setAutoCancel(true)
         .build()
 
+    //temporary fix
+    LaunchedEffect(key1 = null) {
+        dashboardViewModel.loadDashboardWidgets()
+    }
 
     when (dashboardState.value) {
         DashboardState.Loading -> {
             Box (
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(Background40)
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .padding(top = 32.dp)
                         .align(Center),
-                    color = Color.Red
+                    color = MainAccent
                 )
             }
         }

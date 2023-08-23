@@ -2,9 +2,11 @@ package com.mready.myapplication.data
 
 import com.mready.myapplication.models.Ingredient
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 interface FridgeIngredientsRepo {
-
     fun getUserIngredients(email: String): Flow<List<FridgeIngredients>>
 
     suspend fun insertIngredient(ingredient: FridgeIngredients)
