@@ -4,6 +4,7 @@ import com.mready.myapplication.api.endpoints.RecipeAPI
 import com.mready.myapplication.models.Recipe
 import com.mready.myapplication.models.RecipeIngredient
 import com.mready.myapplication.models.RecipeInstruction
+import kotlinx.coroutines.time.delay
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,6 +13,7 @@ class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
 
     suspend fun getRecipe(ingredients: String, offset: Int): Recipe? {
 //        return recipeAPI.getRecipe(ingredients, offset)
+        kotlinx.coroutines.delay(1000)
         return Recipe(
             id = 5929,
             name = "Low-Carb Avocado Chicken Salad",
@@ -89,6 +91,7 @@ class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
 
     suspend fun getRecipesByFirstExpired(firstExpired: List<String>): List<Recipe>? {
 //        return recipeAPI.getRecipesByFirstExpired(firstExpired)
+        kotlinx.coroutines.delay(1000)
         val recipe = Recipe(
             id = 5929,
             name = "Low-Carb Avocado Chicken Salad",
@@ -167,6 +170,7 @@ class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
 
     suspend fun getRecipesByIngredient(ingredient: String): List<Recipe> {
 //        return recipeAPI.getRecipesByIngredient(ingredient)
+        kotlinx.coroutines.delay(1000)
         val recipe = Recipe(
             id = 5929,
             name = "Low-Carb Avocado Chicken Salad",

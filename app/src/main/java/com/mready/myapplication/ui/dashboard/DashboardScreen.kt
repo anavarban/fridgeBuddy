@@ -67,6 +67,7 @@ import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.utils.BackPress
+import com.mready.myapplication.ui.utils.LoadingAnimation
 import kotlinx.coroutines.delay
 import java.util.Calendar
 
@@ -149,18 +150,7 @@ fun DashboardScreen(
 
     when (dashboardState.value) {
         DashboardState.Loading -> {
-            Box (
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Background40)
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .padding(top = 32.dp)
-                        .align(Center),
-                    color = MainAccent
-                )
-            }
+            LoadingAnimation()
         }
 
         is DashboardState.Success -> {

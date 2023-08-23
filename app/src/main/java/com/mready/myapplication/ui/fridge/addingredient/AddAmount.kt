@@ -28,9 +28,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -48,14 +50,16 @@ import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.theme.Surface
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun AddAmount(
     user: String,
     ingredientName: String,
     onNextClick: (String, String, String, Int) -> Unit
 ) {
-    val measurementUnits = listOf("grams", "milliliters", "tsp", "pieces")
+    val measurementUnits = listOf("grams", "milliliters", "pieces")
+
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     var selectedUnit by remember {
         mutableStateOf("")
@@ -82,6 +86,8 @@ fun AddAmount(
 
     fun validate(text: String) {
         amountError = if (text.isEmpty()) {
+            true
+        } else if (text.length > 6) {
             true
         } else if (!text.all { it.isDigit() }) {
             true
@@ -163,6 +169,7 @@ fun AddAmount(
                 },
                 keyboardActions = KeyboardActions {
                     validate(amountEntered)
+                    keyboardController?.hide()
                 },
             )
 

@@ -1,5 +1,6 @@
 package com.mready.myapplication.ui.fridge.addingredient
 
+import android.widget.DatePicker
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,11 +13,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -31,6 +34,7 @@ import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import java.util.Calendar
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +46,16 @@ fun AddExpireDate(
     onDateSelected: (Long) -> Unit,
     onDoneClick: () -> Unit,
 ) {
-    val today = Calendar.getInstance()
+    val today = Calendar.getInstance().apply {
+        set(
+            get(Calendar.YEAR),
+            get(Calendar.MONTH),
+            get(Calendar.DAY_OF_MONTH) - 1,
+            23,
+            59,
+            59
+        )
+    }
 
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = Calendar.getInstance().timeInMillis,
@@ -81,6 +94,7 @@ fun AddExpireDate(
                 state = datePickerState,
                 title = {},
                 showModeToggle = false,
+                dateFormatter = remember { DatePickerDefaults.dateFormatter() },
                 colors = DatePickerDefaults.colors(
                     containerColor = Background,
                     titleContentColor = Background,

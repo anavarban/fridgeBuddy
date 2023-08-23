@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,7 +20,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,16 +33,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.mready.myapplication.R
+import com.mready.myapplication.ui.theme.Background
+import com.mready.myapplication.ui.theme.Error
+import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
+import com.mready.myapplication.ui.utils.LoadingAnimation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -59,7 +68,7 @@ fun ProfileScreen(
                     onLogoutClick()
                 }
                 else -> {
-
+                    // Do nothing
                 }
             }
         }
@@ -67,13 +76,7 @@ fun ProfileScreen(
 
     when (profileState.value) {
         ProfileUiState.Loading -> {
-            Log.d("ProfileScreen", "Loading")
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                color = MainAccent
-            )
+            LoadingAnimation()
         }
 
         ProfileUiState.Success -> {
@@ -84,21 +87,32 @@ fun ProfileScreen(
                     .padding(top = 20.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Icon(
-                    modifier = Modifier
-                        .padding(top = 2.dp, start = 20.dp, end = 8.dp)
-                        .size(40.dp)
-                        .clickable(
-                            interactionSource = MutableInteractionSource(),
-                            indication = null,
-                            onClick = {
-                                onBackClick()
-                            }
-                        ),
-                    imageVector = Icons . Outlined . KeyboardArrowLeft,
-                    contentDescription = null,
-                    tint = MainAccent
-                )
+                Row {
+                    Icon(
+                        modifier = Modifier
+                            .padding(start = 20.dp, end = 8.dp)
+                            .size(40.dp)
+                            .clickable(
+                                interactionSource = MutableInteractionSource(),
+                                indication = null,
+                                onClick = {
+                                    onBackClick()
+                                }
+                            ),
+                        imageVector = Icons.Outlined.KeyboardArrowLeft,
+                        contentDescription = null,
+                        tint = MainAccent
+                    )
+
+                    Text(
+                        modifier = Modifier,
+                        text = stringResource(id = R.string.profile_title),
+                        fontSize = 28.sp,
+                        fontFamily = Poppins,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MainAccent
+                    )
+                }
 
                 Column(
                     modifier = Modifier
@@ -114,25 +128,64 @@ fun ProfileScreen(
                         contentDescription = null,
                         contentScale = ContentScale.Crop
                     )
-                    Text(
-                        modifier = Modifier.padding(top = 12.dp),
-                        text = profileViewModel.user?.displayName ?: "",
-                        textAlign = TextAlign.Center,
-                        fontSize = 20.sp,
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MainText
-                    )
-                    Text(
-                        modifier = Modifier.padding(top = 12.dp),
-                        text = profileViewModel.user?.email ?: "",
-                        textAlign = TextAlign.Center,
-                        fontSize = 20.sp,
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MainText
+
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .fillMaxWidth(.8f),
+                        value = TextFieldValue(profileViewModel.user?.displayName ?: ""),
+                        onValueChange = {},
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.profile_name),
+                                fontSize = 12.sp,
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MainAccent
+                            )
+                        },
+                        readOnly = true,
+                        enabled = false,
+                        colors = TextFieldDefaults.colors(
+                            disabledContainerColor = Background,
+                            disabledIndicatorColor = MainAccent
+                        ),
+                        textStyle = TextStyle(
+                            fontFamily = Poppins,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MainText
+                        ),
                     )
 
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .fillMaxWidth(.8f),
+                        value = TextFieldValue(profileViewModel.user?.email ?: ""),
+                        onValueChange = {},
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.profile_email),
+                                fontSize = 12.sp,
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MainAccent
+                            )
+                        },
+                        readOnly = true,
+                        enabled = false,
+                        colors = TextFieldDefaults.colors(
+                            disabledContainerColor = Background,
+                            disabledIndicatorColor = MainAccent
+                        ),
+                        textStyle = TextStyle(
+                            fontFamily = Poppins,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MainText
+                        ),
+                    )
                 }
 
                 Button(

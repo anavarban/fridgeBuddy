@@ -64,10 +64,13 @@
     <string name="generic_save">Save</string>
     <string name="recipe_item_yields_format">"%1s "</string>
     <string name="dashboard_no_ingredients">Go to your fridge to add ingredients!</string>
-    <string name="fridge_empty">Add ingredients to your fridge!</string>
+    <string name="fridge_empty">No ingredients added yet</string>
     <string name="delete_ingredient">Are you sure you want to delete this ingredient?</string>
     <string name="generic_delete">Delete</string>
     <string name="recipe_instructions">Instructions</string>
     <string name="details_go_to_video">Go to video recipe</string>
     <string name="details_recommended_recipes">Recipes with %1s</string>
+    <string name="profile_title">Profile</string>
+    <string name="profile_name">Name</string>
+    <string name="profile_email">Email</string>
 </resources>

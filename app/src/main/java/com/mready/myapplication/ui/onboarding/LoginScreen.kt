@@ -65,6 +65,7 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.LoadingAnimation
 import com.mready.myapplication.ui.utils.LoginFields
 import com.mready.myapplication.ui.utils.clientId
 
@@ -481,18 +482,7 @@ fun LoginScreen(
     }
 
     if (isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Background40)
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(48.dp),
-                color = MainAccent
-            )
-        }
+        LoadingAnimation(Modifier.alpha(.7f))
     }
 
 }

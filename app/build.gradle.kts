@@ -5,6 +5,7 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
     id ("kotlin-parcelize")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -118,6 +119,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation ("com.google.firebase:firebase-core:21.1.1")
     implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
     //Room
     implementation ("androidx.room:room-runtime:2.5.2")

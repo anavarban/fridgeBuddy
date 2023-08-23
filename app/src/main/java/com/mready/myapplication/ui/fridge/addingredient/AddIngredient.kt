@@ -1,5 +1,6 @@
 package com.mready.myapplication.ui.fridge.addingredient
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +18,7 @@ import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.AlertDialog
@@ -36,8 +38,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -53,14 +57,18 @@ import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalComposeUiApi::class
+)
 @Composable
 fun AddIngredientScreen(
     onDone: () -> Unit
 ) {
+
+
     val addIngredientViewModel: AddIngredientViewModel = hiltViewModel()
 
-    val addState = addIngredientViewModel.addIngredientUiState.collectAsState()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val pagerState = rememberPagerState(
         initialPage = 0,
@@ -82,6 +90,9 @@ fun AddIngredientScreen(
         mutableStateOf(false)
     }
 
+    BackHandler {
+        showPopUp = true
+    }
 
     Box(
         modifier = Modifier
@@ -105,7 +116,6 @@ fun AddIngredientScreen(
             color = MainAccent,
             trackColor = LightAccent,
         )
-
 
         HorizontalPager(
             modifier = Modifier
@@ -142,6 +152,7 @@ fun AddIngredientScreen(
                             addIngredientViewModel.amount = amount
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(2)
+                                keyboardController?.hide()
                             }
                         }
                     }

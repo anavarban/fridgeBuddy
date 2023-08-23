@@ -61,6 +61,7 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.LoadingAnimation
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -96,7 +97,7 @@ fun YourFridgeScreen(
         }
 
         FridgeIngredientsUiState.Loading -> {
-            //todo
+            LoadingAnimation()
         }
 
         is FridgeIngredientsUiState.Success -> {
@@ -114,14 +115,14 @@ fun YourFridgeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
 
                 ) {
-                    Row (
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 32.dp, start = 20.dp, end = 20.dp),
                     ) {
                         Icon(
                             modifier = Modifier
-                                .padding(top = 2.dp, end = 8.dp)
+                                .padding(end = 8.dp)
                                 .size(40.dp)
                                 .clickable(
                                     interactionSource = MutableInteractionSource(),
@@ -130,7 +131,7 @@ fun YourFridgeScreen(
                                         onBackClick()
                                     }
                                 ),
-                            imageVector = Icons . Outlined . KeyboardArrowLeft,
+                            imageVector = Icons.Outlined.KeyboardArrowLeft,
                             contentDescription = null,
                             tint = MainText
                         )
@@ -145,28 +146,11 @@ fun YourFridgeScreen(
                         )
                     }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 32.dp, start = 20.dp, end = 20.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.fridge_soon_to_expire),
-                            textAlign = TextAlign.Left,
-                            fontSize = 24.sp,
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.SemiBold,
-                            color = SecondaryText
-                        )
-                    }
-
                     if (ingredients.isNullOrEmpty()) {
                         Text(
                             modifier = Modifier
-                                .padding(top = 20.dp, start = 20.dp, end = 20.dp)
-                                .align(Alignment.Start),
+                                .padding(top = 80.dp, start = 20.dp, end = 20.dp)
+                                .align(Alignment.CenterHorizontally),
                             text = stringResource(id = R.string.fridge_empty),
                             textAlign = TextAlign.Left,
                             fontSize = 20.sp,
@@ -175,12 +159,29 @@ fun YourFridgeScreen(
                             color = SecondaryText,
                         )
                     } else {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 32.dp, start = 20.dp, end = 20.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.fridge_soon_to_expire),
+                                textAlign = TextAlign.Left,
+                                fontSize = 24.sp,
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.SemiBold,
+                                color = SecondaryText
+                            )
+                        }
+
                         LazyRow(
-                                modifier = Modifier
-                                    .padding(top = 20.dp)
-                                    .align(Alignment.Start),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
+                            modifier = Modifier
+                                .padding(top = 20.dp)
+                                .align(Alignment.Start),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
                         ) {
                             items(ingredients.sortedWith { o1, o2 ->
                                 if (o1.expireDate.year == o2.expireDate.year) {
@@ -202,38 +203,24 @@ fun YourFridgeScreen(
                                 )
                             }
                         }
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 32.dp, start = 20.dp, end = 20.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.fridge_all_ingredients),
-                            textAlign = TextAlign.Left,
-                            fontSize = 24.sp,
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.SemiBold,
-                            color = SecondaryText
-                        )
-                    }
-
-                    if (ingredients.isNullOrEmpty()) {
-                        Text(
+                        Row(
                             modifier = Modifier
-                                .padding(top = 20.dp, start = 20.dp, end = 20.dp)
-                                .align(Alignment.Start),
-                            text = stringResource(id = R.string.fridge_empty),
-                            textAlign = TextAlign.Left,
-                            fontSize = 20.sp,
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.SemiBold,
-                            color = SecondaryText,
-                        )
-                    } else {
+                                .fillMaxWidth()
+                                .padding(top = 32.dp, start = 20.dp, end = 20.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.fridge_all_ingredients),
+                                textAlign = TextAlign.Left,
+                                fontSize = 24.sp,
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.SemiBold,
+                                color = SecondaryText
+                            )
+                        }
+
+
                         LazyVerticalGrid(
                             modifier = Modifier
                                 .padding(top = 20.dp),
@@ -292,10 +279,12 @@ fun YourFridgeScreen(
                         }
                     )
                 }
+
             }
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -65,6 +65,7 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.LoadingAnimation
 
 @Composable
 fun RecipeScreen(
@@ -86,18 +87,7 @@ fun RecipeScreen(
 
     when (uiState.value) {
         is RecipeUiState.Loading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Loading...",
-                    fontFamily = Poppins,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MainText
-                )
-            }
+            LoadingAnimation()
         }
 
         is RecipeUiState.Error -> {
@@ -155,7 +145,6 @@ fun RecipeScreen(
                                         fontFamily = Poppins,
                                         fontWeight = FontWeight.SemiBold,
                                         color = MainText,
-//                                        minLines = 2,
                                     )
 
                                     if (recipe.time != null && recipe.time != 0) {

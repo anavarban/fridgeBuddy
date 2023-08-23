@@ -6,13 +6,22 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.mready.myapplication.R
 import com.mready.myapplication.models.Date
 import kotlinx.coroutines.delay
 import kotlin.system.exitProcess
@@ -103,4 +112,24 @@ fun OpenYouTubeChannel(channelUrl: String, context: Context) {
     val intent = Intent(Intent.ACTION_VIEW)
     intent.data = Uri.parse(channelUrl)
     context.startActivity(intent)
+}
+
+@Composable
+fun LoadingAnimation (modifier: Modifier = Modifier) {
+    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.loading))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        restartOnPlay = true,
+        iterations = Int.MAX_VALUE
+    )
+
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+        )
+    }
 }

@@ -31,6 +31,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -43,6 +44,7 @@ import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -79,7 +81,9 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.LoadingAnimation
 import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun IngredientDetailsScreen(
@@ -99,23 +103,13 @@ fun IngredientDetailsScreen(
 
     when (detailsUiState.value) {
         IngredientDetailsUiState.Loading -> {
-            CircularProgressIndicator()
+            LoadingAnimation()
         }
 
         is IngredientDetailsUiState.Success -> {
             val ingredient = (detailsUiState.value as IngredientDetailsUiState.Success).ingredient
-//            IngredientDetailsContent(
-//                ingredient = ingredient,
-//                onBackButtonClick = onBackButtonClick,
-//                onDeleteClick = {
-//                    ingredientDetailsViewModel.deleteIngredient(it)
-//                    onBackButtonClick()
-//                },
-//                onEditClick = {
-//                    ingredientDetailsViewModel.updateIngredient(it)
-//                }
-//            )
-            LaunchedEffect(key1 = null){
+
+            LaunchedEffect(key1 = null) {
                 ingredientDetailsViewModel.getRecipesByIngredient(ingredient.name)
             }
 
@@ -123,9 +117,10 @@ fun IngredientDetailsScreen(
 
             var showPopUp by remember { mutableStateOf(false) }
 
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 20.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 20.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -165,10 +160,7 @@ fun IngredientDetailsScreen(
                                 fontWeight = FontWeight.SemiBold,
                                 color = MainText
                             )
-
                         }
-
-
                     }
 
                     val dayFormatted = if (ingredient.expireDate.date < 10) {
@@ -216,12 +208,14 @@ fun IngredientDetailsScreen(
                         color = MainText,
                     )
 
-                    //todo add recommended recipes
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp, start = 20.dp),
-                        text = stringResource(id = R.string.details_recommended_recipes, ingredient.name),
+                            .padding(top = 32.dp, start = 20.dp),
+                        text = stringResource(
+                            id = R.string.details_recommended_recipes,
+                            ingredient.name
+                        ),
                         textAlign = TextAlign.Left,
                         fontSize = 20.sp,
                         fontFamily = Poppins,
@@ -229,20 +223,19 @@ fun IngredientDetailsScreen(
                         color = DarkAccent,
                     )
 
-
                     when (ingredientRecipesState.value) {
                         IngredientRecipesState.Loading -> {
-                            CircularProgressIndicator(
+                            LoadingAnimation(
                                 modifier = Modifier
+                                    .size(160.dp)
                                     .align(Alignment.CenterHorizontally)
-                                    .padding(top = 32.dp),
-                                color = MainAccent
                             )
                         }
 
                         is IngredientRecipesState.Success -> {
-                            val recipes = (ingredientRecipesState.value as IngredientRecipesState.Success).recipes
-                            Row (
+                            val recipes =
+                                (ingredientRecipesState.value as IngredientRecipesState.Success).recipes
+                            Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(top = 8.dp)
@@ -271,7 +264,7 @@ fun IngredientDetailsScreen(
                     FloatingActionButton(
                         modifier = Modifier
                             .padding(top = 32.dp, bottom = 20.dp)
-                            .fillMaxWidth(.7f)
+                            .fillMaxWidth(.9f)
                             .align(Alignment.CenterHorizontally),
                         onClick = { showBottomSheet = true },
                         containerColor = MainAccent,
@@ -350,15 +343,6 @@ fun IngredientDetailsScreen(
     }
 }
 
-@Composable
-fun IngredientDetailsContent(
-    ingredient: Ingredient,
-    onBackButtonClick: () -> Unit,
-    onDeleteClick: (Int) -> Unit,
-    onEditClick: (Ingredient) -> Unit
-) {
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeletePopUp(
@@ -425,7 +409,6 @@ fun DeletePopUp(
             }
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -442,12 +425,23 @@ fun EditBottomSheet(
     fun validate(text: String) {
         amountError = if (text.isEmpty()) {
             true
+        } else if (text.length > 6) {
+            true
         } else if (!text.all { it.isDigit() }) {
             true
         } else text.toInt() <= 0
     }
 
-    val today = Calendar.getInstance()
+    val today = Calendar.getInstance().apply {
+        set(
+            get(Calendar.YEAR),
+            get(Calendar.MONTH),
+            get(Calendar.DAY_OF_MONTH) - 1,
+            23,
+            59,
+            59
+        )
+    }
 
     val expDate = Calendar.getInstance().apply {
         set(
@@ -467,10 +461,15 @@ fun EditBottomSheet(
         initialDisplayMode = DisplayMode.Input
     )
 
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
     ModalBottomSheet(
         modifier = Modifier,
         onDismissRequest = onDismissRequest,
         containerColor = Background,
+        sheetState = sheetState,
     ) {
         Column(
             modifier = Modifier
@@ -562,6 +561,28 @@ fun EditBottomSheet(
                 title = {},
                 headline = {},
                 showModeToggle = false,
+                //todo do smth!!!!
+                dateFormatter = object : DatePickerFormatter {
+                    override fun formatDate(
+                        dateMillis: Long?,
+                        locale: Locale,
+                        forContentDescription: Boolean
+                    ): String? {
+                        val date = Calendar.getInstance().apply {
+                            timeInMillis = dateMillis ?: 0
+                        }
+                        return "${date.get(Calendar.DAY_OF_MONTH)}/${date.get(Calendar.MONTH) + 1}/${
+                            date.get(
+                                Calendar.YEAR
+                            )
+                        }"
+                    }
+
+                    override fun formatMonthYear(monthMillis: Long?, locale: Locale): String? {
+                        TODO("Not yet implemented")
+                    }
+
+                },
                 colors = DatePickerDefaults.colors(
                     containerColor = Background,
                     titleContentColor = Background,
@@ -603,7 +624,10 @@ fun EditBottomSheet(
                     .fillMaxWidth(.7f),
                 onClick = {
                     validate(amountEntered)
-                    if (!amountError && datePickerState.selectableDates.isSelectableDate(datePickerState.selectedDateMillis ?: 0)) {
+                    if (!amountError && datePickerState.selectableDates.isSelectableDate(
+                            datePickerState.selectedDateMillis ?: 0
+                        )
+                    ) {
                         val calendar = Calendar.getInstance().apply {
                             timeInMillis = datePickerState.selectedDateMillis ?: 0
                         }
