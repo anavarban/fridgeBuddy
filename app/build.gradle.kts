@@ -121,6 +121,8 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
     //Room
     implementation ("androidx.room:room-runtime:2.5.2")
@@ -139,4 +141,7 @@ dependencies {
 
     //ExoPlayer
     implementation("com.google.android.exoplayer:exoplayer:2.19.1")
+
+    //worker
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
 }

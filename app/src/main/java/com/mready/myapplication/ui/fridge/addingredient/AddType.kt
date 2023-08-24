@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,12 +58,17 @@ fun AddType(
     var selectedType by remember {
         mutableStateOf(startingType)
     }
-    var expandedMenu by remember {
+    var expandedMenu by rememberSaveable {
         mutableStateOf(false)
     }
 
     var picked by remember {
-        mutableStateOf(false)
+        if (startingType.isNotEmpty()) {
+            mutableStateOf(true)
+        } else {
+            mutableStateOf(false)
+        }
+//        mutableStateOf(false)
     }
 
 
@@ -97,8 +103,7 @@ fun AddType(
                     .fillMaxWidth(.8f)
                     .menuAnchor(),
                 value = selectedType,
-                onValueChange = {
-                },
+                onValueChange = {},
                 readOnly = true,
                 textStyle = TextStyle(
                     fontFamily = Poppins,

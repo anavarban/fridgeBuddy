@@ -1,6 +1,5 @@
 package com.mready.myapplication.navigation
 
-import android.app.NotificationManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -26,7 +25,6 @@ import com.mready.myapplication.ui.recipes.RecipeScreen
 @Composable
 fun Navigation(
     onExitFromDashboard: () -> Unit,
-    notificationManager: NotificationManager,
 ) {
     val mainViewModel: MainViewModel = hiltViewModel()
     val navController = rememberNavController()
@@ -95,10 +93,8 @@ fun Navigation(
                 onProfileClick = {
                     navController.navigate(Screens.ProfileScreen.route)
                 },
-                onExit = onExitFromDashboard,
-                onIngredientClick = { navController.navigate(Screens.DetailsScreen.route + "/${it}") },
-                notificationManager = notificationManager
-            )
+                onExit = onExitFromDashboard
+            ) { navController.navigate(Screens.DetailsScreen.route + "/${it}") }
         }
 
         composable(route = Screens.ProfileScreen.route) {

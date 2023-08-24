@@ -1,12 +1,9 @@
 package com.mready.myapplication
 
 import android.annotation.SuppressLint
-import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,12 +14,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.mready.myapplication.navigation.Navigation
-import com.mready.myapplication.notif.ResetNotificationReceiver
+import com.mready.myapplication.notif.ResetNotificationWorker
 import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.MyApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -37,32 +37,22 @@ class MainActivity : ComponentActivity() {
         val notificationManager =
             this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel =
-                NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
-            notificationManager.createNotificationChannel(channel)
-        }
-
-        val calendar = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            add(Calendar.DAY_OF_YEAR, 1)
-        }
+        val channel =
+            NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
+        notificationManager.createNotificationChannel(channel)
 
         val context = this.applicationContext
 
-        val resetIntent = Intent(context, ResetNotificationReceiver::class.java)
-        val pendingIntent =
-            PendingIntent.getBroadcast(context, 0, resetIntent, PendingIntent.FLAG_IMMUTABLE)
+        val constraints = androidx.work.Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )
+        val workRequest = PeriodicWorkRequestBuilder<ResetNotificationWorker>(
+            1, // repeat interval in days
+            TimeUnit.DAYS
+        ).setConstraints(constraints).build()
+
+        WorkManager.getInstance(context).enqueue(workRequest)
 
         setContent {
             MyApplicationTheme {
@@ -74,10 +64,7 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
                         containerColor = Background,
                     ) {
-                        Navigation(
-                            notificationManager = notificationManager,
-                            onExitFromDashboard = { this@MainActivity.finish() }
-                        )
+                        Navigation { this@MainActivity.finish() }
                     }
                 }
             }

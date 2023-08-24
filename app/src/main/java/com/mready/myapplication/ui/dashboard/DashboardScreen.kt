@@ -1,10 +1,6 @@
 package com.mready.myapplication.ui.dashboard
 
 import android.Manifest
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.widget.Toast
@@ -17,7 +13,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -31,7 +26,8 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,10 +36,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -52,29 +49,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus
-import com.google.accompanist.permissions.rememberPermissionState
-import com.mready.myapplication.MainActivity
 import com.mready.myapplication.R
-import com.mready.myapplication.ui.theme.Background40
+import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.theme.Surface
 import com.mready.myapplication.ui.utils.BackPress
 import com.mready.myapplication.ui.utils.LoadingAnimation
 import kotlinx.coroutines.delay
-import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun DashboardScreen(
-    notificationManager: NotificationManager,
     onSeeFridgeClick: () -> Unit,
     onRecipeClick: (String) -> Unit,
     onProfileClick: () -> Unit,
@@ -129,21 +120,6 @@ fun DashboardScreen(
         }
     }
 
-    val sharedPreferences = context.getSharedPreferences("NotificationPrefs", Context.MODE_PRIVATE)
-    val hasNotified = sharedPreferences.getBoolean("hasNotified", false)
-
-    val intent = Intent(LocalContext.current, MainActivity::class.java)
-    val contentIntent =
-        PendingIntent.getActivity(LocalContext.current, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-
-    val notification = NotificationCompat.Builder(LocalContext.current, "fridge_channel")
-        .setContentTitle("FridgeBuddy")
-        .setContentText("Your ingredients will expire soon!")
-        .setSmallIcon(R.drawable.ic_utensils)
-        .setContentIntent(contentIntent)
-        .setAutoCancel(true)
-        .build()
-
     LaunchedEffect(key1 = null) {
         dashboardViewModel.loadDashboardWidgets()
     }
@@ -157,12 +133,13 @@ fun DashboardScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .windowInsetsPadding(WindowInsets.safeDrawing)
-                    .padding(top = 20.dp),
+//                    .background(Brush.verticalGradient(0.0f to Surface, 1.0f to Background))
+                    .windowInsetsPadding(WindowInsets.safeDrawing),
             ) {
                 Row(
                     modifier = Modifier
-                        .padding(start = 20.dp),
+                        .fillMaxWidth()
+                        .padding(top = 20.dp, start = 20.dp, bottom = 20.dp),
                     verticalAlignment = CenterVertically
                 ) {
                     AsyncImage(
@@ -192,17 +169,7 @@ fun DashboardScreen(
                     )
                 }
 
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 32.dp, start = 20.dp),
-                    text = stringResource(id = R.string.dashboard_title_prompt),
-                    textAlign = TextAlign.Left,
-                    fontSize = 24.sp,
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MainText
-                )
+//                Divider(color = Surface, thickness = 2.dp)
 
                 val items = (dashboardState.value as DashboardState.Success).widgets.sortedBy {
                     when (it) {
@@ -212,10 +179,25 @@ fun DashboardScreen(
                     }
                 }
                 LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     contentPadding = PaddingValues(bottom = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
+                    item {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 20.dp, start = 20.dp),
+                            text = stringResource(id = R.string.dashboard_title_prompt),
+                            textAlign = TextAlign.Left,
+                            fontSize = 24.sp,
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MainText
+                        )
+                    }
+
                     items(items) {
                         when (it) {
                             is RecommendedWidgetItemViewModel -> {
@@ -236,37 +218,6 @@ fun DashboardScreen(
                                     onSeeFridgeClick = onSeeFridgeClick,
                                     onIngredientClick = onIngredientClick
                                 )
-
-                                val date = Calendar.getInstance()
-                                val formattedDate = com.mready.myapplication.models.Date(
-                                    year = date.get(Calendar.YEAR),
-                                    month = date.get(Calendar.MONTH) + 1,
-                                    date = date.get(Calendar.DAY_OF_MONTH)
-                                )
-
-                                if (it.displayIngredients.isNotEmpty()) {
-
-                                    val first = it.displayIngredients.first()
-                                    val compareDates =
-                                        if (first.expireDate.year == formattedDate.year) {
-                                            if (first.expireDate.month == formattedDate.month) {
-                                                first.expireDate.date - formattedDate.date - 2
-                                            } else {
-                                                first.expireDate.month - formattedDate.month
-                                            }
-                                        } else {
-                                            first.expireDate.year - formattedDate.year
-                                        }
-                                    // TODO: make it so it only notifies once
-                                    if ( (compareDates <= 0) && canLaunchNotifications && !hasNotified) {
-                                        notificationManager.notify(
-                                            it.displayIngredients.first().id,
-                                            notification
-                                        )
-
-                                        sharedPreferences.edit().putBoolean("hasNotified", true).apply()
-                                    }
-                                }
                             }
                         }
                     }

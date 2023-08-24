@@ -17,6 +17,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:launchMode="singleInstance"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,6 +26,17 @@
             </intent-filter>
         </activity>
         <receiver android:name=".notif.ResetNotificationReceiver" />
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            android:exported="false"
+            android:enabled="true"
+            tools:node="remove"
+            tools:ignore="MissingClass">
+            <meta-data
+                android:name="androidx.work.impl.WorkManagerInitializer"
+                android:value="androidx.startup.Initializer" />
+        </provider>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

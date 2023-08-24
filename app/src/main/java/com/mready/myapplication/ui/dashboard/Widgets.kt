@@ -53,12 +53,13 @@ import com.mready.myapplication.ui.utils.openYoutubeLink
 
 @Composable
 fun PopularRecipes(
+    modifier: Modifier = Modifier,
     recipeUrls: List<String>
 ) {
     val context = LocalContext.current
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 32.dp, start = 20.dp, end = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -165,14 +166,15 @@ fun YoutubeScreen(
 
 @Composable
 fun RecommendedRecipes(
+    modifier: Modifier = Modifier,
     recipes: List<Recipe>,
     ingredientsToExpire: List<String>,
     onRecipeClick: (String) -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(top = 32.dp, start = 20.dp, end = 20.dp),
+            .padding(top = 20.dp, start = 20.dp, end = 20.dp),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.Start
     ) {
@@ -222,12 +224,13 @@ fun RecommendedRecipes(
 
 @Composable
 fun FridgeIngredients(
+    modifier: Modifier = Modifier,
     ingredients: List<Ingredient>,
     onSeeFridgeClick: () -> Unit,
     onIngredientClick: (Int) -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 20.dp, start = 20.dp, end = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween
