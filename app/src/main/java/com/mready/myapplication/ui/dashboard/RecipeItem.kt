@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -19,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -34,7 +31,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.mready.myapplication.R
 import com.mready.myapplication.models.Recipe
-import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.Surface
@@ -61,8 +57,6 @@ fun RecipeItem(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-//            modifier = Modifier.padding(vertical = 20.dp, horizontal = 12.dp),
-//            verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
                 modifier = Modifier
@@ -76,7 +70,12 @@ fun RecipeItem(
                 modifier = Modifier
                     .matchParentSize()
                     .fillMaxSize()
-                    .background(Brush.horizontalGradient(0.0f to Color.Transparent, 1.0f to Surface))
+                    .background(
+                        Brush.horizontalGradient(
+                            0.0f to Color.Transparent,
+                            1.0f to Surface
+                        )
+                    )
                     .padding(start = 28.dp)
                     .align(Alignment.CenterEnd)
             ) {
@@ -96,29 +95,32 @@ fun RecipeItem(
                     overflow = TextOverflow.Ellipsis
                 )
 
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(top = 8.dp, end = 8.dp),
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_time),
-                        contentDescription = null,
-                        tint = MainText
-                    )
+                if (recipe.time != null && recipe.time != 0) {
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 8.dp, end = 8.dp),
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_time),
+                            contentDescription = null,
+                            tint = MainText
+                        )
 
-                    Text(
-                        modifier = Modifier.padding(top = 2.dp, start = 4.dp),
-                        text = stringResource(
-                            id = R.string.recipe_item_time_format,
-                            recipe.time?.toString() ?: "?"
-                        ),
-                        textAlign = TextAlign.Right,
-                        fontSize = 12.sp,
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MainText
-                    )
+                        Text(
+                            modifier = Modifier.padding(top = 2.dp, start = 4.dp),
+                            text =
+                            stringResource(
+                                id = R.string.recipe_item_time_format,
+                                recipe.time.toString()
+                            ),
+                            textAlign = TextAlign.Right,
+                            fontSize = 12.sp,
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MainText
+                        )
+                    }
                 }
 
                 if (recipe.yields.isNotEmpty() && recipe.yields != "null") {

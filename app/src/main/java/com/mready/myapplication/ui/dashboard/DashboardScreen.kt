@@ -171,6 +171,7 @@ fun DashboardScreen(
 
 //                Divider(color = Surface, thickness = 2.dp)
 
+
                 val items = (dashboardState.value as DashboardState.Success).widgets.sortedBy {
                     when (it) {
                         is RecommendedWidgetItemViewModel -> 0

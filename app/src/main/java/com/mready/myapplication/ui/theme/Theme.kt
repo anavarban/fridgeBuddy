@@ -64,6 +64,10 @@ fun MyApplicationTheme(
                 color = Color.Transparent,
                 darkIcons = true
             )
+            systemUiController.setNavigationBarColor(
+                color = Color.Transparent,
+                darkIcons = true
+            )
         }
     }
 

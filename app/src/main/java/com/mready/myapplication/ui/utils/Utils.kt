@@ -3,13 +3,21 @@ package com.mready.myapplication.ui.utils
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,13 +25,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mready.myapplication.R
 import com.mready.myapplication.models.Date
+import com.mready.myapplication.ui.theme.DarkAccent
+import com.mready.myapplication.ui.theme.MainText
+import com.mready.myapplication.ui.theme.Poppins
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlin.system.exitProcess
 
 const val clientId = "835229504494-228oa534qthjun48rr48obm7ns2nitam.apps.googleusercontent.com"
@@ -115,7 +135,7 @@ fun OpenYouTubeChannel(channelUrl: String, context: Context) {
 }
 
 @Composable
-fun LoadingAnimation (modifier: Modifier = Modifier) {
+fun LoadingAnimation(modifier: Modifier = Modifier) {
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.loading))
     val progress by animateLottieCompositionAsState(
         composition = composition,
@@ -132,4 +152,71 @@ fun LoadingAnimation (modifier: Modifier = Modifier) {
             progress = { progress },
         )
     }
+}
+
+@ExperimentalCoroutinesApi
+fun createNetworkConnectivityService(context: Context): Flow<Boolean> = callbackFlow {
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            trySend(true).isSuccess // Network is available
+        }
+
+        override fun onLost(network: Network) {
+            trySend(false).isSuccess // Network is lost
+        }
+    }
+    val networkRequest = NetworkRequest.Builder().build()
+
+    connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+
+    awaitClose { connectivityManager.unregisterNetworkCallback(networkCallback) }
+}
+
+@OptIn(ExperimentalCoroutinesApi::class)
+@Composable
+fun NetworkStatus(
+    onNetworkAvailable: @Composable () -> Unit,
+    onNetworkUnavailable: @Composable () -> Unit
+) {
+    val context = LocalContext.current
+    val networkConnectivityService = remember { createNetworkConnectivityService(context) }
+    val isNetworkAvailable by networkConnectivityService.collectAsState(initial = true)
+
+    if (isNetworkAvailable) {
+        onNetworkAvailable()
+    } else {
+        onNetworkUnavailable()
+    }
+}
+
+@Composable
+fun DisplayError() {
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Icon(
+            painter = painterResource(id = R.drawable.ic_wifi_off),
+            contentDescription = null,
+            tint = DarkAccent
+        )
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 88.dp),
+            text = "No internet connection",
+            textAlign = TextAlign.Center,
+            fontSize = 24.sp,
+            fontFamily = Poppins,
+            fontWeight = FontWeight.SemiBold,
+            color = MainText,
+        )
+
+    }
+
 }

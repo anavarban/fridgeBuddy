@@ -180,10 +180,10 @@ fun RecipeScreen(
                                 val ingredients = recipe.ingredients.sortedBy { it.position }
                                 LazyHorizontalGrid(
                                     modifier = Modifier
-                                        .padding(top = 20.dp)
-                                        .height(180.dp),
+                                        .padding(top = 12.dp)
+                                        .height(140.dp),
                                     rows = GridCells.Fixed(3),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalArrangement = Arrangement.SpaceEvenly,
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                                     contentPadding = PaddingValues(start = 16.dp, end = 20.dp)
                                 ) {
@@ -309,35 +309,9 @@ fun RecipeStepElement(
     stepNo: Int,
     stepDirections: String,
 ) {
-    var expanded by remember {
-        //todo first index could start expanded?
-        if (stepNo == 1) {
-            mutableStateOf(true)
-        } else {
-            mutableStateOf(false)
-        }
-    }
-
-    val extraPadding by animateDpAsState(
-        targetValue = if (expanded) 12.dp else 0.dp,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        ),
-        label = ""
-    )
-
-    //todo this kinda works but i want only one expanded at a time
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = extraPadding.coerceAtLeast(0.dp))
-            .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = null
-            ) {
-                expanded = !expanded
-            },
+        modifier = modifier
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -347,17 +321,17 @@ fun RecipeStepElement(
             fontSize = 24.sp,
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
-            color = if (expanded) MainAccent else LightAccent
+            color = MainAccent
         )
 
         Text(
+            modifier = Modifier.padding(top = 2.dp),
             text = stepDirections,
             textAlign = TextAlign.Left,
             fontSize = 16.sp,
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
-            color = if (expanded) MainText else SecondaryText,
-            maxLines = if (expanded) Int.MAX_VALUE else 2,
+            color = MainText,
             overflow = TextOverflow.Ellipsis
         )
     }

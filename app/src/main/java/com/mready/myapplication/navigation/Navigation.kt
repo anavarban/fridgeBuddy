@@ -2,6 +2,8 @@ package com.mready.myapplication.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -20,6 +22,8 @@ import com.mready.myapplication.ui.onboarding.SplashScreen
 import com.mready.myapplication.ui.onboarding.StartScreen
 import com.mready.myapplication.ui.profile.ProfileScreen
 import com.mready.myapplication.ui.recipes.RecipeScreen
+import com.mready.myapplication.ui.utils.DisplayError
+import com.mready.myapplication.ui.utils.NetworkStatus
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
@@ -87,14 +91,22 @@ fun Navigation(
         }
 
         composable(route = Screens.DashboardScreen.route) {
-            DashboardScreen(
-                onSeeFridgeClick = { navController.navigate(Screens.FridgeScreen.route) },
-                onRecipeClick = { navController.navigate(Screens.RecipeScreen.route + "/${it}" + "/0") },
-                onProfileClick = {
-                    navController.navigate(Screens.ProfileScreen.route)
-                },
-                onExit = onExitFromDashboard
-            ) { navController.navigate(Screens.DetailsScreen.route + "/${it}") }
+            NetworkStatus(
+                onNetworkAvailable = {
+                    DashboardScreen(
+                        onSeeFridgeClick = { navController.navigate(Screens.FridgeScreen.route) },
+                        onRecipeClick = { navController.navigate(Screens.RecipeScreen.route + "/${it}" + "/0") },
+                        onProfileClick = {
+                            navController.navigate(Screens.ProfileScreen.route)
+                        },
+                        onExit = onExitFromDashboard,
+                        onIngredientClick = { navController.navigate(Screens.DetailsScreen.route + "/${it}") }
+                    )
+                }
+            ) {
+                DisplayError()
+            }
+
         }
 
         composable(route = Screens.ProfileScreen.route) {

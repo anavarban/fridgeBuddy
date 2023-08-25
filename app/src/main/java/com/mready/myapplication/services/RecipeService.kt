@@ -168,7 +168,7 @@ class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
         return listOf(recipe, recipe, recipe)
     }
 
-    suspend fun getRecipesByIngredient(ingredient: String): List<Recipe> {
+    suspend fun getRecipesByIngredient(ingredient: String): List<Recipe>? {
 //        return recipeAPI.getRecipesByIngredient(ingredient)
         kotlinx.coroutines.delay(1000)
         val recipe = Recipe(

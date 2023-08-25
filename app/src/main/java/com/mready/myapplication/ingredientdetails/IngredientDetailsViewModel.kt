@@ -72,10 +72,11 @@ class IngredientDetailsViewModel @Inject constructor(
     fun getRecipesByIngredient(ingredientName: String) {
         viewModelScope.launch {
             _ingredientRecipesFlow.update {
+                val recipes = recipeService.getRecipesByIngredient(ingredientName)
+                    ?: return@update IngredientRecipesState.Error
+
                 IngredientRecipesState.Success(
-                    recipeService.getRecipesByIngredient(
-                        ingredientName
-                    )
+                    recipes
                 )
             }
         }
