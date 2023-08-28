@@ -2,6 +2,7 @@ package com.mready.myapplication.ui.recipes
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -27,10 +28,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
+import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -60,11 +64,9 @@ import coil.compose.AsyncImage
 import com.mready.myapplication.R
 import com.mready.myapplication.models.RecipeIngredient
 import com.mready.myapplication.ui.theme.Background
-import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
-import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.utils.LoadingAnimation
 
 @Composable
@@ -79,7 +81,9 @@ fun RecipeScreen(
 
     val uiState = recipeViewModel.uiState.collectAsState()
 
-    val sections = listOf("image", "title", "ingredients", "instructions", "video")
+    val sections = listOf("image", "title", "description", "ingredients", "instructions", "video")
+
+    var toggleDescription by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = null) {
         recipeViewModel.loadRecipe(ingredients, offset)
@@ -176,6 +180,12 @@ fun RecipeScreen(
                                 }
                             }
 
+                            "description" -> {
+                                if (recipe.description.isNotEmpty()) {
+                                    DescriptionCard(text = recipe.description)
+                                }
+                            }
+
                             "ingredients" -> {
                                 val ingredients = recipe.ingredients.sortedBy { it.position }
                                 LazyHorizontalGrid(
@@ -230,7 +240,7 @@ fun RecipeScreen(
                                         modifier = Modifier
                                             .align(Alignment.CenterHorizontally)
                                             .fillMaxWidth(.8f)
-                                            .padding(top = 40.dp, bottom = 16.dp),
+                                            .padding(top = 32.dp, bottom = 16.dp),
                                         onClick = {
                                             val intent = Intent(
                                                 Intent.ACTION_VIEW,
@@ -334,5 +344,86 @@ fun RecipeStepElement(
             color = MainText,
             overflow = TextOverflow.Ellipsis
         )
+    }
+}
+
+
+@Composable
+fun DescriptionCard(text: String) {
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+
+    val extraPadding by animateDpAsState(
+        targetValue = if (expanded) 12.dp else 0.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = ""
+    )
+    Card(
+        modifier = Modifier
+            .padding(vertical = 4.dp, horizontal = 20.dp),
+//            .shadow(4.dp, RoundedCornerShape(12.dp)),
+        colors = CardDefaults.cardColors(
+            containerColor = Background,
+            contentColor = MainText,
+
+            ),
+    ) {
+        Row(
+            modifier = Modifier.padding(all = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1F)
+                    .padding(bottom = extraPadding.coerceAtLeast(0.dp))
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp)
+                        .clickable(
+                            interactionSource = MutableInteractionSource(),
+                            indication = null,
+                            onClick = {
+                                expanded = !expanded
+                            }
+                        )
+                        .animateContentSize(
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                stiffness = Spring.StiffnessLow
+                            )
+                        ),
+                    text = text,
+                    textAlign = TextAlign.Left,
+                    fontSize = 16.sp,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MainText,
+                    maxLines = if (expanded) Int.MAX_VALUE else 3,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+            }
+
+            Icon(
+                modifier = Modifier
+                    .padding(top = 12.dp, end = 4.dp)
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null,
+                        onClick = {
+                            expanded = !expanded
+                        }
+                    ),
+                imageVector = if (expanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
+                contentDescription = if (expanded) "Show less" else "Show more"
+            )
+
+        }
+
     }
 }

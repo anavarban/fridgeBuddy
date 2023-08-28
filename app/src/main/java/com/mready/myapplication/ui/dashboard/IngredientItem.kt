@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -34,9 +35,11 @@ import coil.compose.AsyncImage
 import com.mready.myapplication.R
 import com.mready.myapplication.models.Ingredient
 import com.mready.myapplication.ui.theme.Background
+import com.mready.myapplication.ui.theme.Error
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
+import com.mready.myapplication.ui.utils.isExpired
 
 @Composable
 fun IngredientItem(
@@ -45,6 +48,7 @@ fun IngredientItem(
     showDeleteButton: Boolean = true,
     onDeleteClick: () -> Unit = {}
 ) {
+    val isExpired = ingredient.expireDate.isExpired()
 
     Card(
         modifier = modifier
@@ -73,7 +77,12 @@ fun IngredientItem(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Brush.verticalGradient(0.0f to Color.Transparent, 1.0f to Background))
+                    .background(
+                        Brush.verticalGradient(
+                            0.0f to Color.Transparent,
+                            1.0f to Background
+                        )
+                    )
                     .align(Alignment.BottomCenter)
                     .padding(top = 64.dp),
             ) {
@@ -144,6 +153,19 @@ fun IngredientItem(
                 ) {
                     Icon(imageVector = Icons.Outlined.Delete, contentDescription = null )
                 }
+            }
+
+            if (isExpired) {
+                Icon(
+                    modifier = Modifier
+                        .padding(top = 12.dp, start = 8.dp)
+                        .align(Alignment.TopStart)
+                        .size(40.dp),
+                    imageVector = Icons.Outlined.Warning,
+                    contentDescription = null,
+                    tint = Error
+                )
+
             }
 
 

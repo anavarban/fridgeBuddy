@@ -482,7 +482,7 @@ fun LoginScreen(
     }
 
     if (isLoading) {
-        LoadingAnimation(Modifier.alpha(.7f))
+        LoadingAnimation()
     }
 
 }

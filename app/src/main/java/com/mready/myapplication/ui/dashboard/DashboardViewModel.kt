@@ -6,6 +6,7 @@ import com.mready.myapplication.auth.AuthRepository
 import com.mready.myapplication.data.FridgeIngredientsRepo
 import com.mready.myapplication.models.toIngredient
 import com.mready.myapplication.services.RecipeService
+import com.mready.myapplication.ui.utils.getFirstThreeDistinct
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

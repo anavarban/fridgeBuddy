@@ -154,7 +154,7 @@ fun AddAmount(
                     unfocusedIndicatorColor = LightAccent,
                     errorIndicatorColor = Error,
                 ),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = androidx.compose.ui.text.input.ImeAction.Done),
                 isError = amountError,
                 supportingText = {
                     if (amountError) {
@@ -170,8 +170,12 @@ fun AddAmount(
                 },
                 keyboardActions = KeyboardActions {
                     validate(amountEntered)
-                    keyboardController?.hide()
+//                    keyboardController?.hide()
                 },
+//                keyboardActions = KeyboardActions(onDone = {
+//                    validate(amountEntered)
+//                    keyboardController?.hide()
+//                }),
             )
 
             ExposedDropdownMenuBox(

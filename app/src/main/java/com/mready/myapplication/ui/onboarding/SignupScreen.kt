@@ -540,6 +540,6 @@ fun SignUpScreen(
     }
 
     if (isLoading) {
-        LoadingAnimation(Modifier.alpha(.7f))
+        LoadingAnimation()
     }
 }

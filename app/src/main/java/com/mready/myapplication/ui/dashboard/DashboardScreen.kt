@@ -133,13 +133,12 @@ fun DashboardScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-//                    .background(Brush.verticalGradient(0.0f to Surface, 1.0f to Background))
                     .windowInsetsPadding(WindowInsets.safeDrawing),
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 20.dp, start = 20.dp, bottom = 20.dp),
+                        .padding(top = 20.dp, start = 20.dp, bottom = 12.dp),
                     verticalAlignment = CenterVertically
                 ) {
                     AsyncImage(
@@ -168,9 +167,6 @@ fun DashboardScreen(
                         color = SecondaryText
                     )
                 }
-
-//                Divider(color = Surface, thickness = 2.dp)
-
 
                 val items = (dashboardState.value as DashboardState.Success).widgets.sortedBy {
                     when (it) {

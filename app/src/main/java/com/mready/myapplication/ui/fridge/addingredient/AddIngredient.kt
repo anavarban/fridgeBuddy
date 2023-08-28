@@ -14,11 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.AlertDialog
@@ -31,7 +29,6 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,7 +54,8 @@ import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class,
+@OptIn(
+    ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class,
     ExperimentalComposeUiApi::class
 )
 @Composable
@@ -103,7 +101,10 @@ fun AddIngredientScreen(
             when (pagerState.currentPage) {
                 0 -> progress = 0f
                 1 -> progress = 0.33f
-                2 -> progress = 0.66f
+                2 -> {
+                    progress = 0.66f
+//                    keyboardController?.hide()
+                }
             }
         }
 
@@ -126,55 +127,56 @@ fun AddIngredientScreen(
             userScrollEnabled = userScrollEnabled,
             reverseLayout = false,
             beyondBoundsPageCount = 0,
-            key = null
-            ){
-                when (it) {
-                    0 -> {
-                        AddType(
-                            startingType = addIngredientViewModel.type,
-                            user = addIngredientViewModel.currentUser?.email ?: "",
-                            onNextClick = { _, type ->
-                                addIngredientViewModel.type = type
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(1)
-                                }
-                                userScrollEnabled = true
-                            }
-                        )
-                    }
-
-                    1 -> {
-                        AddAmount(
-                            user = addIngredientViewModel.currentUser?.email ?: "",
-                            ingredientName = addIngredientViewModel.type
-                        ) { _, _, unit, amount ->
-                            addIngredientViewModel.unit = unit
-                            addIngredientViewModel.amount = amount
+            key = null,
+        ) {
+            when (it) {
+                0 -> {
+                    AddType(
+                        startingType = addIngredientViewModel.type,
+                        user = addIngredientViewModel.currentUser?.email ?: "",
+                        onNextClick = { _, type ->
+                            addIngredientViewModel.type = type
                             coroutineScope.launch {
-                                pagerState.animateScrollToPage(2)
-                                keyboardController?.hide()
+                                pagerState.animateScrollToPage(1)
                             }
+                            userScrollEnabled = true
+                        }
+                    )
+                }
+
+                1 -> {
+                    AddAmount(
+                        user = addIngredientViewModel.currentUser?.email ?: "",
+                        ingredientName = addIngredientViewModel.type
+                    ) { _, _, unit, amount ->
+                        keyboardController?.hide()
+                        addIngredientViewModel.unit = unit
+                        addIngredientViewModel.amount = amount
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(2)
                         }
                     }
+                }
 
-                    2 -> {
-                        AddExpireDate(
-                            user = addIngredientViewModel.currentUser?.email ?: "",
-                            ingredientName = addIngredientViewModel.type,
-                            unit = addIngredientViewModel.unit,
-                            amount = addIngredientViewModel.amount,
-                            onDateSelected = { date ->
-                                addIngredientViewModel.date = date
-                            },
-                            onDoneClick = {
-                                addIngredientViewModel.addIngredient()
-                                onDone()
-                                progress = 1f
-                            }
-                        )
-                    }
+                2 -> {
+//                    keyboardController?.hide()
+                    AddExpireDate(
+                        user = addIngredientViewModel.currentUser?.email ?: "",
+                        ingredientName = addIngredientViewModel.type,
+                        unit = addIngredientViewModel.unit,
+                        amount = addIngredientViewModel.amount,
+                        onDateSelected = { date ->
+                            addIngredientViewModel.date = date
+                        },
+                        onDoneClick = {
+                            addIngredientViewModel.addIngredient()
+                            onDone()
+                            progress = 1f
+                        }
+                    )
                 }
             }
+        }
 
 
         IconButton(

@@ -2,6 +2,8 @@ package com.mready.myapplication.ui.dashboard
 
 import com.mready.myapplication.models.Ingredient
 import com.mready.myapplication.models.Recipe
+import com.mready.myapplication.ui.utils.getFirstThreeDistinct
+import java.util.Calendar
 
 sealed class WidgetItemViewModel
 data class RecommendedWidgetItemViewModel(
@@ -15,7 +17,21 @@ data class RecommendedWidgetItemViewModel(
 
 data class FridgeWidgetItemViewModel(private val ingredients: List<Ingredient>) :
     WidgetItemViewModel() {
-    val displayIngredients = ingredients.sortedWith { o1, o2 ->
+
+    val date: Calendar = Calendar.getInstance()
+    private val formattedDate = com.mready.myapplication.models.Date(
+        year = date.get(Calendar.YEAR),
+        month = date.get(Calendar.MONTH) + 1,
+        date = date.get(Calendar.DAY_OF_MONTH)
+    )
+
+    val displayIngredients = ingredients
+//        .filter {
+//            it.expireDate.year == formattedDate.year &&
+//            (it.expireDate.month == formattedDate.month
+//                    || (it.expireDate.month == formattedDate.month + 1 && it.expireDate.date < formattedDate.date))
+//        }
+        .sortedWith { o1, o2 ->
         if (o1.expireDate.year == o2.expireDate.year) {
             if (o1.expireDate.month == o2.expireDate.month) {
                 o1.expireDate.date - o2.expireDate.date
@@ -25,7 +41,12 @@ data class FridgeWidgetItemViewModel(private val ingredients: List<Ingredient>) 
         } else {
             o1.expireDate.year - o2.expireDate.year
         }
-    }.take(3)
+    }.getFirstThreeDistinct()
+//        .take(3)
+//        .takeWhile { it.expireDate.year == formattedDate.year &&
+//            (it.expireDate.month == formattedDate.month
+//                    || (it.expireDate.month == formattedDate.month + 1 && it.expireDate.date < formattedDate.date))
+//    }
 
 }
 

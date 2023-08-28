@@ -2,8 +2,6 @@ package com.mready.myapplication.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,7 +39,7 @@ fun Navigation(
                 }
 
                 else -> {
-
+                    //do nothing
                 }
             }
         }
@@ -110,47 +108,79 @@ fun Navigation(
         }
 
         composable(route = Screens.ProfileScreen.route) {
-            ProfileScreen(
-                onLogoutClick = { navController.navigate(Screens.LoginScreen.route) },
-                onBackClick = { navController.navigate(Screens.DashboardScreen.route) },
-            )
+            NetworkStatus(
+                onNetworkAvailable = {
+                    ProfileScreen(
+                        onLogoutClick = { navController.navigate(Screens.LoginScreen.route) },
+                        onBackClick = { navController.navigate(Screens.DashboardScreen.route) },
+                    )
+                }
+            ) {
+                DisplayError()
+            }
         }
 
         composable(route = Screens.RecipeScreen.route + "/{ingredients}" + "/{offset}") {
-            val recipeIngredients = it.arguments?.getString("ingredients")
-            val recipeOffset = it.arguments?.getString("offset")?.toInt()
-            RecipeScreen(
-                offset = recipeOffset ?: 0,
-                ingredients = recipeIngredients ?: "",
-                onBackClick = { navController.popBackStack() },
-            )
+            NetworkStatus(
+                onNetworkAvailable = {
+                    val recipeIngredients = it.arguments?.getString("ingredients")
+                    val recipeOffset = it.arguments?.getString("offset")?.toInt()
+                    RecipeScreen(
+                        offset = recipeOffset ?: 0,
+                        ingredients = recipeIngredients ?: "",
+                        onBackClick = { navController.popBackStack() },
+                    )
+                }
+            ) {
+                DisplayError()
+            }
+
         }
 
         composable(route = Screens.FridgeScreen.route) {
-            YourFridgeScreen(
-                onAddClick = { navController.navigate(Screens.AddIngredientScreen.route) },
-                onBackClick = { navController.navigate(Screens.DashboardScreen.route) },
-                onCardClick = { navController.navigate(Screens.DetailsScreen.route + "/${it}") },
-            )
+            NetworkStatus(
+                onNetworkAvailable = {
+                    YourFridgeScreen(
+                        onAddClick = { navController.navigate(Screens.AddIngredientScreen.route) },
+                        onBackClick = { navController.navigate(Screens.DashboardScreen.route) },
+                        onCardClick = { navController.navigate(Screens.DetailsScreen.route + "/${it}") },
+                    )
+                }
+            ) {
+                DisplayError()
+            }
 
         }
 
         composable(route = Screens.AddIngredientScreen.route) {
-            AddIngredientScreen(
-                onDone = { navController.navigate(Screens.FridgeScreen.route) }
-            )
+            NetworkStatus(
+                onNetworkAvailable = {
+                    AddIngredientScreen(
+                        onDone = { navController.navigate(Screens.FridgeScreen.route) }
+                    )
+                }
+            ) {
+                DisplayError()
+            }
+
         }
 
         composable(route = Screens.DetailsScreen.route + "/{id}") {
-            val id = it.arguments?.getString("id")?.toInt() ?: 0
-            IngredientDetailsScreen(
-                ingredientId = id,
-                onBackButtonClick = {
-                    navController.popBackStack()
-                },
-                onRecipeClick = { ing, offset -> navController.navigate(Screens.RecipeScreen.route + "/${ing}" + "/${offset}") }
-            )
-        }
+            NetworkStatus(
+                onNetworkAvailable = {
+                    val id = it.arguments?.getString("id")?.toInt() ?: 0
+                    IngredientDetailsScreen(
+                        ingredientId = id,
+                        onBackButtonClick = {
+                            navController.popBackStack()
+                        },
+                        onRecipeClick = { ing, offset -> navController.navigate(Screens.RecipeScreen.route + "/${ing}" + "/${offset}") }
+                    )
+                }
+            ) {
 
+                DisplayError()
+            }
+        }
     }
 }

@@ -62,6 +62,8 @@ import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.utils.LoadingAnimation
+import com.mready.myapplication.ui.utils.getFirstThreeDistinct
+import java.util.Calendar
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -176,14 +178,16 @@ fun YourFridgeScreen(
                             )
                         }
 
-                        LazyRow(
-                            modifier = Modifier
-                                .padding(top = 20.dp)
-                                .align(Alignment.Start),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
-                        ) {
-                            items(ingredients.sortedWith { o1, o2 ->
+                        val date = Calendar.getInstance()
+                        val formattedDate = com.mready.myapplication.models.Date(
+                            year = date.get(Calendar.YEAR),
+                            month = date.get(Calendar.MONTH) + 1,
+                            date = date.get(Calendar.DAY_OF_MONTH)
+                        )
+
+                        //todo does this make sense??????????
+                        val displaySoonToExpire = ingredients
+                            .sortedWith { o1, o2 ->
                                 if (o1.expireDate.year == o2.expireDate.year) {
                                     if (o1.expireDate.month == o2.expireDate.month) {
                                         o1.expireDate.date - o2.expireDate.date
@@ -193,7 +197,22 @@ fun YourFridgeScreen(
                                 } else {
                                     o1.expireDate.year - o2.expireDate.year
                                 }
-                            }.take(3)) {
+                            }.getFirstThreeDistinct()
+//                            .takeWhile {
+//                                it.expireDate.year == formattedDate.year &&
+//                                        (it.expireDate.month == formattedDate.month
+//                                                || (it.expireDate.month == formattedDate.month + 1 && it.expireDate.date < formattedDate.date))
+//                            }
+//                        .take(3)
+
+                        LazyRow(
+                            modifier = Modifier
+                                .padding(top = 20.dp)
+                                .align(Alignment.Start),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
+                        ) {
+                            items(displaySoonToExpire) {
                                 IngredientItem(
                                     modifier = Modifier
                                         .width(120.dp)

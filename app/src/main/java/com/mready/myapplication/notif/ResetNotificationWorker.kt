@@ -18,6 +18,7 @@ import com.mready.myapplication.data.FridgeDatabase
 import com.mready.myapplication.data.FridgeIngredientsRepo
 import com.mready.myapplication.data.FridgeIngredientsRepoImpl
 import com.mready.myapplication.models.toIngredient
+import com.mready.myapplication.ui.utils.getFirstThreeDistinct
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -78,17 +79,28 @@ class ResetNotificationWorker(
                 date = date.get(Calendar.DAY_OF_MONTH)
             )
 
-            val displayIngredients = ingredients.sortedWith { o1, o2 ->
-                if (o1.expireDate.year == o2.expireDate.year) {
-                    if (o1.expireDate.month == o2.expireDate.month) {
-                        o1.expireDate.date - o2.expireDate.date
+            val displayIngredients = ingredients
+//                .filter {
+//                    it.expireDate.year == formattedDate.year &&
+//                            (it.expireDate.month == formattedDate.month
+//                                    || (it.expireDate.month == formattedDate.month + 1 && it.expireDate.date < formattedDate.date))
+//                }
+                .sortedWith { o1, o2 ->
+                    if (o1.expireDate.year == o2.expireDate.year) {
+                        if (o1.expireDate.month == o2.expireDate.month) {
+                            o1.expireDate.date - o2.expireDate.date
+                        } else {
+                            o1.expireDate.month - o2.expireDate.month
+                        }
                     } else {
-                        o1.expireDate.month - o2.expireDate.month
+                        o1.expireDate.year - o2.expireDate.year
                     }
-                } else {
-                    o1.expireDate.year - o2.expireDate.year
-                }
-            }.take(3)
+                }.getFirstThreeDistinct()
+//                .take(3)
+//            }.takeWhile { it.expireDate.year == formattedDate.year &&
+//                    (it.expireDate.month == formattedDate.month
+//                            || (it.expireDate.month == formattedDate.month + 1 && it.expireDate.date < formattedDate.date))
+//            }
 
             if (displayIngredients.isNotEmpty()) {
 
@@ -112,69 +124,6 @@ class ResetNotificationWorker(
                 }
             }
         }
-
-//        fridgeIngredientsRepo.getUserIngredients(userEmail).onEach { list ->
-//
-//            val intent = Intent(context, MainActivity::class.java)
-//            val contentIntent =
-//                PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-//
-//            val notification = NotificationCompat.Builder(context, "fridge_channel")
-//                .setContentTitle("FridgeBuddy")
-//                .setContentText("Your ingredients will expire soon!")
-//                .setSmallIcon(R.drawable.ic_utensils)
-//                .setContentIntent(contentIntent)
-//                .setAutoCancel(true)
-//                .setPriority(NotificationCompat.PRIORITY_HIGH)
-//                .build()
-//
-//            val ingredients = list.map { elem -> elem.toIngredient() }
-//
-//            val date = Calendar.getInstance()
-//            val formattedDate = com.mready.myapplication.models.Date(
-//                year = date.get(Calendar.YEAR),
-//                month = date.get(Calendar.MONTH) + 1,
-//                date = date.get(Calendar.DAY_OF_MONTH)
-//            )
-//
-//            val displayIngredients = ingredients.sortedWith { o1, o2 ->
-//                if (o1.expireDate.year == o2.expireDate.year) {
-//                    if (o1.expireDate.month == o2.expireDate.month) {
-//                        o1.expireDate.date - o2.expireDate.date
-//                    } else {
-//                        o1.expireDate.month - o2.expireDate.month
-//                    }
-//                } else {
-//                    o1.expireDate.year - o2.expireDate.year
-//                }
-//            }.take(3)
-//
-//            if (displayIngredients.isNotEmpty()) {
-//
-//                val first = displayIngredients.first()
-//                val compareDates =
-//                    if (first.expireDate.year == formattedDate.year) {
-//                        if (first.expireDate.month == formattedDate.month) {
-//                            first.expireDate.date - formattedDate.date - 2
-//                        } else {
-//                            first.expireDate.month - formattedDate.month
-//                        }
-//                    } else {
-//                        first.expireDate.year - formattedDate.year
-//                    }
-//
-//                if (compareDates <= 0) {
-//                    notificationManager.notify(
-//                        Random.nextInt(),
-//                        notification
-//                    )
-//                }
-//            }
-//
-//
-//        }.stateIn(scope = coroutineScope)
-
-
         return Result.success()
     }
 }

@@ -1,5 +1,8 @@
 package com.mready.myapplication.ingredientdetails
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -24,10 +27,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
+import androidx.compose.material.icons.outlined.KeyboardArrowUp
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
@@ -38,9 +45,11 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SelectableDates
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
@@ -56,6 +65,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -82,6 +92,7 @@ import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.utils.LoadingAnimation
+import com.mready.myapplication.ui.utils.isExpired
 import java.util.Calendar
 import java.util.Locale
 
@@ -159,6 +170,33 @@ fun IngredientDetailsScreen(
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MainText
+                            )
+                        }
+                    }
+
+                    if (ingredient.expireDate.isExpired()) {
+                        Row (
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp, start = 20.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(40.dp),
+                                imageVector = Icons.Outlined.Warning,
+                                contentDescription = null,
+                                tint = Error
+                            )
+
+                            Text(
+                                modifier = Modifier.padding(top = 16.dp),
+                                text = stringResource(id = R.string.details_expired),
+                                fontSize = 20.sp,
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Error,
                             )
                         }
                     }
@@ -283,7 +321,8 @@ fun IngredientDetailsScreen(
                 IconButton(
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(top = 32.dp, start = 20.dp),
+                        .padding(top = 32.dp, start = 20.dp)
+                        .shadow(4.dp, CircleShape),
                     onClick = onBackButtonClick,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = Background,
@@ -299,7 +338,8 @@ fun IngredientDetailsScreen(
                 IconButton(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(top = 32.dp, end = 20.dp),
+                        .padding(top = 32.dp, end = 20.dp)
+                        .shadow(4.dp, CircleShape),
                     onClick = { showPopUp = true },
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = Background,
@@ -658,3 +698,4 @@ fun EditBottomSheet(
         }
     }
 }
+

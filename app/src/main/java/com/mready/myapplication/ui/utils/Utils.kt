@@ -36,6 +36,7 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mready.myapplication.R
 import com.mready.myapplication.models.Date
+import com.mready.myapplication.models.Ingredient
 import com.mready.myapplication.ui.theme.DarkAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
@@ -44,6 +45,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import java.util.Calendar
 import kotlin.system.exitProcess
 
 const val clientId = "835229504494-228oa534qthjun48rr48obm7ns2nitam.apps.googleusercontent.com"
@@ -219,4 +221,20 @@ fun DisplayError() {
 
     }
 
+}
+
+fun Date.isExpired(): Boolean {
+    val today = Calendar.getInstance()
+    val expireDate = Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+    }
+    expireDate.set(this.year, this.month - 1, this.date)
+
+    return today.after(expireDate)
+}
+
+fun List<Ingredient>.getFirstThreeDistinct(): List<Ingredient> {
+    return this.groupBy { it.expireDate }.values.take(3).flatten()
 }
