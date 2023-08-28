@@ -42,13 +42,6 @@ class FridgeViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun insertIngredient(ingredient: Ingredient, user: String) {
-        viewModelScope.launch {
-            fridgeIngredientsRepo.insertIngredient(ingredient.toFridgeIngredient(user))
-        }
-        loadIngredients()
-    }
-
     fun deleteIngredient(ingredient: Ingredient) {
         viewModelScope.launch {
             fridgeIngredientsRepo.deleteIngredient(ingredient.id)

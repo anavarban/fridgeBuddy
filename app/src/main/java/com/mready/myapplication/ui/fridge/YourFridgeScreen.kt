@@ -249,7 +249,7 @@ fun YourFridgeScreen(
                                 bottom = 40.dp
                             )
                         ) {
-                            items(ingredients, key = { it.id }) {
+                            items(ingredients.sortedBy { it.name }, key = { it.id }) {
                                 IngredientItem(
                                     modifier = Modifier
                                         .width(120.dp)

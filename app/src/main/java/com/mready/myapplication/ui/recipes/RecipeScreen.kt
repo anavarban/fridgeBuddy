@@ -81,7 +81,7 @@ fun RecipeScreen(
 
     val uiState = recipeViewModel.uiState.collectAsState()
 
-    val sections = listOf("image", "title", "description", "ingredients", "instructions", "video")
+    val sections = listOf("image", "title", "description","yields", "ingredients", "instructions", "video")
 
     var toggleDescription by remember { mutableStateOf(false) }
 
@@ -183,6 +183,31 @@ fun RecipeScreen(
                             "description" -> {
                                 if (recipe.description.isNotEmpty()) {
                                     DescriptionCard(text = recipe.description)
+                                }
+                            }
+
+                            "yields" -> {
+                                if (recipe.yields.isNotEmpty() && recipe.yields != "null") {
+                                    Row(
+                                        modifier = Modifier.padding(top = 12.dp, start = 20.dp, end = 20.dp)
+                                    ) {
+                                        Icon(
+                                            modifier = Modifier.size(32.dp),
+                                            painter = painterResource(id = R.drawable.ic_utensils),
+                                            contentDescription = null,
+                                            tint = MainAccent
+                                        )
+
+                                        Text(
+                                            modifier = Modifier.padding(start = 4.dp),
+                                            text = recipe.yields,
+                                            textAlign = TextAlign.Right,
+                                            fontSize = 20.sp,
+                                            fontFamily = Poppins,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = MainAccent
+                                        )
+                                    }
                                 }
                             }
 
