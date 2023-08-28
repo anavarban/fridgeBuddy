@@ -142,7 +142,7 @@ fun RecipeScreen(
                                 ) {
                                     Text(
                                         modifier = Modifier
-                                            .fillMaxWidth(.5f),
+                                            .fillMaxWidth(.6f),
                                         text = recipe.name,
                                         textAlign = TextAlign.Left,
                                         fontSize = 24.sp,
@@ -212,7 +212,7 @@ fun RecipeScreen(
                             }
 
                             "ingredients" -> {
-                                val ingredients = recipe.ingredients.sortedBy { it.position }
+                                val ingredients = recipe.ingredients.sortedBy { it.position }.filter { it.ingredient != "null" && it.ingredient != "n/a" }
                                 LazyHorizontalGrid(
                                     modifier = Modifier
                                         .padding(top = 12.dp)

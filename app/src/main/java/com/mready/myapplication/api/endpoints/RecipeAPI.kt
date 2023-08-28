@@ -12,54 +12,54 @@ import net.mready.json.Json
 
 @Singleton
 class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient) {
-//    suspend fun getRecipesByFirstExpired(firstExpired: List<String>): List<Recipe>? {
-//        val recipeList = mutableListOf<Recipe>()
-//
-//        firstExpired.forEach{
-//            val rec = getRecipe(it, 0)
-//            if (rec != null) {
-//                recipeList.add(rec)
-//            }
-//        }
-//
-//        if (recipeList.isEmpty()) return null
-//        return recipeList
-//    }
-//
-//    suspend fun getRecipe(ingredients: String, offset: Int): Recipe? {
-//        var isSuccessful = true
-//
-//        val recipe = apiClient.get(
-//            endpoint = "/recipes/list",
-//            query = mapOf("from" to offset, "size" to 1,"q" to ingredients),
-//            headers = mapOf("X-RapidAPI-Key" to "7df009b68dmsh58d26dc93e075eap1bf7b7jsnfe39e6923b88", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
-//            errorHandler = {_ ->  isSuccessful = false}
-//        ) { json ->
-//            json["results"].array[0].toRecipe(ingredients)
-//        }
-//
-//        if (!isSuccessful) return null
-//        return recipe
-//    }
-//
-//    suspend fun getRecipesByIngredient(ingredient: String) : List<Recipe>? {
-//
-//        val recipes = mutableListOf<Recipe>()
-//        var isSuccessful = true
-//
-//        apiClient.get(
-//            endpoint = "/recipes/list",
-//            query = mapOf("from" to 0, "size" to 3,"q" to ingredient),
-//            headers = mapOf("X-RapidAPI-Key" to "7df009b68dmsh58d26dc93e075eap1bf7b7jsnfe39e6923b88", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
-//            errorHandler = {_ -> isSuccessful = false}
-//        ) { json ->
-//            json["results"].array.forEach {
-//                recipes.add(it.toRecipe(ingredient))
-//            }
-//        }
-//        if (!isSuccessful) return null
-//        return recipes
-//    }
+    suspend fun getRecipesByFirstExpired(firstExpired: List<String>): List<Recipe>? {
+        val recipeList = mutableListOf<Recipe>()
+
+        firstExpired.forEach{
+            val rec = getRecipe(it, 0)
+            if (rec != null) {
+                recipeList.add(rec)
+            }
+        }
+
+        if (recipeList.isEmpty()) return null
+        return recipeList
+    }
+
+    suspend fun getRecipe(ingredients: String, offset: Int): Recipe? {
+        var isSuccessful = true
+
+        val recipe = apiClient.get(
+            endpoint = "/recipes/list",
+            query = mapOf("from" to offset, "size" to 1,"q" to ingredients),
+            headers = mapOf("X-RapidAPI-Key" to "21f5dc8f2emsha07d1de222eee84p1575e0jsn9fbedb70ae24", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
+            errorHandler = {_ ->  isSuccessful = false}
+        ) { json ->
+            json["results"].array[0].toRecipe(ingredients)
+        }
+
+        if (!isSuccessful) return null
+        return recipe
+    }
+
+    suspend fun getRecipesByIngredient(ingredient: String) : List<Recipe>? {
+
+        val recipes = mutableListOf<Recipe>()
+        var isSuccessful = true
+
+        apiClient.get(
+            endpoint = "/recipes/list",
+            query = mapOf("from" to 0, "size" to 3,"q" to ingredient),
+            headers = mapOf("X-RapidAPI-Key" to "21f5dc8f2emsha07d1de222eee84p1575e0jsn9fbedb70ae24", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
+            errorHandler = {_ -> isSuccessful = false}
+        ) { json ->
+            json["results"].array.forEach {
+                recipes.add(it.toRecipe(ingredient))
+            }
+        }
+        if (!isSuccessful) return null
+        return recipes
+    }
 }
 
 private fun Json.toRecipe(baseIngredient: String) = Recipe(

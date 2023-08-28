@@ -7,13 +7,13 @@ import com.mready.myapplication.data.FridgeIngredientsRepo
 import com.mready.myapplication.models.Recipe
 import com.mready.myapplication.models.toIngredient
 import com.mready.myapplication.services.RecipeService
-import com.mready.myapplication.ui.utils.getFirstThreeDistinct
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class DashboardState {
@@ -42,7 +42,8 @@ class DashboardViewModel @Inject constructor(
             ?: return _dashboardFlow.update { DashboardState.Success(emptyList()) }
 
         _dashboardFlow.update { DashboardState.Loading }
-        fridgeIngredientsRepo.getUserIngredients(currentUser.email ?: "").onEach { list ->
+        viewModelScope.launch {
+            val list = fridgeIngredientsRepo.getUserIngredients(currentUser.email ?: "").stateIn(viewModelScope).value
             val widgets = mutableListOf<WidgetItemViewModel>()
 
             val ingredientsList = list.map { elem -> elem.toIngredient() }
@@ -71,7 +72,7 @@ class DashboardViewModel @Inject constructor(
             _dashboardFlow.update {
                 DashboardState.Success(widgets)
             }
-        }.launchIn(viewModelScope)
+        }
     }
 
 }

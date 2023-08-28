@@ -1,12 +1,10 @@
 package com.mready.myapplication.ui.fridge
 
 import androidx.lifecycle.ViewModel
-import com.mready.myapplication.data.FridgeIngredients
 import com.mready.myapplication.data.FridgeIngredientsRepo
 import com.mready.myapplication.models.Ingredient
 import com.mready.myapplication.models.toIngredient
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -15,6 +13,7 @@ import com.mready.myapplication.auth.AuthRepository
 import com.mready.myapplication.models.toFridgeIngredient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -35,11 +34,12 @@ class FridgeViewModel @Inject constructor(
     }
 
     fun loadIngredients() {
-        fridgeIngredientsRepo.getUserIngredients(currentUser?.email ?: "").onEach {list ->
+        viewModelScope.launch {
+            val list = fridgeIngredientsRepo.getUserIngredients(currentUser?.email ?: "").stateIn(viewModelScope).value
             _fridgeFlow.update {
                 FridgeIngredientsUiState.Success(list.map { it.toIngredient() })
             }
-        }.launchIn(viewModelScope)
+        }
     }
 
     fun deleteIngredient(ingredient: Ingredient) {
