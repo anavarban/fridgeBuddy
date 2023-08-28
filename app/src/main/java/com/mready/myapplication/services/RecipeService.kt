@@ -86,7 +86,8 @@ class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
             time = 20,
             yields = "Servings: 4",
             videoUrl = "https://s3.amazonaws.com/video-api-prod/assets/a0e1b07dc71c4ac6b378f24493ae2d85/FixedFBFinal.mp4",
-        )
+        baseIngredient = ingredients
+            )
     }
 
     suspend fun getRecipesByFirstExpired(firstExpired: List<String>): List<Recipe>? {
@@ -164,7 +165,8 @@ class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
             time = 20,
             yields = "Servings: 4",
             videoUrl = "https://s3.amazonaws.com/video-api-prod/assets/a0e1b07dc71c4ac6b378f24493ae2d85/FixedFBFinal.mp4",
-        )
+        baseIngredient = firstExpired[0]
+            )
         return listOf(recipe, recipe, recipe)
     }
 
@@ -243,7 +245,8 @@ class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
             time = 20,
             yields = "Servings: 4",
             videoUrl = "https://s3.amazonaws.com/video-api-prod/assets/a0e1b07dc71c4ac6b378f24493ae2d85/FixedFBFinal.mp4",
-        )
+        baseIngredient = ingredient
+            )
         return listOf(recipe, recipe, recipe)
     }
 

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mready.myapplication.auth.AuthRepository
 import com.mready.myapplication.data.FridgeIngredientsRepo
+import com.mready.myapplication.models.Recipe
 import com.mready.myapplication.models.toIngredient
 import com.mready.myapplication.services.RecipeService
 import com.mready.myapplication.ui.utils.getFirstThreeDistinct
@@ -33,6 +34,9 @@ class DashboardViewModel @Inject constructor(
     private var _dashboardFlow = MutableStateFlow<DashboardState>(DashboardState.Loading)
     val dashboardFlow: StateFlow<DashboardState> = _dashboardFlow
 
+    private var firstExpiredCache: List<String> = emptyList()
+    private var recipesCache: List<Recipe>? = emptyList()
+
     fun loadDashboardWidgets() {
         val currentUser = authRepository.currentUser.value
             ?: return _dashboardFlow.update { DashboardState.Success(emptyList()) }
@@ -46,7 +50,14 @@ class DashboardViewModel @Inject constructor(
             widgets.add(fridgeWidgetItem)
 
             val firstExpired = fridgeWidgetItem.displayIngredients.map { it.name }
-            val recipes = recipeService.getRecipesByFirstExpired(firstExpired.distinct())
+            val recipes = if (firstExpiredCache != firstExpired) {
+                firstExpiredCache = firstExpired
+                recipesCache = recipeService.getRecipesByFirstExpired(firstExpired.distinct())
+                recipesCache
+            } else {
+                recipesCache
+            }
+
             widgets.add(RecommendedWidgetItemViewModel(recipes ?: emptyList(), firstExpired))
 
             widgets.add(

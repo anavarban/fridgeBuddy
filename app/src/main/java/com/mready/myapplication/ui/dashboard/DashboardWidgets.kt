@@ -11,19 +11,12 @@ data class RecommendedWidgetItemViewModel(
     private val ingredients: List<String>
 ) :
     WidgetItemViewModel() {
-    val displayRecipes = recipes.distinct()
+    val displayRecipes = recipes.distinctBy { it.name }
     val soonToExpireIngredients = ingredients
 }
 
 data class FridgeWidgetItemViewModel(private val ingredients: List<Ingredient>) :
     WidgetItemViewModel() {
-
-    val date: Calendar = Calendar.getInstance()
-    private val formattedDate = com.mready.myapplication.models.Date(
-        year = date.get(Calendar.YEAR),
-        month = date.get(Calendar.MONTH) + 1,
-        date = date.get(Calendar.DAY_OF_MONTH)
-    )
 
     val displayIngredients = ingredients
         .sortedWith { o1, o2 ->

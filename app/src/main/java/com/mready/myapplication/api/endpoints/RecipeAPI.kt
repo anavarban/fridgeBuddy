@@ -13,7 +13,7 @@ import net.mready.json.Json
 @Singleton
 class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient) {
 //    suspend fun getRecipesByFirstExpired(firstExpired: List<String>): List<Recipe>? {
-//        var recipeList = mutableListOf<Recipe>()
+//        val recipeList = mutableListOf<Recipe>()
 //
 //        firstExpired.forEach{
 //            val rec = getRecipe(it, 0)
@@ -32,10 +32,10 @@ class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient)
 //        val recipe = apiClient.get(
 //            endpoint = "/recipes/list",
 //            query = mapOf("from" to offset, "size" to 1,"q" to ingredients),
-//            headers = mapOf("X-RapidAPI-Key" to "3f4d1155c6msh66d70d2a24e50a9p1dc35fjsne99d6ec86d23", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
+//            headers = mapOf("X-RapidAPI-Key" to "7df009b68dmsh58d26dc93e075eap1bf7b7jsnfe39e6923b88", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
 //            errorHandler = {_ ->  isSuccessful = false}
 //        ) { json ->
-//            json["results"].array[0].toRecipe()
+//            json["results"].array[0].toRecipe(ingredients)
 //        }
 //
 //        if (!isSuccessful) return null
@@ -50,11 +50,11 @@ class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient)
 //        apiClient.get(
 //            endpoint = "/recipes/list",
 //            query = mapOf("from" to 0, "size" to 3,"q" to ingredient),
-//            headers = mapOf("X-RapidAPI-Key" to "3f4d1155c6msh66d70d2a24e50a9p1dc35fjsne99d6ec86d23", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
+//            headers = mapOf("X-RapidAPI-Key" to "7df009b68dmsh58d26dc93e075eap1bf7b7jsnfe39e6923b88", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
 //            errorHandler = {_ -> isSuccessful = false}
 //        ) { json ->
 //            json["results"].array.forEach {
-//                recipes.add(it.toRecipe())
+//                recipes.add(it.toRecipe(ingredient))
 //            }
 //        }
 //        if (!isSuccessful) return null
@@ -62,7 +62,7 @@ class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient)
 //    }
 }
 
-private fun Json.toRecipe() = Recipe(
+private fun Json.toRecipe(baseIngredient: String) = Recipe(
     id = this["id"].int,
     name = this["name"].string,
     description = this["description"].string,
@@ -71,7 +71,8 @@ private fun Json.toRecipe() = Recipe(
     videoUrl = this["original_video_url"].stringOrNull,
     thumbnailUrl = this["thumbnail_url"].string,
     instructions = this["instructions"].toInstructions(),
-    ingredients = this["sections"].toIngredients()
+    ingredients = this["sections"].toIngredients(),
+    baseIngredient = baseIngredient
 )
 
 private fun Json.toInstructions() = this.array.map {

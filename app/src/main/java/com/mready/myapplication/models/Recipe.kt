@@ -11,6 +11,7 @@ data class RecipeInstruction(
 )
 
 data class Recipe(
+    val baseIngredient: String,
     val id: Int,
     val name: String,
     val ingredients: List<RecipeIngredient>,

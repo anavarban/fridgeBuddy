@@ -212,9 +212,10 @@ fun RecommendedRecipes(
                     .width(240.dp)
                     .height(180.dp),
                 recipe = it,
-                baseIngredient = if (ingredientsToExpire.isNotEmpty()) ingredientsToExpire[recipes.indexOf(
-                    it
-                )] else "",
+                baseIngredient = it.baseIngredient,
+//                if (ingredientsToExpire.isNotEmpty())
+//                    ingredientsToExpire.distinct()[recipes.indexOf(it)]
+//                                else "",
                 onClick = onRecipeClick
             )
         }
