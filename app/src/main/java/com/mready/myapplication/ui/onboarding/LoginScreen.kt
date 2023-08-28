@@ -323,6 +323,8 @@ fun LoginScreen(
                 }
             },
         )
+        val resetSuccess = stringResource(id = R.string.onboarding_reset_pass_success)
+        val resetFailure = stringResource(id = R.string.onboarding_reset_pass_failure)
 
         Text(
             modifier = Modifier
@@ -331,7 +333,16 @@ fun LoginScreen(
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
-                    onClick = { /*TODO*/ }
+                    onClick = {
+                        validate(email, LoginFields.EMAIL)
+                        if (!emailError) {
+                            loginViewModel.resetPassword(email, onSuccess = {
+                                Toast.makeText(context, resetSuccess, Toast.LENGTH_SHORT).show()
+                            }, onFailure = {
+                                Toast.makeText(context, resetFailure, Toast.LENGTH_SHORT).show()
+                            })
+                        }
+                    }
                 ),
             text = stringResource(id = R.string.onboarding_forgot_pass),
             textAlign = TextAlign.Right,

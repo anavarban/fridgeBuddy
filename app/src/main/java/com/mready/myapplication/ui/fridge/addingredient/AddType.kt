@@ -141,7 +141,7 @@ fun AddType(
                 expanded = expandedMenu,
                 onDismissRequest = { expandedMenu = false }
             ) {
-                ingredientOptions.forEach {
+                ingredientOptions.sorted().forEach {
                     DropdownMenuItem(
                         text = {
                             Text(

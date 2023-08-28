@@ -36,6 +36,12 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
         }
     }
 
+    fun resetPassword(email: String, onSuccess: () -> Unit, onFailure: () -> Unit) {
+        viewModelScope.launch {
+            authRepository.resetPassword(email, onSuccess = onSuccess, onFailure = onFailure)
+        }
+    }
+
 }
 
 sealed class LoginUiState {

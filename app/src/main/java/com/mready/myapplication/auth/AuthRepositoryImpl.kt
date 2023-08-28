@@ -68,6 +68,16 @@ class AuthRepositoryImpl @Inject constructor(
         firebaseAuth.signOut()
     }
 
+    override suspend fun resetPassword(email: String, onSuccess: () -> Unit, onFailure: () -> Unit) {
+         firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener {
+             if (it.isSuccessful) {
+                 onSuccess()
+             } else {
+                 onFailure()
+             }
+         }
+    }
+
     override suspend fun googleSignIn(credential: AuthCredential): Resource<FirebaseUser> {
         return try {
             val result = firebaseAuth.signInWithCredential(credential).await()

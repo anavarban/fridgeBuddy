@@ -90,7 +90,6 @@ fun RecipeItem(
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     color = MainText,
-                    minLines = 3,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis
                 )

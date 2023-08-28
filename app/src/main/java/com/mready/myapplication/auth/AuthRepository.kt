@@ -10,6 +10,8 @@ interface AuthRepository {
     suspend fun signUp(name: String, email: String, password: String): Resource<FirebaseUser>
     suspend fun logout()
 
+    suspend fun resetPassword(email: String, onSuccess: () -> Unit, onFailure: () -> Unit)
+
     suspend fun googleSignIn(credential: AuthCredential): Resource<FirebaseUser>
     //suspend fun googleSignUp(): Resource<FirebaseUser>
 }
