@@ -95,7 +95,17 @@ fun YourFridgeScreen(
 
     when (fridgeState.value) {
         FridgeIngredientsUiState.Error -> {
-            //todo
+            Text(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                text = stringResource(id = R.string.generic_error),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp,
+                fontFamily = Poppins,
+                fontWeight = FontWeight.SemiBold,
+                color = MainText
+            )
         }
 
         FridgeIngredientsUiState.Loading -> {
@@ -178,14 +188,6 @@ fun YourFridgeScreen(
                             )
                         }
 
-                        val date = Calendar.getInstance()
-                        val formattedDate = com.mready.myapplication.models.Date(
-                            year = date.get(Calendar.YEAR),
-                            month = date.get(Calendar.MONTH) + 1,
-                            date = date.get(Calendar.DAY_OF_MONTH)
-                        )
-
-                        //todo does this make sense??????????
                         val displaySoonToExpire = ingredients
                             .sortedWith { o1, o2 ->
                                 if (o1.expireDate.year == o2.expireDate.year) {
@@ -198,12 +200,6 @@ fun YourFridgeScreen(
                                     o1.expireDate.year - o2.expireDate.year
                                 }
                             }.getFirstThreeDistinct()
-//                            .takeWhile {
-//                                it.expireDate.year == formattedDate.year &&
-//                                        (it.expireDate.month == formattedDate.month
-//                                                || (it.expireDate.month == formattedDate.month + 1 && it.expireDate.date < formattedDate.date))
-//                            }
-//                        .take(3)
 
                         LazyRow(
                             modifier = Modifier
@@ -298,7 +294,6 @@ fun YourFridgeScreen(
                         }
                     )
                 }
-
             }
         }
     }

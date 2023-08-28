@@ -63,33 +63,6 @@ sealed class BackPress {
     object InitialTouch : BackPress()
 }
 
-@Composable
-
-fun DoubleBackPressToExit() {
-    var backPressState by remember { mutableStateOf<BackPress>(BackPress.Idle) }
-    val context = LocalContext.current
-
-    LaunchedEffect(key1 = backPressState) {
-        if (backPressState == BackPress.InitialTouch) {
-            delay(2000)
-            backPressState = BackPress.Idle
-        }
-    }
-
-    BackHandler(backPressState == BackPress.Idle) {
-        when (backPressState) {
-            BackPress.Idle -> {
-                backPressState = BackPress.InitialTouch
-                Toast.makeText(context, "Press back again to exit", Toast.LENGTH_SHORT).show()
-            }
-
-            BackPress.InitialTouch -> {
-                exitProcess(0)
-            }
-        }
-    }
-}
-
 val ingredientToUrl = mapOf(
     "Onion" to "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8b25pb258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
     "Garlic" to "https://images.unsplash.com/photo-1625229466998-42ee9c597290?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Z2FybGljfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",

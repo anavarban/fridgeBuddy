@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">FridgeBuddy</string>
 
+    // Onboarding
     <string name="onboarding_button_let_s_go">Let\'s go</string>
     <string name="onboarding_start_title_message">Hello, Buddy!</string>
     <string name="onboarding_start_intro_message">Say hello to your FridgeBuddy and cook delicious meals together</string>
@@ -20,58 +21,67 @@
     <string name="onboarding_email_error">Enter a valid email address!</string>
     <string name="onboarding_name_error">Please enter a valid name!</string>
     <string name="onboarding_pass_error">Password is invalid!</string>
+    <string name="onboarding_logout">Logout</string>
 
-
+    //Dashboard
     <string name="dashboard_hello_msg">Hi, %1s!</string>
     <string name="dashboard_title_prompt">What do you feel like cooking today?</string>
     <string name="dashboard_previous_recipes">Recommended recipes</string>
     <string name="dashboard_your_fridge">Your fridge</string>
     <string name="dashboard_popular_recipes">Popular recipes</string>
+    <string name="dashboard_rec_recipes_subtitle">Based on the ingredients that will expire first</string>
+    <string name="dashboard_no_ingredients">Go to your fridge to add ingredients!</string>
 
+    //Recipe
     <string name="recipe_item_time_format">%1s minutes</string>
+    <string name="recipe_item_yields_format">"%1s "</string>
+    <string name="recipe_instructions">Instructions</string>
 
+    //Ingredients
     <string name="ingredient_item_best_before">Best before: </string>
     <string name="ingredient_item_exp_date">%1s.%2s.%3d</string>
 
+    //Fridge
     <string name="fridge_add">Add</string>
     <string name="fridge_title">Your fridge</string>
-    <string name="fridge_soon_to_expire">Soon to expire</string>
+    <string name="fridge_soon_to_expire">First to expire</string>
     <string name="fridge_all_ingredients">All ingredients</string>
-
-    <string name="generic_or">or</string>
-    <string name="generic_see_all">See all</string>
-    <string name="generic_see_more">See more</string>
-    <string name="generic_ok">Ok</string>
-    <string name="generic_next">Next</string>
-    <string name="generic_done">Done</string>
-
-
-    <string name="generic_error">An error occurred!</string>
-    <string name="onboarding_logout">Logout</string>
-    <string name="dashboard_rec_recipes_subtitle">Based on the ingredients soon to expire</string>
     <string name="fridge_add_amount">Add %1s to your fridge</string>
     <string name="fridge_add_amount_unit">unit</string>
     <string name="fridge_add_ingredient">Add ingredient to your fridge</string>
     <string name="fridge_pick_ingredient">Pick ingredient</string>
     <string name="fridge_add_amount_error">Add a valid amount!</string>
     <string name="fridge_add_amount_unit_error">Pick unit!</string>
+    <string name="fridge_empty">No ingredients added yet</string>
+
+    //PopUps
     <string name="cancel_adding_ingredient">Are you sure you want to cancel adding ingredient?</string>
-    <string name="generic_exit">Exit</string>
+    <string name="delete_ingredient">Are you sure you want to delete this ingredient?</string>
+
+    //Details
     <string name="details_expires_on">Expires on: %1s.%2s.%3d</string>
     <string name="details_quantity">Quantity: %1d %2s</string>
     <string name="details_edit">Edit</string>
     <string name="details_edit_title">Edit details for %1s</string>
-    <string name="generic_save">Save</string>
-    <string name="recipe_item_yields_format">"%1s "</string>
-    <string name="dashboard_no_ingredients">Go to your fridge to add ingredients!</string>
-    <string name="fridge_empty">No ingredients added yet</string>
-    <string name="delete_ingredient">Are you sure you want to delete this ingredient?</string>
-    <string name="generic_delete">Delete</string>
-    <string name="recipe_instructions">Instructions</string>
     <string name="details_go_to_video">Go to video recipe</string>
     <string name="details_recommended_recipes">Recipes with %1s</string>
+    <string name="details_expired">This ingredient has expired!</string>
+
+    //Profile
     <string name="profile_title">Profile</string>
     <string name="profile_name">Name</string>
     <string name="profile_email">Email</string>
-    <string name="details_expired">This ingredient has expired!</string>
+
+    //Generic
+    <string name="generic_or">or</string>
+    <string name="generic_see_all">See all</string>
+    <string name="generic_see_more">See more</string>
+    <string name="generic_ok">Ok</string>
+    <string name="generic_next">Next</string>
+    <string name="generic_done">Done</string>
+    <string name="generic_error">An error occurred!</string>
+    <string name="generic_exit">Exit</string>
+    <string name="generic_save">Save</string>
+    <string name="generic_delete">Delete</string>
+
 </resources>

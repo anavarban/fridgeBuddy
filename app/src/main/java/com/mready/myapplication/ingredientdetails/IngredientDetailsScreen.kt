@@ -296,7 +296,19 @@ fun IngredientDetailsScreen(
                             }
                         }
 
-                        IngredientRecipesState.Error -> TODO()
+                        IngredientRecipesState.Error -> {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp, start = 20.dp),
+                                text = stringResource(id = R.string.generic_error),
+                                textAlign = TextAlign.Left,
+                                fontSize = 24.sp,
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MainText
+                            )
+                        }
                     }
 
                     FloatingActionButton(
@@ -311,7 +323,7 @@ fun IngredientDetailsScreen(
                     ) {
                         Text(
                             text = stringResource(id = R.string.details_edit),
-                            fontSize = 18.sp,
+                            fontSize = 20.sp,
                             fontFamily = Poppins,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -378,7 +390,17 @@ fun IngredientDetailsScreen(
         }
 
         IngredientDetailsUiState.Error -> {
-            //todo
+            Text(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                text = stringResource(id = R.string.generic_error),
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp,
+                fontFamily = Poppins,
+                fontWeight = FontWeight.SemiBold,
+                color = MainText
+            )
         }
     }
 }
@@ -601,28 +623,6 @@ fun EditBottomSheet(
                 title = {},
                 headline = {},
                 showModeToggle = false,
-                //todo do smth!!!!
-                dateFormatter = object : DatePickerFormatter {
-                    override fun formatDate(
-                        dateMillis: Long?,
-                        locale: Locale,
-                        forContentDescription: Boolean
-                    ): String? {
-                        val date = Calendar.getInstance().apply {
-                            timeInMillis = dateMillis ?: 0
-                        }
-                        return "${date.get(Calendar.DAY_OF_MONTH)}/${date.get(Calendar.MONTH) + 1}/${
-                            date.get(
-                                Calendar.YEAR
-                            )
-                        }"
-                    }
-
-                    override fun formatMonthYear(monthMillis: Long?, locale: Locale): String? {
-                        TODO("Not yet implemented")
-                    }
-
-                },
                 colors = DatePickerDefaults.colors(
                     containerColor = Background,
                     titleContentColor = Background,
@@ -690,7 +690,7 @@ fun EditBottomSheet(
             ) {
                 Text(
                     text = stringResource(id = R.string.generic_save),
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold
                 )

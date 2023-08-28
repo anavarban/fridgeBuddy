@@ -80,11 +80,6 @@ class ResetNotificationWorker(
             )
 
             val displayIngredients = ingredients
-//                .filter {
-//                    it.expireDate.year == formattedDate.year &&
-//                            (it.expireDate.month == formattedDate.month
-//                                    || (it.expireDate.month == formattedDate.month + 1 && it.expireDate.date < formattedDate.date))
-//                }
                 .sortedWith { o1, o2 ->
                     if (o1.expireDate.year == o2.expireDate.year) {
                         if (o1.expireDate.month == o2.expireDate.month) {
@@ -96,11 +91,6 @@ class ResetNotificationWorker(
                         o1.expireDate.year - o2.expireDate.year
                     }
                 }.getFirstThreeDistinct()
-//                .take(3)
-//            }.takeWhile { it.expireDate.year == formattedDate.year &&
-//                    (it.expireDate.month == formattedDate.month
-//                            || (it.expireDate.month == formattedDate.month + 1 && it.expireDate.date < formattedDate.date))
-//            }
 
             if (displayIngredients.isNotEmpty()) {
 

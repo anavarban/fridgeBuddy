@@ -46,7 +46,7 @@ class DashboardViewModel @Inject constructor(
             widgets.add(fridgeWidgetItem)
 
             val firstExpired = fridgeWidgetItem.displayIngredients.map { it.name }
-            val recipes = recipeService.getRecipesByFirstExpired(firstExpired)
+            val recipes = recipeService.getRecipesByFirstExpired(firstExpired.distinct())
             widgets.add(RecommendedWidgetItemViewModel(recipes ?: emptyList(), firstExpired))
 
             widgets.add(
