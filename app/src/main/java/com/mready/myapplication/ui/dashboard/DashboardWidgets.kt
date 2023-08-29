@@ -18,18 +18,51 @@ data class RecommendedWidgetItemViewModel(
 data class FridgeWidgetItemViewModel(private val ingredients: List<Ingredient>) :
     WidgetItemViewModel() {
 
-    val displayIngredients = ingredients
+//        ingredients
+//        .sortedWith { o1, o2 ->
+//        if (o1.expireDate.year == o2.expireDate.year) {
+//            if (o1.expireDate.month == o2.expireDate.month) {
+//                o1.expireDate.date - o2.expireDate.date
+//            } else {
+//                o1.expireDate.month - o2.expireDate.month
+//            }
+//        } else {
+//            o1.expireDate.year - o2.expireDate.year
+//        }
+//    }.getFirstThreeDistinct()
+
+    private val soonToExpire = ingredients
         .sortedWith { o1, o2 ->
-        if (o1.expireDate.year == o2.expireDate.year) {
-            if (o1.expireDate.month == o2.expireDate.month) {
-                o1.expireDate.date - o2.expireDate.date
+            if (o1.expireDate.year == o2.expireDate.year) {
+                if (o1.expireDate.month == o2.expireDate.month) {
+                    o1.expireDate.date - o2.expireDate.date
+                } else {
+                    o1.expireDate.month - o2.expireDate.month
+                }
             } else {
-                o1.expireDate.month - o2.expireDate.month
+                o1.expireDate.year - o2.expireDate.year
             }
+        }.getFirstThreeDistinct()
+
+    val displayIngredients =
+        if (soonToExpire.isEmpty()) {
+            ingredients.sortedBy { it.name }.take(3)
+        } else if (soonToExpire.size < 3) {
+            ingredients
+                .sortedWith { o1, o2 ->
+                    if (o1.expireDate.year == o2.expireDate.year) {
+                        if (o1.expireDate.month == o2.expireDate.month) {
+                            o1.expireDate.date - o2.expireDate.date
+                        } else {
+                            o1.expireDate.month - o2.expireDate.month
+                        }
+                    } else {
+                        o1.expireDate.year - o2.expireDate.year
+                    }
+                }
         } else {
-            o1.expireDate.year - o2.expireDate.year
+            soonToExpire
         }
-    }.getFirstThreeDistinct()
 
 }
 

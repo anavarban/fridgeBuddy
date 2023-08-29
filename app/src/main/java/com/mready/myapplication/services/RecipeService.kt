@@ -12,7 +12,7 @@ import javax.inject.Singleton
 class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
 
     suspend fun getRecipe(ingredients: String, offset: Int): Recipe? {
-//        return recipeAPI.getRecipe(ingredients, offset)
+        return recipeAPI.getRecipe(ingredients, offset)
         kotlinx.coroutines.delay(1000)
         return Recipe(
             id = 5929,
@@ -91,7 +91,7 @@ class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
     }
 
     suspend fun getRecipesByFirstExpired(firstExpired: List<String>): List<Recipe>? {
-//        return recipeAPI.getRecipesByFirstExpired(firstExpired)
+        return recipeAPI.getRecipesByFirstExpired(firstExpired)
         kotlinx.coroutines.delay(1000)
         val recipe = Recipe(
             id = 5929,
@@ -171,7 +171,7 @@ class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
     }
 
     suspend fun getRecipesByIngredient(ingredient: String): List<Recipe>? {
-//        return recipeAPI.getRecipesByIngredient(ingredient)
+        return recipeAPI.getRecipesByIngredient(ingredient)
         kotlinx.coroutines.delay(1000)
         val recipe = Recipe(
             id = 5929,

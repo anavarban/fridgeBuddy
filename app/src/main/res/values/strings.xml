@@ -44,7 +44,7 @@
     //Fridge
     <string name="fridge_add">Add</string>
     <string name="fridge_title">Your fridge</string>
-    <string name="fridge_soon_to_expire">First to expire</string>
+    <string name="fridge_soon_to_expire">Soon to expire</string>
     <string name="fridge_all_ingredients">All ingredients</string>
     <string name="fridge_add_amount">Add %1s to your fridge</string>
     <string name="fridge_add_amount_unit">unit</string>
@@ -84,7 +84,8 @@
     <string name="generic_save">Save</string>
     <string name="generic_delete">Delete</string>
     <string name="onboarding_reset_pass_success">Email sent, check inbox!</string>
-    <string name="onboarding_reset_pass_failure">An error ocurred, try again!</string>
+    <string name="onboarding_reset_pass_failure">An error occurred, try again!</string>
     <string name="details_expires_soon">This ingredient will expire soon!</string>
+    <string name="fridge_no_ingredients_expiring">Your ingredients are still good!</string>
 
 </resources>

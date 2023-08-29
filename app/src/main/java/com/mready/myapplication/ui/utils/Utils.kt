@@ -228,5 +228,5 @@ fun Date.expiresRatherSoon(): Boolean {
 }
 
 fun List<Ingredient>.getFirstThreeDistinct(): List<Ingredient> {
-    return this.groupBy { it.expireDate }.values.take(3).flatten()
+    return this.filter { it.expireDate.isExpired() || it.expireDate.expiresRatherSoon() }.groupBy { it.expireDate }.values.take(3).flatten()
 }

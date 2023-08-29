@@ -57,6 +57,7 @@ import com.mready.myapplication.R
 import com.mready.myapplication.models.Ingredient
 import com.mready.myapplication.ui.dashboard.IngredientItem
 import com.mready.myapplication.ui.theme.Background
+import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
@@ -201,23 +202,38 @@ fun YourFridgeScreen(
                                 }
                             }.getFirstThreeDistinct()
 
-                        LazyRow(
-                            modifier = Modifier
-                                .padding(top = 20.dp)
-                                .align(Alignment.Start),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
-                        ) {
-                            items(displaySoonToExpire) {
-                                IngredientItem(
-                                    modifier = Modifier
-                                        .width(120.dp)
-                                        .clickable { onCardClick(it.id) },
-                                    showDeleteButton = false,
-                                    ingredient = it
-                                )
+                        if (displaySoonToExpire.isNotEmpty()) {
+                            LazyRow(
+                                modifier = Modifier
+                                    .padding(top = 20.dp)
+                                    .align(Alignment.Start),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
+                            ) {
+                                items(displaySoonToExpire) {
+                                    IngredientItem(
+                                        modifier = Modifier
+                                            .width(120.dp)
+                                            .clickable { onCardClick(it.id) },
+                                        showDeleteButton = false,
+                                        ingredient = it
+                                    )
+                                }
                             }
+                        } else {
+                            Text(text = stringResource(id = R.string.fridge_no_ingredients_expiring),
+                                modifier = Modifier
+                                    .padding(top = 20.dp, start = 32.dp)
+                                    .align(Alignment.Start),
+                                textAlign = TextAlign.Left,
+                                fontSize = 20.sp,
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.SemiBold,
+                                color = LightAccent
+                            )
                         }
+
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
