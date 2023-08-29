@@ -1,6 +1,7 @@
 package com.mready.myapplication.ui.dashboard
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -151,12 +152,15 @@ fun IngredientItem(
                         .align(Alignment.TopEnd)
                         .size(40.dp),
                     onClick = onDeleteClick,
-                    shape = RoundedCornerShape(8.dp),
+                    shape = CircleShape,
                     containerColor = Background,
                     contentColor = Error
 
                 ) {
-                    Icon(imageVector = Icons.Outlined.Delete, contentDescription = null )
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = null
+                    )
                 }
             }
 

@@ -188,7 +188,7 @@ fun IngredientDetailsScreen(
                             Icon(
                                 modifier = Modifier
                                     .size(40.dp),
-                                painter = painterResource(id = R.drawable.ic_warning),
+                                painter = painterResource(id = R.drawable.ic_warning_details),
                                 contentDescription = null,
                                 tint = Error
                             )
@@ -213,7 +213,7 @@ fun IngredientDetailsScreen(
                             Icon(
                                 modifier = Modifier
                                     .size(40.dp),
-                                painter = painterResource(id = R.drawable.ic_warning),
+                                painter = painterResource(id = R.drawable.ic_warning_details),
                                 contentDescription = null,
                                 tint = Warning
                             )
