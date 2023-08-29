@@ -112,7 +112,7 @@ fun Navigation(
                 onNetworkAvailable = {
                     ProfileScreen(
                         onLogoutClick = { navController.navigate(Screens.LoginScreen.route) },
-                        onBackClick = { navController.navigate(Screens.DashboardScreen.route) },
+                        onBackClick = { navController.popBackStack() },
                     )
                 }
             ) {
@@ -142,7 +142,7 @@ fun Navigation(
                 onNetworkAvailable = {
                     YourFridgeScreen(
                         onAddClick = { navController.navigate(Screens.AddIngredientScreen.route) },
-                        onBackClick = { navController.navigate(Screens.DashboardScreen.route) },
+                        onBackClick = { navController.popBackStack() },
                         onCardClick = { navController.navigate(Screens.DetailsScreen.route + "/${it}") },
                     )
                 }
@@ -156,7 +156,7 @@ fun Navigation(
             NetworkStatus(
                 onNetworkAvailable = {
                     AddIngredientScreen(
-                        onDone = { navController.navigate(Screens.FridgeScreen.route) }
+                        onDone = { navController.popBackStack() }
                     )
                 }
             ) {

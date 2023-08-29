@@ -59,7 +59,7 @@ data class FridgeWidgetItemViewModel(private val ingredients: List<Ingredient>) 
                     } else {
                         o1.expireDate.year - o2.expireDate.year
                     }
-                }
+                }.take(3)
         } else {
             soonToExpire
         }
