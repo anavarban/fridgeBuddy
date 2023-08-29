@@ -85,5 +85,6 @@
     <string name="generic_delete">Delete</string>
     <string name="onboarding_reset_pass_success">Email sent, check inbox!</string>
     <string name="onboarding_reset_pass_failure">An error ocurred, try again!</string>
+    <string name="details_expires_soon">This ingredient will expire soon!</string>
 
 </resources>

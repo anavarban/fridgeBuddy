@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
@@ -21,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -39,6 +41,8 @@ import com.mready.myapplication.ui.theme.Error
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
+import com.mready.myapplication.ui.theme.Warning
+import com.mready.myapplication.ui.utils.expiresRatherSoon
 import com.mready.myapplication.ui.utils.isExpired
 
 @Composable
@@ -49,6 +53,7 @@ fun IngredientItem(
     onDeleteClick: () -> Unit = {}
 ) {
     val isExpired = ingredient.expireDate.isExpired()
+    val isExpiring = ingredient.expireDate.expiresRatherSoon()
 
     Card(
         modifier = modifier
@@ -147,8 +152,8 @@ fun IngredientItem(
                         .size(40.dp),
                     onClick = onDeleteClick,
                     shape = RoundedCornerShape(8.dp),
-                    containerColor = MainAccent,
-                    contentColor = Color.White
+                    containerColor = Background,
+                    contentColor = Error
 
                 ) {
                     Icon(imageVector = Icons.Outlined.Delete, contentDescription = null )
@@ -160,12 +165,29 @@ fun IngredientItem(
                     modifier = Modifier
                         .padding(top = 12.dp, start = 8.dp)
                         .align(Alignment.TopStart)
-                        .size(40.dp),
-                    imageVector = Icons.Outlined.Warning,
+                        .size(40.dp)
+                        .background(
+                            color = Background,
+                            shape = CircleShape
+                        ),
+                    painter = painterResource(id = R.drawable.ic_warning),
                     contentDescription = null,
                     tint = Error
                 )
-
+            } else if (isExpiring) {
+                Icon(
+                    modifier = Modifier
+                        .padding(top = 12.dp, start = 8.dp)
+                        .align(Alignment.TopStart)
+                        .size(40.dp)
+                        .background(
+                            color = Background,
+                            shape = CircleShape
+                        ),
+                    painter = painterResource(id = R.drawable.ic_warning),
+                    contentDescription = null,
+                    tint = Warning
+                )
             }
 
 

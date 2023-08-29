@@ -45,7 +45,10 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
+import kotlin.math.abs
 import kotlin.system.exitProcess
 
 const val clientId = "835229504494-228oa534qthjun48rr48obm7ns2nitam.apps.googleusercontent.com"
@@ -206,6 +209,22 @@ fun Date.isExpired(): Boolean {
     expireDate.set(this.year, this.month - 1, this.date)
 
     return today.after(expireDate)
+}
+
+fun Date.expiresRatherSoon(): Boolean {
+    if (this.isExpired()) {
+        return false
+    }
+
+    val today = Calendar.getInstance()
+    val todayAsDate = Date(today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1, today.get(Calendar.DAY_OF_MONTH))
+
+    val localDate1 = LocalDate.of(this.year, this.month, this.date)
+    val localDate2 = LocalDate.of(todayAsDate.year, todayAsDate.month, todayAsDate.date)
+
+    val daysApart = ChronoUnit.DAYS.between(localDate1, localDate2)
+
+    return abs(daysApart) <= 2
 }
 
 fun List<Ingredient>.getFirstThreeDistinct(): List<Ingredient> {

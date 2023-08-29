@@ -69,6 +69,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -91,7 +92,9 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.theme.Warning
 import com.mready.myapplication.ui.utils.LoadingAnimation
+import com.mready.myapplication.ui.utils.expiresRatherSoon
 import com.mready.myapplication.ui.utils.isExpired
 import java.util.Calendar
 import java.util.Locale
@@ -185,18 +188,43 @@ fun IngredientDetailsScreen(
                             Icon(
                                 modifier = Modifier
                                     .size(40.dp),
-                                imageVector = Icons.Outlined.Warning,
+                                painter = painterResource(id = R.drawable.ic_warning),
                                 contentDescription = null,
                                 tint = Error
                             )
 
                             Text(
-                                modifier = Modifier.padding(top = 16.dp),
+                                modifier = Modifier.padding(top = 4.dp),
                                 text = stringResource(id = R.string.details_expired),
                                 fontSize = 20.sp,
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.SemiBold,
                                 color = Error,
+                            )
+                        }
+                    } else if (ingredient.expireDate.expiresRatherSoon()) {
+                        Row (
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp, start = 20.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(40.dp),
+                                painter = painterResource(id = R.drawable.ic_warning),
+                                contentDescription = null,
+                                tint = Warning
+                            )
+
+                            Text(
+                                modifier = Modifier.padding(top = 4.dp),
+                                text = stringResource(id = R.string.details_expires_soon),
+                                fontSize = 20.sp,
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Warning,
                             )
                         }
                     }
@@ -355,7 +383,7 @@ fun IngredientDetailsScreen(
                     onClick = { showPopUp = true },
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = Background,
-                        contentColor = MainAccent
+                        contentColor = Error
                     )
                 ) {
                     Icon(

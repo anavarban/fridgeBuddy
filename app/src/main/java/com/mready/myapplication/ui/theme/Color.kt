@@ -20,4 +20,5 @@ val Error = Color(0xFFC8767F)
 val Surface = Color(0xFFECF5EB)
 val AlternateBackground = Color(0xFFF4F9F4)
 val DarkAccent = Color(0xFF2a7a38)
+val Warning = Color(0xFFf2bd50)
 

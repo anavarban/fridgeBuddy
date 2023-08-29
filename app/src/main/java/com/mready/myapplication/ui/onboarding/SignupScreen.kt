@@ -471,7 +471,7 @@ fun SignUpScreen(
             ) {
             Icon(
                 modifier = Modifier
-                    .padding(end = 8.dp)
+                    .padding(end = 0.dp)
                     .size(32.dp)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
@@ -492,21 +492,21 @@ fun SignUpScreen(
                 contentDescription = null,
                 tint = MainAccent
             )
-            Icon(
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .size(32.dp),
-                painter = painterResource(id = R.drawable.ic_facebook_f),
-                contentDescription = null,
-                tint = MainAccent
-            )
-            Icon(
-                modifier = Modifier
-                    .size(32.dp),
-                painter = painterResource(id = R.drawable.ic_instagram),
-                contentDescription = null,
-                tint = MainAccent
-            )
+//            Icon(
+//                modifier = Modifier
+//                    .padding(end = 8.dp)
+//                    .size(32.dp),
+//                painter = painterResource(id = R.drawable.ic_facebook_f),
+//                contentDescription = null,
+//                tint = MainAccent
+//            )
+//            Icon(
+//                modifier = Modifier
+//                    .size(32.dp),
+//                painter = painterResource(id = R.drawable.ic_instagram),
+//                contentDescription = null,
+//                tint = MainAccent
+//            )
         }
 
         Row(
