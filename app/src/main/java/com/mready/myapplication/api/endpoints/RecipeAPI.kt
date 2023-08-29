@@ -6,6 +6,7 @@ import com.mready.myapplication.api.FridgeBuddyApiClient
 import com.mready.myapplication.models.Recipe
 import com.mready.myapplication.models.RecipeIngredient
 import com.mready.myapplication.models.RecipeInstruction
+import com.mready.myapplication.models.RecipeNutrition
 import net.mready.apiclient.get
 import net.mready.json.Json
 
@@ -32,7 +33,7 @@ class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient)
         val recipe = apiClient.get(
             endpoint = "/recipes/list",
             query = mapOf("from" to offset, "size" to 1,"q" to ingredients),
-            headers = mapOf("X-RapidAPI-Key" to "21f5dc8f2emsha07d1de222eee84p1575e0jsn9fbedb70ae24", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
+            headers = mapOf("X-RapidAPI-Key" to "556508c00amshd984811ee9a5eefp165d11jsn62f1e26d0872", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
             errorHandler = {_ ->  isSuccessful = false}
         ) { json ->
             json["results"].array[0].toRecipe(ingredients)
@@ -50,7 +51,7 @@ class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient)
         apiClient.get(
             endpoint = "/recipes/list",
             query = mapOf("from" to 0, "size" to 3,"q" to ingredient),
-            headers = mapOf("X-RapidAPI-Key" to "21f5dc8f2emsha07d1de222eee84p1575e0jsn9fbedb70ae24", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
+            headers = mapOf("X-RapidAPI-Key" to "556508c00amshd984811ee9a5eefp165d11jsn62f1e26d0872", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
             errorHandler = {_ -> isSuccessful = false}
         ) { json ->
             json["results"].array.forEach {
@@ -72,7 +73,8 @@ private fun Json.toRecipe(baseIngredient: String) = Recipe(
     thumbnailUrl = this["thumbnail_url"].string,
     instructions = this["instructions"].toInstructions(),
     ingredients = this["sections"].toIngredients(),
-    baseIngredient = baseIngredient
+    baseIngredient = baseIngredient,
+    nutrition = if (this["nutrition"].size == 0) null else this["nutrition"].toNutrition()
 )
 
 private fun Json.toInstructions() = this.array.map {
@@ -93,4 +95,13 @@ private fun Json.toComponents() = this["components"].array.map {
 private fun Json.toIngredient() = RecipeIngredient(
     ingredient = this["raw_text"].string,
     position = this["position"].int
+)
+
+private fun Json.toNutrition() = RecipeNutrition(
+    calories = this["calories"].int,
+    carbohydrates = this["carbohydrates"].int,
+    fat = this["fat"].int,
+    fiber = this["fiber"].int,
+    protein = this["protein"].int,
+    sugar = this["sugar"].int,
 )

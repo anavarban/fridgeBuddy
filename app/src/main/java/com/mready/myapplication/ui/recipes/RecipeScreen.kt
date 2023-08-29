@@ -2,10 +2,13 @@ package com.mready.myapplication.ui.recipes
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -62,6 +65,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.mready.myapplication.R
+import com.mready.myapplication.models.Recipe
 import com.mready.myapplication.models.RecipeIngredient
 import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.MainAccent
@@ -81,9 +85,17 @@ fun RecipeScreen(
 
     val uiState = recipeViewModel.uiState.collectAsState()
 
-    val sections = listOf("image", "title", "description","yields", "ingredients", "instructions", "video")
-
-    var toggleDescription by remember { mutableStateOf(false) }
+    val sections =
+        listOf(
+            "image",
+            "title",
+            "description",
+            "yields",
+            "ingredients",
+            "nutrition",
+            "instructions",
+            "video"
+        )
 
     LaunchedEffect(key1 = null) {
         recipeViewModel.loadRecipe(ingredients, offset)
@@ -189,7 +201,11 @@ fun RecipeScreen(
                             "yields" -> {
                                 if (recipe.yields.isNotEmpty() && recipe.yields != "null") {
                                     Row(
-                                        modifier = Modifier.padding(top = 12.dp, start = 20.dp, end = 20.dp)
+                                        modifier = Modifier.padding(
+                                            top = 12.dp,
+                                            start = 20.dp,
+                                            end = 20.dp
+                                        )
                                     ) {
                                         Icon(
                                             modifier = Modifier.size(32.dp),
@@ -212,7 +228,8 @@ fun RecipeScreen(
                             }
 
                             "ingredients" -> {
-                                val ingredients = recipe.ingredients.sortedBy { it.position }.filter { it.ingredient != "null" && it.ingredient != "n/a" }
+                                val ingredients = recipe.ingredients.sortedBy { it.position }
+                                    .filter { it.ingredient != "null" && it.ingredient != "n/a" }
                                 LazyHorizontalGrid(
                                     modifier = Modifier
                                         .padding(top = 12.dp)
@@ -225,6 +242,17 @@ fun RecipeScreen(
                                     items(ingredients) { ingredient ->
                                         RecipeIngredientElement(ingredient)
                                     }
+                                }
+                            }
+
+                            "nutrition" -> {
+                                if (recipe.nutrition != null) {
+                                    NutritionCard(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 12.dp),
+                                        recipe = recipe
+                                    )
                                 }
                             }
 
@@ -390,12 +418,11 @@ fun DescriptionCard(text: String) {
     Card(
         modifier = Modifier
             .padding(vertical = 4.dp, horizontal = 20.dp),
-//            .shadow(4.dp, RoundedCornerShape(12.dp)),
         colors = CardDefaults.cardColors(
             containerColor = Background,
             contentColor = MainText,
 
-            ),
+        ),
     ) {
         Row(
             modifier = Modifier.padding(all = 4.dp)
@@ -431,7 +458,6 @@ fun DescriptionCard(text: String) {
                     maxLines = if (expanded) Int.MAX_VALUE else 3,
                     overflow = TextOverflow.Ellipsis
                 )
-
             }
 
             Icon(
@@ -447,8 +473,191 @@ fun DescriptionCard(text: String) {
                 imageVector = if (expanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
                 contentDescription = if (expanded) "Show less" else "Show more"
             )
-
         }
-
     }
 }
+
+@Composable
+fun NutritionCard(
+    modifier: Modifier = Modifier,
+    recipe: Recipe
+) {
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+
+    Card(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(
+            containerColor = Background,
+            contentColor = MainText,
+
+            ),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 20.dp, end = 20.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = stringResource(id = R.string.recipe_nutrition),
+                    fontSize = 24.sp,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MainAccent
+                )
+
+                Row(
+                    modifier = Modifier
+                        .padding(2.dp)
+                        .clickable(
+                            interactionSource = MutableInteractionSource(),
+                            indication = null,
+                            onClick = {
+                                expanded = !expanded
+                            }
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(top = 2.dp, end = 4.dp),
+                        text = if (expanded) "Show less" else "Show more",
+                        fontSize = 16.sp,
+                        fontFamily = Poppins,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MainAccent
+                    )
+
+                    Icon(
+                        modifier = Modifier,
+                        imageVector = if (expanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
+                        contentDescription = null,
+                        tint = MainAccent
+                    )
+                }
+            }
+
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically(
+                    expandFrom = Alignment.Top,
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                ),
+                exit = shrinkVertically(
+                    shrinkTowards = Alignment.Top,
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
+            ) {
+                LazyHorizontalGrid(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .clickable(
+                            interactionSource = MutableInteractionSource(),
+                            indication = null,
+                            onClick = {
+                                expanded = !expanded
+                            }
+                        ),
+                    rows = GridCells.Fixed(3),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(top = 12.dp, bottom = 8.dp)
+                ) {
+                    item {
+                        NutritionGridItem(
+                            stringId = R.string.recipe_nutrition_calories,
+                            value = recipe.nutrition!!.calories,
+                            icon = R.drawable.ic_kcal
+                        )
+                    }
+
+                    item {
+                        NutritionGridItem(
+                            stringId = R.string.recipe_nutrition_sugar,
+                            value = recipe.nutrition!!.sugar,
+                            icon = R.drawable.ic_sugar
+                        )
+                    }
+
+                    item {
+                        NutritionGridItem(
+                            stringId = R.string.recipe_nutrition_carbs,
+                            value = recipe.nutrition!!.carbohydrates,
+                            icon = R.drawable.ic_carbs
+                        )
+                    }
+
+                    item {
+                        NutritionGridItem(
+                            stringId = R.string.recipe_nutrition_proteins,
+                            value = recipe.nutrition!!.protein,
+                            icon = R.drawable.ic_proteins
+                        )
+                    }
+
+                    item {
+                        NutritionGridItem(
+                            stringId = R.string.recipe_nutrition_fats,
+                            value = recipe.nutrition!!.fat,
+                            icon = R.drawable.ic_fats
+                        )
+                    }
+
+                    item {
+                        NutritionGridItem(
+                            stringId = R.string.recipe_nutrition_fiber,
+                            value = recipe.nutrition!!.fiber,
+                            icon = R.drawable.ic_fibers
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun NutritionGridItem(
+    stringId: Int,
+    value: Int,
+    icon: Int
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(id = icon),
+            contentDescription = null,
+            tint = MainAccent
+        )
+
+        Text(
+            modifier = Modifier.padding(start = 4.dp, top = 2.dp),
+            text = stringResource(
+                id = stringId,
+                value
+            ),
+            fontSize = 16.sp,
+            fontFamily = Poppins,
+            fontWeight = FontWeight.SemiBold,
+            color = MainText
+        )
+    }
+}
+

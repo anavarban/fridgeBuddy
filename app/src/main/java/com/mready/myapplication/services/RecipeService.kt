@@ -86,7 +86,8 @@ class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
             time = 20,
             yields = "Servings: 4",
             videoUrl = "https://s3.amazonaws.com/video-api-prod/assets/a0e1b07dc71c4ac6b378f24493ae2d85/FixedFBFinal.mp4",
-        baseIngredient = ingredients
+        baseIngredient = ingredients,
+            nutrition = null
             )
     }
 
@@ -165,7 +166,8 @@ class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
             time = 20,
             yields = "Servings: 4",
             videoUrl = "https://s3.amazonaws.com/video-api-prod/assets/a0e1b07dc71c4ac6b378f24493ae2d85/FixedFBFinal.mp4",
-        baseIngredient = firstExpired[0]
+        baseIngredient = firstExpired[0],
+            nutrition = null
             )
         return listOf(recipe, recipe, recipe)
     }
@@ -245,7 +247,8 @@ class RecipeService @Inject constructor(private val recipeAPI: RecipeAPI) {
             time = 20,
             yields = "Servings: 4",
             videoUrl = "https://s3.amazonaws.com/video-api-prod/assets/a0e1b07dc71c4ac6b378f24493ae2d85/FixedFBFinal.mp4",
-        baseIngredient = ingredient
+        baseIngredient = ingredient,
+            nutrition = null
             )
         return listOf(recipe, recipe, recipe)
     }

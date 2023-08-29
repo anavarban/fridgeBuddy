@@ -202,7 +202,7 @@ fun RecommendedRecipes(
         modifier = Modifier
             .padding(top = 20.dp)
             .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.height(20.dp))
@@ -213,9 +213,6 @@ fun RecommendedRecipes(
                     .height(180.dp),
                 recipe = it,
                 baseIngredient = it.baseIngredient,
-//                if (ingredientsToExpire.isNotEmpty())
-//                    ingredientsToExpire.distinct()[recipes.indexOf(it)]
-//                                else "",
                 onClick = onRecipeClick
             )
         }

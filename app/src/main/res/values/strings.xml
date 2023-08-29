@@ -87,5 +87,16 @@
     <string name="onboarding_reset_pass_failure">An error occurred, try again!</string>
     <string name="details_expires_soon">This ingredient will expire soon!</string>
     <string name="fridge_no_ingredients_expiring">Your ingredients are still good!</string>
+    <string name="onboarding_start_title_message_2">This could be you!</string>
+    <string name="onboarding_start_intro_message_2">Manage your ingredients and their expiration dates, make sure they stay fresh</string>
+    <string name="onboarding_start_title_message_3">Let nothing go to waste!</string>
+    <string name="onboarding_start_intro_message_3">Get personalized recipes with each ingredient from your fridge. Ready?</string>
+    <string name="recipe_nutrition">Nutrition</string>
+    <string name="recipe_nutrition_calories">Calories: %1d kcal</string>
+    <string name="recipe_nutrition_sugar">Sugar: 1%d g</string>
+    <string name="recipe_nutrition_carbs">Carbohydrates: %1d g</string>
+    <string name="recipe_nutrition_fats">Fat: %1d g</string>
+    <string name="recipe_nutrition_fiber">Fiber: %1d g</string>
+    <string name="recipe_nutrition_proteins">Protein: %1d g</string>
 
 </resources>

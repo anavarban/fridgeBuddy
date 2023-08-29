@@ -10,6 +10,15 @@ data class RecipeInstruction(
     val position: Int
 )
 
+data class RecipeNutrition(
+    val calories: Int,
+    val carbohydrates: Int,
+    val fat: Int,
+    val fiber: Int,
+    val protein: Int,
+    val sugar: Int,
+)
+
 data class Recipe(
     val baseIngredient: String,
     val id: Int,
@@ -21,4 +30,5 @@ data class Recipe(
     val description: String,
     val yields: String,
     val videoUrl: String?,
+    val nutrition: RecipeNutrition?
 )
