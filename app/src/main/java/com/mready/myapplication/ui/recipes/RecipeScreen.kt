@@ -92,9 +92,9 @@ fun RecipeScreen(
             "image",
             "title",
             "description",
+            "nutrition",
             "yields",
             "ingredients",
-            "nutrition",
             "instructions",
             "video"
         )
@@ -197,10 +197,19 @@ fun RecipeScreen(
                             "description" -> {
                                 if (recipe.description.isNotEmpty()) {
                                     DescriptionCard(text = recipe.description)
+
                                 }
                             }
 
                             "yields" -> {
+                                Divider(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 12.dp, start = 20.dp, end = 20.dp),
+                                    color = com.mready.myapplication.ui.theme.Divider,
+                                    thickness = 1.dp
+                                )
+
                                 if (recipe.yields.isNotEmpty() && recipe.yields != "null") {
                                     Row(
                                         modifier = Modifier.padding(
@@ -245,6 +254,14 @@ fun RecipeScreen(
                                         RecipeIngredientElement(ingredient)
                                     }
                                 }
+
+                                Divider(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 12.dp, start = 20.dp, end = 20.dp),
+                                    color = com.mready.myapplication.ui.theme.Divider,
+                                    thickness = 1.dp
+                                )
                             }
 
                             "nutrition" -> {
@@ -254,14 +271,6 @@ fun RecipeScreen(
                                             .fillMaxWidth()
                                             .padding(top = 12.dp),
                                         recipe = recipe
-                                    )
-
-                                    Divider(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(top = 12.dp, start = 20.dp, end = 20.dp),
-                                        color = MainText.copy(alpha = .1f),
-                                        thickness = 2.dp
                                     )
                                 }
                             }
@@ -417,6 +426,8 @@ fun DescriptionCard(text: String) {
         mutableStateOf(false)
     }
 
+    var displayOverflowButton by remember { mutableStateOf(false) }
+
     val extraPadding by animateDpAsState(
         targetValue = if (expanded) 12.dp else 0.dp,
         animationSpec = spring(
@@ -435,7 +446,7 @@ fun DescriptionCard(text: String) {
         ),
     ) {
         Row(
-            modifier = Modifier.padding(all = 4.dp)
+//            modifier = Modifier.padding(all = 4.dp)
         ) {
             Column(
                 modifier = Modifier
@@ -451,7 +462,8 @@ fun DescriptionCard(text: String) {
                             indication = null,
                             onClick = {
                                 expanded = !expanded
-                            }
+                            },
+                            enabled = displayOverflowButton
                         )
                         .animateContentSize(
                             animationSpec = spring(
@@ -466,23 +478,29 @@ fun DescriptionCard(text: String) {
                     fontWeight = FontWeight.SemiBold,
                     color = MainText,
                     maxLines = if (expanded) Int.MAX_VALUE else 3,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    onTextLayout = {
+                        displayOverflowButton = it.hasVisualOverflow || it.lineCount > 3
+                    }
                 )
             }
 
-            Icon(
-                modifier = Modifier
-                    .padding(top = 12.dp, end = 4.dp)
-                    .clickable(
-                        interactionSource = MutableInteractionSource(),
-                        indication = null,
-                        onClick = {
-                            expanded = !expanded
-                        }
-                    ),
-                imageVector = if (expanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
-                contentDescription = if (expanded) "Show less" else "Show more"
-            )
+            if (displayOverflowButton) {
+                Icon(
+                    modifier = Modifier
+                        .padding(top = 12.dp)
+                        .clickable(
+                            interactionSource = MutableInteractionSource(),
+                            indication = null,
+                            onClick = {
+                                expanded = !expanded
+                            }
+                        ),
+                    imageVector = if (expanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
+                    contentDescription = if (expanded) "Show less" else "Show more"
+                )
+            }
+
         }
     }
 }

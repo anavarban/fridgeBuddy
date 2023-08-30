@@ -21,4 +21,5 @@ val Surface = Color(0xFFECF5EB)
 val AlternateBackground = Color(0xFFF4F9F4)
 val DarkAccent = Color(0xFF2a7a38)
 val Warning = Color(0xFFf2bd50)
+val Divider = Color(0xFF283739).copy(alpha = .07f)
 

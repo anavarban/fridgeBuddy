@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -15,6 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.mready.myapplication.navigation.Navigation
@@ -47,12 +49,15 @@ class MainActivity : ComponentActivity() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val workRequest = PeriodicWorkRequestBuilder<ResetNotificationWorker>(
-            1, // repeat interval in days
-            TimeUnit.DAYS
-        ).setConstraints(constraints).build()
+        val workRequest =
+//            PeriodicWorkRequestBuilder<ResetNotificationWorker>(
+//            1, // repeat interval in days
+//            TimeUnit.DAYS
+//        ).setConstraints(constraints).build()
+            OneTimeWorkRequestBuilder<ResetNotificationWorker>().setConstraints(constraints).build()
 
         WorkManager.getInstance(context).enqueue(workRequest)
+        Log.d("MainActivity", "WorkManager enqueued")
 
         setContent {
             MyApplicationTheme {

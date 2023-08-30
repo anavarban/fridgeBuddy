@@ -92,7 +92,7 @@ fun StartScreen(
             modifier = Modifier
                 .fillMaxWidth(),
             state = pagerState,
-            userScrollEnabled = false
+            userScrollEnabled = true
         ) {
             when (it) {
                 0 -> {
