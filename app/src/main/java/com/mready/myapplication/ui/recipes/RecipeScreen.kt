@@ -38,6 +38,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -68,6 +69,7 @@ import com.mready.myapplication.R
 import com.mready.myapplication.models.Recipe
 import com.mready.myapplication.models.RecipeIngredient
 import com.mready.myapplication.ui.theme.Background
+import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
@@ -252,6 +254,14 @@ fun RecipeScreen(
                                             .fillMaxWidth()
                                             .padding(top = 12.dp),
                                         recipe = recipe
+                                    )
+
+                                    Divider(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 12.dp, start = 20.dp, end = 20.dp),
+                                        color = MainText.copy(alpha = .1f),
+                                        thickness = 2.dp
                                     )
                                 }
                             }
@@ -573,7 +583,7 @@ fun NutritionCard(
                             }
                         ),
                     rows = GridCells.Fixed(3),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(48.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(top = 12.dp, bottom = 8.dp)
                 ) {

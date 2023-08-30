@@ -3,6 +3,7 @@ package com.mready.myapplication.ui.onboarding
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -149,12 +151,30 @@ fun StartScreenPageOne(onClick: () -> Unit) {
     ) {
 
 
-        AsyncImage(
-            modifier = Modifier.fillMaxHeight(.7f),
-            model = "https://images.unsplash.com/photo-1493770348161-369560ae357d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-            contentDescription = null,
-            contentScale = ContentScale.Crop
-        )
+        Box (
+            modifier = Modifier.fillMaxHeight(.7f)
+        ) {
+            AsyncImage(
+                modifier = Modifier.fillMaxSize(),
+                model = "https://images.unsplash.com/photo-1493770348161-369560ae357d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
+
+            Column (
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 240.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            0.0f to Color.Transparent,
+                            1.0f to Background
+                        )
+                    )
+                    .align(Alignment.BottomCenter)
+            ) {}
+
+        }
 
 
         Surface(
@@ -215,14 +235,30 @@ fun StartScreenPageTwo(onClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        Box (
+            modifier = Modifier.fillMaxHeight(.7f)
+        ) {
+            AsyncImage(
+                modifier = Modifier.fillMaxSize(),
+                model = "https://i.pinimg.com/564x/88/fa/4a/88fa4a03f3f448feef5f450573ef999c.jpg",
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
 
+            Column (
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 240.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            0.0f to Color.Transparent,
+                            1.0f to Background
+                        )
+                    )
+                    .align(Alignment.BottomCenter)
+            ) {}
 
-        AsyncImage(
-            modifier = Modifier.fillMaxHeight(.7f),
-            model = "https://i.pinimg.com/564x/88/fa/4a/88fa4a03f3f448feef5f450573ef999c.jpg",
-            contentDescription = null,
-            contentScale = ContentScale.Crop
-        )
+        }
 
 
         Surface(
@@ -283,13 +319,32 @@ fun StartScreenPageThree(onClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        Box (
+            modifier = Modifier.fillMaxHeight(.7f)
+        ) {
+            AsyncImage(
+                modifier = Modifier.fillMaxSize(),
+                model = "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDV8fGZvb2QlMjBpbmdyZWRpZW50c3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
 
-        AsyncImage(
-            modifier = Modifier.fillMaxHeight(.7f),
-            model = "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDV8fGZvb2QlMjBpbmdyZWRpZW50c3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-            contentDescription = null,
-            contentScale = ContentScale.Crop
-        )
+            Column (
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 240.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            0.0f to Color.Transparent,
+                            1.0f to Background
+                        )
+                    )
+                    .align(Alignment.BottomCenter)
+            ) {}
+
+        }
+
+
 
         Surface(
             modifier = Modifier

@@ -61,7 +61,7 @@ fun PopularRecipes(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 32.dp, start = 20.dp, end = 20.dp),
+            .padding(top = 20.dp, start = 20.dp, end = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
