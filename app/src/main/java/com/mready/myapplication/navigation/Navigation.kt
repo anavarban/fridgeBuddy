@@ -5,19 +5,22 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.mready.myapplication.MainViewModel
 import com.mready.myapplication.StartScreenState
 import com.mready.myapplication.ingredientdetails.IngredientDetailsScreen
 import com.mready.myapplication.ui.dashboard.DashboardScreen
 import com.mready.myapplication.ui.fridge.YourFridgeScreen
 import com.mready.myapplication.ui.fridge.addingredient.AddIngredientScreen
-import com.mready.myapplication.ui.onboarding.LoginScreen
-import com.mready.myapplication.ui.onboarding.SignUpScreen
 import com.mready.myapplication.ui.onboarding.SplashScreen
 import com.mready.myapplication.ui.onboarding.StartScreen
+import com.mready.myapplication.ui.onboarding.forgotpass.ForgotPassScreen
+import com.mready.myapplication.ui.onboarding.login.LoginScreen
+import com.mready.myapplication.ui.onboarding.signup.SignUpScreen
 import com.mready.myapplication.ui.profile.ProfileScreen
 import com.mready.myapplication.ui.recipes.RecipeScreen
 import com.mready.myapplication.ui.utils.DisplayError
@@ -70,9 +73,9 @@ fun Navigation(
                     navController.navigate(Screens.DashboardScreen.route) {
                         popUpTo(Screens.LoginScreen.route) { inclusive = true }
                     }
-
                 },
-                onSignUpClick = { navController.navigate(Screens.SignUpScreen.route) }
+                onSignUpClick = { navController.navigate(Screens.SignUpScreen.route) },
+                onForgotClick = { navController.navigate(Screens.ForgotPassScreen.route + "?email=$it") }
             )
         }
 
@@ -83,9 +86,26 @@ fun Navigation(
                     navController.navigate(Screens.DashboardScreen.route) {
                         popUpTo(Screens.LoginScreen.route) { inclusive = true }
                     }
-
                 }
             )
+        }
+
+        composable(
+            route = Screens.ForgotPassScreen.route + "?email={email}",
+            arguments = listOf(navArgument("email") { type = NavType.StringType; nullable = true })
+        ) {
+            val email = it.arguments?.getString("email") ?: ""
+            NetworkStatus(
+                onNetworkAvailable = {
+                    ForgotPassScreen(
+                        onBackClick = { navController.popBackStack() },
+                        onSendClick = { navController.navigate(Screens.LoginScreen.route) },
+                        email = email
+                    )
+                }
+            ) {
+                DisplayError()
+            }
         }
 
         composable(route = Screens.DashboardScreen.route) {
@@ -162,7 +182,6 @@ fun Navigation(
             ) {
                 DisplayError()
             }
-
         }
 
         composable(route = Screens.DetailsScreen.route + "/{id}") {
@@ -178,7 +197,6 @@ fun Navigation(
                     )
                 }
             ) {
-
                 DisplayError()
             }
         }

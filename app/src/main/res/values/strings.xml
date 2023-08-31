@@ -98,5 +98,8 @@
     <string name="recipe_nutrition_fats">Fat: %1d g</string>
     <string name="recipe_nutrition_fiber">Fiber: %1d g</string>
     <string name="recipe_nutrition_proteins">Protein: %1d g</string>
+    <string name="forgot_pass_email">Enter your email to reset password</string>
+    <string name="onboarding_reset_pass">Reset your password</string>
+    <string name="onboarding_send_reset_email">Send reset link</string>
 
 </resources>

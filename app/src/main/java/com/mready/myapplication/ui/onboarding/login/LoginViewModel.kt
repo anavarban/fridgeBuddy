@@ -1,4 +1,4 @@
-package com.mready.myapplication.ui.onboarding
+package com.mready.myapplication.ui.onboarding.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -1,4 +1,4 @@
-package com.mready.myapplication.ui.onboarding
+package com.mready.myapplication.ui.onboarding.signup
 
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -24,7 +24,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -58,7 +57,6 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.mready.myapplication.R
 import com.mready.myapplication.auth.Resource
 import com.mready.myapplication.ui.theme.Background
-import com.mready.myapplication.ui.theme.Background40
 import com.mready.myapplication.ui.theme.Error
 import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
@@ -66,17 +64,17 @@ import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.utils.LoadingAnimation
-import com.mready.myapplication.ui.utils.LoginFields
 import com.mready.myapplication.ui.utils.clientId
+import com.mready.myapplication.ui.utils.signUpFields
 
 @Composable
-fun LoginScreen(
+fun SignUpScreen(
     onLoginClick: () -> Unit,
     onSignUpClick: () -> Unit,
 ) {
     val context = LocalContext.current
 
-    val loginViewModel: LoginViewModel = hiltViewModel()
+    val signUpViewModel: SignUpViewModel = hiltViewModel()
 
     var email by remember {
         mutableStateOf("")
@@ -87,6 +85,14 @@ fun LoginScreen(
     }
 
     var passwordVisibility by remember {
+        mutableStateOf(false)
+    }
+
+    var name by remember {
+        mutableStateOf("")
+    }
+
+    var nameError by remember {
         mutableStateOf(false)
     }
 
@@ -104,8 +110,8 @@ fun LoginScreen(
         mutableStateOf(false)
     }
 
-    LaunchedEffect(key1 = loginViewModel.loginFlow) {
-        loginViewModel.loginFlow.collect {
+    LaunchedEffect(key1 = signUpViewModel.signUpFlow) {
+        signUpViewModel.signUpFlow.collect {
             when (it) {
                 is Resource.Error -> {
                     isLoading = false
@@ -118,7 +124,7 @@ fun LoginScreen(
 
                 is Resource.Success -> {
                     isLoading = false
-                    onLoginClick()
+                    onSignUpClick()
                 }
 
                 is Resource.Loading -> {
@@ -132,14 +138,19 @@ fun LoginScreen(
         }
     }
 
-    fun validate(text: String, type: LoginFields) {
+
+    fun validate(text: String, type: signUpFields) {
         when (type) {
-            LoginFields.EMAIL -> {
+            signUpFields.NAME -> {
+                nameError = text.length < 3 || !text.all {it.isLetterOrDigit()}
+            }
+
+            signUpFields.EMAIL -> {
                 emailError = !android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches()
             }
 
-            LoginFields.PASSWORD -> {
-                passwordError = text.length < 8 || !text.all { it.isLetterOrDigit() }
+            signUpFields.PASSWORD -> {
+                passwordError = text.length < 8 || !text.all{it.isLetterOrDigit()}
             }
         }
     }
@@ -150,7 +161,7 @@ fun LoginScreen(
             try {
                 val result = account.getResult(ApiException::class.java)
                 val credential = GoogleAuthProvider.getCredential(result?.idToken, null)
-                loginViewModel.googleSignIn(credential)
+                signUpViewModel.googleSignIn(credential)
             } catch (e: ApiException) {
                 Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
             }
@@ -167,12 +178,77 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 40.dp),
-            text = stringResource(id = R.string.onboarding_login),
+            text = stringResource(id = R.string.onboarding_sign_up),
             textAlign = TextAlign.Center,
             fontSize = 24.sp,
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
             color = MainText
+        )
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp),
+            text = stringResource(id = R.string.onboarding_sign_up_name),
+            textAlign = TextAlign.Left,
+            fontSize = 16.sp,
+            fontFamily = Poppins,
+            fontWeight = FontWeight.SemiBold,
+            color = SecondaryText
+        )
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth(),
+            value = name,
+            onValueChange = { name = it },
+            textStyle = TextStyle(
+                fontFamily = Poppins,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MainText
+            ),
+            maxLines = 1,
+            placeholder = {
+                Text(
+                    modifier = Modifier
+                        .alpha(.6f)
+                        .padding(top = 4.dp),
+                    text = stringResource(id = R.string.onboarding_name_placeholder),
+                    textAlign = TextAlign.Left,
+                    fontSize = 16.sp,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    color = SecondaryText
+                )
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Background,
+                unfocusedContainerColor = Background,
+                errorContainerColor = Background,
+                focusedIndicatorColor = MainAccent,
+                unfocusedIndicatorColor = LightAccent,
+                errorIndicatorColor = Error,
+            ),
+            isError = nameError,
+            keyboardActions = KeyboardActions {
+                validate(name, signUpFields.NAME)
+            },
+            supportingText = {
+                if (nameError) {
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 4.dp),
+                        text = stringResource(id = R.string.onboarding_name_error),
+                        textAlign = TextAlign.Left,
+                        fontSize = 12.sp,
+                        fontFamily = Poppins,
+                        color = Error
+                    )
+                }
+            }
+
+
         )
 
         Text(
@@ -211,25 +287,10 @@ fun LoginScreen(
                     color = SecondaryText
                 )
             },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Background,
-                unfocusedContainerColor = Background,
-                errorContainerColor = Background,
-                focusedIndicatorColor = MainAccent,
-                unfocusedIndicatorColor = LightAccent,
-                errorIndicatorColor = Error,
-            ),
-            isError = emailError,
-            keyboardActions = KeyboardActions {
-                validate(email, LoginFields.EMAIL)
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
             supportingText = {
                 if (emailError) {
                     Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 4.dp),
+                        modifier = Modifier,
                         text = stringResource(id = R.string.onboarding_email_error),
                         textAlign = TextAlign.Left,
                         fontSize = 12.sp,
@@ -238,6 +299,19 @@ fun LoginScreen(
                     )
                 }
             },
+            isError = emailError,
+            keyboardActions = KeyboardActions {
+                validate(email, signUpFields.EMAIL)
+            },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Background,
+                unfocusedContainerColor = Background,
+                errorContainerColor = Background,
+                focusedIndicatorColor = MainAccent,
+                unfocusedIndicatorColor = LightAccent,
+                errorIndicatorColor = Error,
+            )
         )
 
         Text(
@@ -303,16 +377,15 @@ fun LoginScreen(
                     tint = if (!passwordError) MainAccent else Error
                 )
             },
-            isError = passwordError,
             keyboardActions = KeyboardActions {
-                validate(password, LoginFields.PASSWORD)
+                validate(password, signUpFields.PASSWORD)
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
+            isError = passwordError,
             supportingText = {
                 if (passwordError) {
                     Text(
                         modifier = Modifier
-                            .fillMaxWidth()
                             .padding(top = 4.dp),
                         text = stringResource(id = R.string.onboarding_pass_error),
                         textAlign = TextAlign.Left,
@@ -321,35 +394,8 @@ fun LoginScreen(
                         color = Error
                     )
                 }
-            },
-        )
-        val resetSuccess = stringResource(id = R.string.onboarding_reset_pass_success)
-        val resetFailure = stringResource(id = R.string.onboarding_reset_pass_failure)
+            }
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = {
-                        validate(email, LoginFields.EMAIL)
-                        if (!emailError) {
-                            loginViewModel.resetPassword(email, onSuccess = {
-                                Toast.makeText(context, resetSuccess, Toast.LENGTH_SHORT).show()
-                            }, onFailure = {
-                                Toast.makeText(context, resetFailure, Toast.LENGTH_SHORT).show()
-                            })
-                        }
-                    }
-                ),
-            text = stringResource(id = R.string.onboarding_forgot_pass),
-            textAlign = TextAlign.Right,
-            fontSize = 14.sp,
-            fontFamily = Poppins,
-            fontWeight = FontWeight.SemiBold,
-            color = SecondaryText
         )
 
         Spacer(
@@ -361,10 +407,11 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .padding(top = 40.dp),
             onClick = {
-                validate(email, LoginFields.EMAIL)
-                validate(password, LoginFields.PASSWORD)
-                if (!emailError && !passwordError) {
-                    loginViewModel.login(email, password)
+                validate(name, signUpFields.NAME)
+                validate(email, signUpFields.EMAIL)
+                validate(password, signUpFields.PASSWORD)
+                if (!nameError && !emailError && !passwordError) {
+                    signUpViewModel.signUp(name, email, password)
                 }
             },
             colors = ButtonDefaults.buttonColors(
@@ -373,7 +420,7 @@ fun LoginScreen(
             shape = RoundedCornerShape(8.dp)
         ) {
             Text(
-                text = stringResource(id = R.string.onboarding_login),
+                text = stringResource(id = R.string.onboarding_sign_up),
                 fontSize = 20.sp,
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
@@ -406,7 +453,7 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
-            text = stringResource(id = R.string.onboarding_continue_options),
+            text = stringResource(id = R.string.onboarding_sign_up_options),
             textAlign = TextAlign.Center,
             fontSize = 16.sp,
             fontFamily = Poppins,
@@ -467,7 +514,7 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = stringResource(id = R.string.onboarding_sign_up_prompt),
+                text = stringResource(id = R.string.onboarding_login_prompt),
                 fontSize = 16.sp,
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
@@ -479,21 +526,18 @@ fun LoginScreen(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                        onClick = onSignUpClick
+                        onClick = onLoginClick
                     ),
-                text = stringResource(id = R.string.onboarding_sign_up),
+                text = stringResource(id = R.string.onboarding_login),
                 fontSize = 16.sp,
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
                 color = MainAccent
             )
         }
-
-
     }
 
     if (isLoading) {
         LoadingAnimation()
     }
-
 }
