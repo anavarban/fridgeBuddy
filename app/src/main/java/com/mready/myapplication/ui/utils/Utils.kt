@@ -1,5 +1,6 @@
 package com.mready.myapplication.ui.utils
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -7,8 +8,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.net.Uri
-import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -23,12 +22,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ShareCompat
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
@@ -47,19 +44,18 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mready.myapplication.R
 import com.mready.myapplication.models.Date
 import com.mready.myapplication.models.Ingredient
+import com.mready.myapplication.models.Recipe
 import com.mready.myapplication.ui.theme.DarkAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import kotlin.math.abs
-import kotlin.system.exitProcess
 
 const val clientId = "835229504494-228oa534qthjun48rr48obm7ns2nitam.apps.googleusercontent.com"
 
@@ -227,7 +223,11 @@ fun Date.expiresRatherSoon(): Boolean {
     }
 
     val today = Calendar.getInstance()
-    val todayAsDate = Date(today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1, today.get(Calendar.DAY_OF_MONTH))
+    val todayAsDate = Date(
+        today.get(Calendar.YEAR),
+        today.get(Calendar.MONTH) + 1,
+        today.get(Calendar.DAY_OF_MONTH)
+    )
 
     val localDate1 = LocalDate.of(this.year, this.month, this.date)
     val localDate2 = LocalDate.of(todayAsDate.year, todayAsDate.month, todayAsDate.date)
@@ -238,7 +238,8 @@ fun Date.expiresRatherSoon(): Boolean {
 }
 
 fun List<Ingredient>.getFirstThreeDistinct(): List<Ingredient> {
-    return this.filter { it.expireDate.isExpired() || it.expireDate.expiresRatherSoon() }.groupBy { it.expireDate }.values.take(3).flatten()
+    return this.filter { it.expireDate.isExpired() || it.expireDate.expiresRatherSoon() }
+        .groupBy { it.expireDate }.values.take(3).flatten()
 }
 
 @Composable
@@ -280,4 +281,35 @@ fun DotsIndicator(
             }
         }
     }
+}
+
+fun shareText(text: String, context: Context) {
+    val shareIntent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, text)
+        type = "text/plain"
+    }
+    context.startActivity(Intent.createChooser(shareIntent, null))
+}
+
+fun getShareableRecipe(recipe: Recipe): String {
+    var shareableText = "Check out this recipe: ${recipe.name}\n\n"
+    if (recipe.description.isNotEmpty() && recipe.description != "null" && recipe.description != "n/a"
+        && !recipe.videoUrl.isNullOrEmpty() && recipe.videoUrl != "null" && recipe.videoUrl != "n/a") {
+        shareableText += "${recipe.description}\n\n ${recipe.videoUrl}\n\n"
+        return shareableText
+    }
+
+    shareableText += "Ingredients:\n"
+    for (ingredient in recipe.ingredients.filter { it.ingredient.isNotEmpty() && it.ingredient != "null" && it.ingredient != "n/a" }
+        .sortedBy { it.position }) {
+        shareableText += "- ${ingredient.ingredient}\n"
+    }
+    shareableText += "\n"
+    shareableText += "Instructions:\n"
+    for (instruction in recipe.instructions.filter { it.displayText.isNotEmpty() && it.displayText != "null" && it.displayText != "n/a" }
+        .sortedBy { it.position }) {
+        shareableText += "${instruction.position}. ${instruction.displayText}\n"
+    }
+    return shareableText
 }

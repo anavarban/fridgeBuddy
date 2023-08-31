@@ -34,6 +34,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -74,6 +75,8 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.utils.LoadingAnimation
+import com.mready.myapplication.ui.utils.getShareableRecipe
+import com.mready.myapplication.ui.utils.shareText
 
 @Composable
 fun RecipeScreen(
@@ -351,6 +354,25 @@ fun RecipeScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.KeyboardArrowLeft,
+                        contentDescription = null
+                    )
+                }
+
+                IconButton(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 32.dp, end = 20.dp)
+                        .shadow(4.dp, CircleShape),
+                    onClick = {
+                              shareText(getShareableRecipe(recipe), context)
+                    },
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = Background,
+                        contentColor = MainAccent
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Share,
                         contentDescription = null
                     )
                 }
