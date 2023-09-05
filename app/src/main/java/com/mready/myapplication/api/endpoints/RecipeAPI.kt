@@ -33,7 +33,7 @@ class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient)
         val recipe = apiClient.get(
             endpoint = "/recipes/list",
             query = mapOf("from" to offset, "size" to 1,"q" to ingredients),
-            headers = mapOf("X-RapidAPI-Key" to "556508c00amshd984811ee9a5eefp165d11jsn62f1e26d0872", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
+            headers = mapOf("X-RapidAPI-Key" to "6c7cf6006fmshe7c316b0ab830a4p193114jsn0f66b4b0fbf9", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
             errorHandler = {_ ->  isSuccessful = false}
         ) { json ->
             json["results"].array[0].toRecipe(ingredients)
@@ -51,7 +51,7 @@ class RecipeAPI @Inject constructor(private val apiClient: FridgeBuddyApiClient)
         apiClient.get(
             endpoint = "/recipes/list",
             query = mapOf("from" to 0, "size" to 3,"q" to ingredient),
-            headers = mapOf("X-RapidAPI-Key" to "556508c00amshd984811ee9a5eefp165d11jsn62f1e26d0872", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
+            headers = mapOf("X-RapidAPI-Key" to "6c7cf6006fmshe7c316b0ab830a4p193114jsn0f66b4b0fbf9", "X-RapidAPI-Host" to "tasty.p.rapidapi.com"),
             errorHandler = {_ -> isSuccessful = false}
         ) { json ->
             json["results"].array.forEach {

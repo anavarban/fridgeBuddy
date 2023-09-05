@@ -193,8 +193,6 @@ fun IngredientItem(
                     tint = Warning
                 )
             }
-
-
         }
     }
 }

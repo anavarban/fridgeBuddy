@@ -134,12 +134,12 @@ fun IngredientDetailsScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 20.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
+                        .padding(bottom = 20.dp)
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         AsyncImage(

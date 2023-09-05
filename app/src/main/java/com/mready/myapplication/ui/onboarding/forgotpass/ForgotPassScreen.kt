@@ -79,13 +79,13 @@ fun ForgotPassScreen(
         modifier = Modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.safeDrawing)
-            .padding(top = 20.dp, start = 32.dp, end = 32.dp),
+            .padding(top = 20.dp,end = 32.dp),
 
         ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 20.dp),
+                .padding(top = 20.dp, start = 16.dp, ),
         ) {
             Icon(
                 modifier = Modifier
@@ -117,7 +117,7 @@ fun ForgotPassScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 56.dp),
+                .padding(top = 56.dp,start = 32.dp),
             text = stringResource(id = R.string.forgot_pass_email),
             textAlign = TextAlign.Left,
             fontSize = 16.sp,
@@ -127,7 +127,8 @@ fun ForgotPassScreen(
         )
         OutlinedTextField(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(start = 32.dp),
             value = email,
             onValueChange = { email = it },
             textStyle = TextStyle(
@@ -177,12 +178,13 @@ fun ForgotPassScreen(
                     )
                 }
             },
+
         )
 
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 40.dp),
+                .padding(top = 40.dp, start = 32.dp),
             onClick = {
                 validate(email)
                 if (!emailError) {

@@ -402,7 +402,7 @@ fun RecipeIngredientElement(
             fontSize = 16.sp,
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
-            color = MainText
+            color = MainText,
         )
     }
 }
