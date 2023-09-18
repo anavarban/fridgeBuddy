@@ -30,6 +30,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -54,6 +55,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.mready.myapplication.R
 import com.mready.myapplication.models.Ingredient
 import com.mready.myapplication.ui.dashboard.IngredientItem
@@ -65,7 +68,6 @@ import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.utils.LoadingAnimation
 import com.mready.myapplication.ui.utils.getFirstThreeDistinct
-import java.util.Calendar
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -77,10 +79,9 @@ fun YourFridgeScreen(
     BackHandler {
         onBackClick()
     }
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     val fridgeViewModel: FridgeViewModel = hiltViewModel()
-
-
     val fridgeState = fridgeViewModel.fridgeFlow.collectAsState()
 
     LaunchedEffect(key1 = null) {
@@ -94,6 +95,19 @@ fun YourFridgeScreen(
     var toDelete by remember {
         mutableStateOf(0)
     }
+
+    var showScanPopUp by remember {
+        mutableStateOf(false)
+    }
+
+    var scannedBarcode: String by remember {
+        mutableStateOf("")
+    }
+
+    val options = GmsBarcodeScannerOptions.Builder()
+        .enableAutoZoom()
+        .build()
+    val scanner = GmsBarcodeScanning.getClient(context, options)
 
     when (fridgeState.value) {
         FridgeIngredientsUiState.Error -> {
@@ -223,7 +237,8 @@ fun YourFridgeScreen(
                                 }
                             }
                         } else {
-                            Text(text = stringResource(id = R.string.fridge_no_ingredients_expiring),
+                            Text(
+                                text = stringResource(id = R.string.fridge_no_ingredients_expiring),
                                 modifier = Modifier
                                     .padding(top = 20.dp, start = 32.dp)
                                     .align(Alignment.Start),
@@ -302,6 +317,26 @@ fun YourFridgeScreen(
                     )
                 }
 
+                FloatingActionButton(
+                    modifier = Modifier
+                        .padding(top = 20.dp, end = 20.dp)
+                        .align(Alignment.TopEnd),
+                    onClick = {
+                              scanner.startScan().addOnSuccessListener { barcode ->
+                                  val barcodeValue = barcode.rawValue
+                                  if (barcodeValue != null) {
+                                      showScanPopUp = true
+                                      scannedBarcode = barcodeValue
+                                  }
+                              }
+                    },
+                    containerColor = MainAccent,
+                    contentColor = Background,
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Icon(imageVector = Icons.Outlined.ShoppingCart, contentDescription = null)
+                }
+
                 if (showPopUp && ingredients != null) {
                     FridgeDeletePopUp(
                         ingredient = ingredients[toDelete],
@@ -311,6 +346,12 @@ fun YourFridgeScreen(
                             showPopUp = false
                         }
                     )
+                }
+
+                if (showScanPopUp ) {
+                    FridgeScanPopUp(
+                        scannedBarcode = scannedBarcode
+                    ) { showScanPopUp = false }
                 }
             }
         }
@@ -377,6 +418,75 @@ fun FridgeDeletePopUp(
             ) {
                 Text(
                     text = stringResource(id = R.string.generic_delete),
+                    fontSize = 20.sp,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FridgeScanPopUp(
+    scannedBarcode: String,
+    onDismissRequest: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true
+        ),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .background(color = Background)
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(72.dp)
+                    .border(4.dp, MainAccent, CircleShape),
+                imageVector = Icons.Outlined.ShoppingCart,
+                contentDescription = null,
+                tint = MainAccent
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = stringResource(id = R.string.scanned),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp,
+                fontFamily = Poppins,
+                color = MainText
+            )
+
+            Text(text = scannedBarcode)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                modifier = Modifier,
+                onClick = {
+                    onDismissRequest()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MainAccent
+                ),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.generic_ok),
                     fontSize = 20.sp,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,

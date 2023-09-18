@@ -144,4 +144,7 @@ dependencies {
 
     //worker
     implementation("androidx.work:work-runtime-ktx:2.8.1")
+
+    //google scanner
+    implementation ("com.google.android.gms:play-services-code-scanner:16.1.0")
 }
