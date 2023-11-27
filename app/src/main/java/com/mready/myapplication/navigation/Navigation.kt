@@ -1,6 +1,9 @@
 package com.mready.myapplication.navigation
 
+import com.mready.myapplication.ui.fridge.scan.ScanActivity
+import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,6 +19,8 @@ import com.mready.myapplication.ingredientdetails.IngredientDetailsScreen
 import com.mready.myapplication.ui.dashboard.DashboardScreen
 import com.mready.myapplication.ui.fridge.YourFridgeScreen
 import com.mready.myapplication.ui.fridge.addingredient.AddIngredientScreen
+import com.mready.myapplication.ui.fridge.scan.ScanScreen
+import com.mready.myapplication.ui.fridge.scan.ScannedScreen
 import com.mready.myapplication.ui.onboarding.SplashScreen
 import com.mready.myapplication.ui.onboarding.StartScreen
 import com.mready.myapplication.ui.onboarding.forgotpass.ForgotPassScreen
@@ -164,12 +169,50 @@ fun Navigation(
                         onAddClick = { navController.navigate(Screens.AddIngredientScreen.route) },
                         onBackClick = { navController.popBackStack() },
                         onCardClick = { navController.navigate(Screens.DetailsScreen.route + "/${it}") },
+                        onScanClick = {
+//                            val context = navController.context
+//                            val intent = Intent(context, ScanActivity::class.java)
+//                            context.startActivity(intent)
+                            navController.navigate(Screens.ScanScreen.route)
+                        }
+                    )
+                }) {
+                DisplayError()
+            }
+
+        }
+
+        composable(route = Screens.ScanScreen.route) {
+            NetworkStatus(
+                onNetworkAvailable = {
+                    Log.d("DEBUG", "Scan screen")
+                    ScanScreen(
+                        onTextRecognised = {
+                            if (it.isNotEmpty()) {
+                                navController.navigate(Screens.ScannedScreen.route + "/${it}")
+                            }
+                        }
                     )
                 }
             ) {
                 DisplayError()
             }
+        }
 
+        composable(route = Screens.ScannedScreen.route + "/{text}") {
+            NetworkStatus(
+                onNetworkAvailable = {
+                    val text = it.arguments?.getString("text")
+                    Log.d("DEBUG", "Scanned screen")
+                    Log.d("DEBUG", "Text is $text")
+//                    val intent = Intent(navController.context, ScanActivity::class.java)
+//                    intent.putExtra("text", text)
+//                    navController.context.startActivity(intent)
+                    ScannedScreen(text = text ?: "")
+                }
+            ) {
+                DisplayError()
+            }
         }
 
         composable(route = Screens.AddIngredientScreen.route) {

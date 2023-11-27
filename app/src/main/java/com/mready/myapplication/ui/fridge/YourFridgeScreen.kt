@@ -1,6 +1,20 @@
 package com.mready.myapplication.ui.fridge
 
+import android.Manifest
+import android.os.Build
+import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.camera.core.Camera
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.CameraController
+import androidx.camera.view.LifecycleCameraController
+import androidx.camera.view.PreviewView
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,12 +45,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,15 +65,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
+import com.google.api.Context
+import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.mready.myapplication.R
 import com.mready.myapplication.models.Ingredient
 import com.mready.myapplication.ui.dashboard.IngredientItem
@@ -68,13 +99,17 @@ import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.utils.LoadingAnimation
 import com.mready.myapplication.ui.utils.getFirstThreeDistinct
+import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
 
-@OptIn(ExperimentalFoundationApi::class)
+@RequiresApi(Build.VERSION_CODES.P)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun YourFridgeScreen(
     onAddClick: (String) -> Unit,
     onBackClick: () -> Unit,
-    onCardClick: (Int) -> Unit
+    onCardClick: (Int) -> Unit,
+    onScanClick: () -> Unit
 ) {
     BackHandler {
         onBackClick()
@@ -104,10 +139,49 @@ fun YourFridgeScreen(
         mutableStateOf("")
     }
 
+    var displayCamera by remember {
+        mutableStateOf(false)
+    }
+
     val options = GmsBarcodeScannerOptions.Builder()
         .enableAutoZoom()
         .build()
     val scanner = GmsBarcodeScanning.getClient(context, options)
+
+    val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+
+
+    val cameraController = LifecycleCameraController(context)
+
+    val imageCapture = remember { ImageCapture.Builder().build() }
+    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+    val cameraProvider = cameraProviderFuture.get()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+    val preview = remember { Preview.Builder().build() }
+    cameraProvider.bindToLifecycle(
+        lifecycleOwner,
+        cameraSelector,
+        preview,
+        imageCapture
+    )
+
+
+    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
+    LaunchedEffect(Unit) {
+        lifecycleOwner.lifecycle
+        val permissionResult = cameraPermissionState.status
+        if (!permissionResult.isGranted) {
+            if (permissionResult.shouldShowRationale) {
+                // Show a rationale if needed (optional)
+            } else {
+                // Request the permission
+                cameraPermissionState.launchPermissionRequest()
+            }
+        }
+    }
+
+
 
     when (fridgeState.value) {
         FridgeIngredientsUiState.Error -> {
@@ -322,13 +396,8 @@ fun YourFridgeScreen(
                         .padding(top = 20.dp, end = 20.dp)
                         .align(Alignment.TopEnd),
                     onClick = {
-                              scanner.startScan().addOnSuccessListener { barcode ->
-                                  val barcodeValue = barcode.rawValue
-                                  if (barcodeValue != null) {
-                                      showScanPopUp = true
-                                      scannedBarcode = barcodeValue
-                                  }
-                              }
+                        if (cameraController.hasCamera(cameraSelector)){ displayCamera = true }
+
                     },
                     containerColor = MainAccent,
                     contentColor = Background,
@@ -348,7 +417,29 @@ fun YourFridgeScreen(
                     )
                 }
 
-                if (showScanPopUp ) {
+                if (displayCamera) {
+                    LaunchedEffect(Unit){ onScanClick() }
+//                    CameraPreview(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .background(color = Background),
+//                        cameraProviderFuture = cameraProviderFuture,
+//                        lifecycleOwner = lifecycleOwner,
+//                        onCaptureClick = {
+//                            fridgeViewModel.recognise(
+//                                textRecognizer = recognizer,
+//                                imageCapture = imageCapture,
+//                                executor =  Executors.newSingleThreadExecutor()
+//                            )?.let {
+//                                displayCamera = false
+//                                scannedBarcode = it
+//                                showScanPopUp = true
+//                            }
+//                        }
+//                    )
+                }
+
+                if (showScanPopUp) {
                     FridgeScanPopUp(
                         scannedBarcode = scannedBarcode
                     ) { showScanPopUp = false }
@@ -495,3 +586,5 @@ fun FridgeScanPopUp(
         }
     }
 }
+
+

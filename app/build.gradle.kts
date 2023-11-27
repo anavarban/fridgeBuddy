@@ -83,6 +83,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-insets:0.30.1")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
     implementation("com.google.android.gms:play-services-auth:20.6.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -147,4 +148,14 @@ dependencies {
 
     //google scanner
     implementation ("com.google.android.gms:play-services-code-scanner:16.1.0")
+
+    //mlkit
+    implementation("com.google.mlkit:text-recognition:16.0.0")
+
+    //CameraX
+    implementation ("androidx.camera:camera-core:1.0.0")
+    implementation ("androidx.camera:camera-camera2:1.0.0")
+    implementation ("androidx.camera:camera-lifecycle:1.0.0")
+    implementation ("androidx.camera:camera-view:1.2.0")
+    implementation ("androidx.camera:camera-extensions:1.2.0")
 }

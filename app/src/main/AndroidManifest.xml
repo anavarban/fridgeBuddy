@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".FridgeBuddyApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -11,8 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
-        android:name=".FridgeBuddyApp"
-        tools:targetApi="31">
+        tools:targetApi="33">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -26,23 +26,34 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.fridge.scan.ScanActivity"
+            android:label="@string/title_activity_scan"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat" />
+
         <receiver android:name=".notif.ResetNotificationReceiver" />
         <provider
             android:name="androidx.work.impl.WorkManagerInitializer"
             android:authorities="${applicationId}.workmanager-init"
-            android:exported="false"
             android:enabled="true"
-            tools:node="remove"
-            tools:ignore="MissingClass">
+            android:exported="false"
+            tools:ignore="MissingClass"
+            tools:node="remove">
             <meta-data
                 android:name="androidx.work.impl.WorkManagerInitializer"
                 android:value="androidx.startup.Initializer" />
             <meta-data
                 android:name="com.google.mlkit.vision.DEPENDENCIES"
-                android:value="barcode_ui"/>
+                android:value="barcode_ui" />
         </provider>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <uses-feature android:name="android.hardware.camera.any" />
+    <uses-permission android:name="android.permission.CAMERA" />
 </manifest>

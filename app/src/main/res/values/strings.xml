@@ -102,5 +102,6 @@
     <string name="onboarding_reset_pass">Reset your password</string>
     <string name="onboarding_send_reset_email">Send reset link</string>
     <string name="scanned">Scanned the following:</string>
+    <string name="title_activity_scan">Scan</string>
 
 </resources>
