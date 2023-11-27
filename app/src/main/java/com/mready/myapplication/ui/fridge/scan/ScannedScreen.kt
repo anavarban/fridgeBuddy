@@ -1,5 +1,6 @@
 package com.mready.myapplication.ui.fridge.scan
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
@@ -10,7 +11,13 @@ import androidx.compose.ui.Modifier
 @Composable
 fun ScannedScreen(
     text: String,
+    onBack: () -> Unit
 ) {
+
+    BackHandler {
+        onBack()
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Text(
             modifier = Modifier.align(Alignment.Center),

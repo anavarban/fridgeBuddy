@@ -1,6 +1,7 @@
 package com.mready.myapplication.ui.fridge.scan
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
@@ -34,15 +35,20 @@ import java.util.concurrent.Executors
 
 @Composable
 fun ScanScreen(
+    onBack: () -> Unit = {},
     onTextRecognised: (text: String) -> Unit = {}
 ) {
+    BackHandler {
+        onBack()
+    }
+
     val context = LocalContext.current
     val cameraProviderFuture = remember(context) {
         ProcessCameraProvider.getInstance(context)
     }
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    Surface(modifier = Modifier.fillMaxSize()){
+    Surface(modifier = Modifier.fillMaxSize()) {
 
         AndroidView(
             modifier = Modifier
@@ -67,7 +73,9 @@ fun ScanScreen(
                         .also {
                             it.setAnalyzer(cameraExecutor, TextRecAnalyser { text ->
                                 Log.d("DEBUG", "Recognised text is $text")
-                                onTextRecognised(text)
+                                if (text.isNotEmpty()) {
+                                    onTextRecognised(text)
+                                }
                             })
                         }
 
@@ -98,7 +106,7 @@ fun ScanScreen(
 class TextRecAnalyser(
     val onCaptureClick: (text: String) -> Unit
 ) : ImageAnalysis.Analyzer {
-    override fun  analyze(imageProxy: ImageProxy) {
+    override fun analyze(imageProxy: ImageProxy) {
 
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
@@ -133,7 +141,7 @@ fun CameraPreview(
     val cameraSelector = remember { CameraSelector.DEFAULT_BACK_CAMERA }
 
     Surface {
-        Box(modifier = modifier){
+        Box(modifier = modifier) {
             AndroidView(
                 modifier = Modifier.align(Alignment.Center),
                 factory = { ctx ->

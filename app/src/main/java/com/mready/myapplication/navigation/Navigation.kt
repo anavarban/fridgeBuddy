@@ -174,7 +174,7 @@ fun Navigation(
 //                            val intent = Intent(context, ScanActivity::class.java)
 //                            context.startActivity(intent)
                             navController.navigate(Screens.ScanScreen.route)
-                        }
+                        },
                     )
                 }) {
                 DisplayError()
@@ -188,9 +188,14 @@ fun Navigation(
                     Log.d("DEBUG", "Scan screen")
                     ScanScreen(
                         onTextRecognised = {
-                            if (it.isNotEmpty()) {
-                                navController.navigate(Screens.ScannedScreen.route + "/${it}")
-                            }
+                            navController.navigate(Screens.ScannedScreen.route + "/${it}")
+
+                        },
+                        onBack = {
+                            navController.popBackStack(
+                                route = Screens.FridgeScreen.route,
+                                inclusive = false
+                            )
                         }
                     )
                 }
@@ -208,7 +213,12 @@ fun Navigation(
 //                    val intent = Intent(navController.context, ScanActivity::class.java)
 //                    intent.putExtra("text", text)
 //                    navController.context.startActivity(intent)
-                    ScannedScreen(text = text ?: "")
+                    ScannedScreen(text = text ?: "") {
+                        navController.popBackStack(
+                            route = Screens.FridgeScreen.route,
+                            inclusive = false
+                        )
+                    }
                 }
             ) {
                 DisplayError()
