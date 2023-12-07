@@ -151,35 +151,30 @@ fun YourFridgeScreen(
     val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
 
-    val cameraController = LifecycleCameraController(context)
 
-    val imageCapture = remember { ImageCapture.Builder().build() }
-    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
-    val cameraProvider = cameraProviderFuture.get()
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-    val preview = remember { Preview.Builder().build() }
-    cameraProvider.bindToLifecycle(
-        lifecycleOwner,
-        cameraSelector,
-        preview,
-        imageCapture
-    )
+//    val cameraController = LifecycleCameraController(context)
+//
+//    val imageCapture = remember { ImageCapture.Builder().build() }
+//    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+//    val cameraProvider = cameraProviderFuture.get()
+//    val lifecycleOwner = LocalLifecycleOwner.current
+//    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+//    val preview = remember { Preview.Builder().build() }
 
 
-    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
-    LaunchedEffect(Unit) {
-        lifecycleOwner.lifecycle
-        val permissionResult = cameraPermissionState.status
-        if (!permissionResult.isGranted) {
-            if (permissionResult.shouldShowRationale) {
-                // Show a rationale if needed (optional)
-            } else {
-                // Request the permission
-                cameraPermissionState.launchPermissionRequest()
-            }
-        }
-    }
+//    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
+//    LaunchedEffect(Unit) {
+//        lifecycleOwner.lifecycle
+//        val permissionResult = cameraPermissionState.status
+//        if (!permissionResult.isGranted) {
+//            if (permissionResult.shouldShowRationale) {
+//                // Show a rationale if needed (optional)
+//            } else {
+//                // Request the permission
+//                cameraPermissionState.launchPermissionRequest()
+//            }
+//        }
+//    }
 
 
 
@@ -396,8 +391,7 @@ fun YourFridgeScreen(
                         .padding(top = 20.dp, end = 20.dp)
                         .align(Alignment.TopEnd),
                     onClick = {
-                        if (cameraController.hasCamera(cameraSelector)){ displayCamera = true }
-
+                        onScanClick()
                     },
                     containerColor = MainAccent,
                     contentColor = Background,
@@ -418,7 +412,7 @@ fun YourFridgeScreen(
                 }
 
                 if (displayCamera) {
-                    LaunchedEffect(Unit){ onScanClick() }
+
 //                    CameraPreview(
 //                        modifier = Modifier
 //                            .fillMaxSize()
