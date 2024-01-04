@@ -1,13 +1,10 @@
 package com.mready.myapplication.ui.fridge.addingredient
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mready.myapplication.auth.AuthRepository
 import com.mready.myapplication.data.FridgeIngredients
 import com.mready.myapplication.data.FridgeIngredientsRepo
-import com.mready.myapplication.models.Date
-import com.mready.myapplication.models.Ingredient
 import com.mready.myapplication.ui.utils.ingredientToUrl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +29,7 @@ class AddIngredientViewModel @Inject constructor(
     var amount: Int = 0
     var unit: String = ""
     var date: Long = 0
+    var picturePath: String = ""
 
     init {
         _addIngredientUiState.value = AddIngredientUiState.Loading
@@ -50,7 +48,7 @@ class AddIngredientViewModel @Inject constructor(
                 expireYear = calendar.get(Calendar.YEAR),
                 expireMonth = calendar.get(Calendar.MONTH) + 1,
                 expireDay = calendar.get(Calendar.DAY_OF_MONTH),
-                imgUrl = ingredientToUrl[type] ?: "",
+                imgUrl = ingredientToUrl[type] ?: picturePath,
             )
             fridgeIngredientsRepo.insertIngredient(ingredient)
             _addIngredientUiState.update {

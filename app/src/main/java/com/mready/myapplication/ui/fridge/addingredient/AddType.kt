@@ -1,9 +1,8 @@
 package com.mready.myapplication.ui.fridge.addingredient
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -51,6 +50,7 @@ fun AddType(
     user: String,
     startingType: String = "",
     onNextClick: (String, String) -> Unit,
+    onScanClick: () -> Unit
 ) {
 
     val ingredientOptions = ingredientToUrl.keys.toList()
@@ -68,19 +68,18 @@ fun AddType(
         } else {
             mutableStateOf(false)
         }
-//        mutableStateOf(false)
     }
 
-
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .safeDrawingPadding()
-            .padding(top = 64.dp)
+            .padding(top = 64.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
         Text(
-            modifier = Modifier.align(Alignment.TopCenter),
+            modifier = Modifier,
             text = stringResource(id = R.string.fridge_add_ingredient),
             textAlign = TextAlign.Center,
             fontSize = 24.sp,
@@ -92,8 +91,7 @@ fun AddType(
 
         ExposedDropdownMenuBox(
             modifier = Modifier
-                .padding(top = 32.dp)
-                .align(Alignment.TopCenter),
+                .padding(top = 32.dp),
             expanded = expandedMenu,
             onExpandedChange = { expandedMenu = !expandedMenu }
         ) {
@@ -167,10 +165,41 @@ fun AddType(
             }
         }
 
+        Text(
+            text = stringResource(id = R.string.generic_or),
+            modifier = Modifier
+                .padding(top = 20.dp),
+            textAlign = TextAlign.Center,
+            fontSize = 16.sp,
+            fontFamily = Poppins,
+            fontWeight = FontWeight.Normal,
+            color = LightAccent
+        )
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth(.8f)
+                .padding(top = 20.dp),
+            onClick = { onScanClick() },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MainAccent,
+                contentColor = Background
+            ),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.fridge_go_to_scan),
+                fontSize = 20.sp,
+                fontFamily = Poppins,
+                fontWeight = FontWeight.SemiBold,
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
         if (picked) {
             Button(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
                     .fillMaxWidth(.8f)
                     .padding(bottom = 32.dp),
                 onClick = { onNextClick(user, selectedType) },

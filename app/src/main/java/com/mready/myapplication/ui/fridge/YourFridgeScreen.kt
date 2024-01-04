@@ -1,20 +1,8 @@
 package com.mready.myapplication.ui.fridge
 
-import android.Manifest
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.camera.core.Camera
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.CameraController
-import androidx.camera.view.LifecycleCameraController
-import androidx.camera.view.PreviewView
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -44,16 +32,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
-import androidx.compose.material.icons.outlined.ShoppingCart
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -65,33 +49,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
-import com.google.api.Context
-import com.google.common.util.concurrent.ListenableFuture
-import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
-import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
-import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.mready.myapplication.R
 import com.mready.myapplication.models.Ingredient
 import com.mready.myapplication.ui.dashboard.IngredientItem
 import com.mready.myapplication.ui.theme.Background
+import com.mready.myapplication.ui.theme.Error
 import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
@@ -99,22 +68,18 @@ import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.utils.LoadingAnimation
 import com.mready.myapplication.ui.utils.getFirstThreeDistinct
-import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
 
 @RequiresApi(Build.VERSION_CODES.P)
-@OptIn(ExperimentalFoundationApi::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun YourFridgeScreen(
     onAddClick: (String) -> Unit,
     onBackClick: () -> Unit,
     onCardClick: (Int) -> Unit,
-    onScanClick: () -> Unit
 ) {
     BackHandler {
         onBackClick()
     }
-    val context = androidx.compose.ui.platform.LocalContext.current
 
     val fridgeViewModel: FridgeViewModel = hiltViewModel()
     val fridgeState = fridgeViewModel.fridgeFlow.collectAsState()
@@ -130,53 +95,6 @@ fun YourFridgeScreen(
     var toDelete by remember {
         mutableStateOf(0)
     }
-
-    var showScanPopUp by remember {
-        mutableStateOf(false)
-    }
-
-    var scannedBarcode: String by remember {
-        mutableStateOf("")
-    }
-
-    var displayCamera by remember {
-        mutableStateOf(false)
-    }
-
-    val options = GmsBarcodeScannerOptions.Builder()
-        .enableAutoZoom()
-        .build()
-    val scanner = GmsBarcodeScanning.getClient(context, options)
-
-    val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-
-
-
-//    val cameraController = LifecycleCameraController(context)
-//
-//    val imageCapture = remember { ImageCapture.Builder().build() }
-//    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
-//    val cameraProvider = cameraProviderFuture.get()
-//    val lifecycleOwner = LocalLifecycleOwner.current
-//    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-//    val preview = remember { Preview.Builder().build() }
-
-
-//    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
-//    LaunchedEffect(Unit) {
-//        lifecycleOwner.lifecycle
-//        val permissionResult = cameraPermissionState.status
-//        if (!permissionResult.isGranted) {
-//            if (permissionResult.shouldShowRationale) {
-//                // Show a rationale if needed (optional)
-//            } else {
-//                // Request the permission
-//                cameraPermissionState.launchPermissionRequest()
-//            }
-//        }
-//    }
-
-
 
     when (fridgeState.value) {
         FridgeIngredientsUiState.Error -> {
@@ -386,20 +304,6 @@ fun YourFridgeScreen(
                     )
                 }
 
-                FloatingActionButton(
-                    modifier = Modifier
-                        .padding(top = 20.dp, end = 20.dp)
-                        .align(Alignment.TopEnd),
-                    onClick = {
-                        onScanClick()
-                    },
-                    containerColor = MainAccent,
-                    contentColor = Background,
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Icon(imageVector = Icons.Outlined.ShoppingCart, contentDescription = null)
-                }
-
                 if (showPopUp && ingredients != null) {
                     FridgeDeletePopUp(
                         ingredient = ingredients[toDelete],
@@ -409,34 +313,6 @@ fun YourFridgeScreen(
                             showPopUp = false
                         }
                     )
-                }
-
-                if (displayCamera) {
-
-//                    CameraPreview(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .background(color = Background),
-//                        cameraProviderFuture = cameraProviderFuture,
-//                        lifecycleOwner = lifecycleOwner,
-//                        onCaptureClick = {
-//                            fridgeViewModel.recognise(
-//                                textRecognizer = recognizer,
-//                                imageCapture = imageCapture,
-//                                executor =  Executors.newSingleThreadExecutor()
-//                            )?.let {
-//                                displayCamera = false
-//                                scannedBarcode = it
-//                                showScanPopUp = true
-//                            }
-//                        }
-//                    )
-                }
-
-                if (showScanPopUp) {
-                    FridgeScanPopUp(
-                        scannedBarcode = scannedBarcode
-                    ) { showScanPopUp = false }
                 }
             }
         }
@@ -470,10 +346,10 @@ fun FridgeDeletePopUp(
             Icon(
                 modifier = Modifier
                     .size(72.dp)
-                    .border(4.dp, MainAccent, CircleShape),
+                    .border(4.dp, Error, CircleShape),
                 imageVector = Icons.Outlined.Close,
                 contentDescription = null,
-                tint = MainAccent
+                tint = Error
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -497,7 +373,7 @@ fun FridgeDeletePopUp(
                     onDeleteClick(ingredient)
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MainAccent
+                    containerColor = Error
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
@@ -511,74 +387,3 @@ fun FridgeDeletePopUp(
         }
     }
 }
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun FridgeScanPopUp(
-    scannedBarcode: String,
-    onDismissRequest: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true
-        ),
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
-                .background(color = Background)
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                modifier = Modifier
-                    .size(72.dp)
-                    .border(4.dp, MainAccent, CircleShape),
-                imageVector = Icons.Outlined.ShoppingCart,
-                contentDescription = null,
-                tint = MainAccent
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                text = stringResource(id = R.string.scanned),
-                textAlign = TextAlign.Center,
-                fontSize = 20.sp,
-                fontFamily = Poppins,
-                color = MainText
-            )
-
-            Text(text = scannedBarcode)
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                modifier = Modifier,
-                onClick = {
-                    onDismissRequest()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MainAccent
-                ),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.generic_ok),
-                    fontSize = 20.sp,
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            }
-        }
-    }
-}
-
-

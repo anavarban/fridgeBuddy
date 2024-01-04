@@ -47,7 +47,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mready.myapplication.R
+import com.mready.myapplication.ui.fridge.scan.ScanViewModel
 import com.mready.myapplication.ui.theme.Background
+import com.mready.myapplication.ui.theme.Error
 import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
@@ -60,11 +62,21 @@ import kotlinx.coroutines.launch
 )
 @Composable
 fun AddIngredientScreen(
+    scanViewModel: ScanViewModel = hiltViewModel(),
+    onScanClick: () -> Unit,
     onDone: () -> Unit
 ) {
-
-
     val addIngredientViewModel: AddIngredientViewModel = hiltViewModel()
+
+    if (scanViewModel.getTitle() != "") {
+        addIngredientViewModel.type = scanViewModel.getTitle()
+        scanViewModel.updateTitle("")
+    }
+
+    if (scanViewModel.getCapturedImage() != "") {
+        addIngredientViewModel.picturePath = scanViewModel.getCapturedImage()
+        scanViewModel.updateCapturedImage("")
+    }
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -103,7 +115,6 @@ fun AddIngredientScreen(
                 1 -> progress = 0.33f
                 2 -> {
                     progress = 0.66f
-//                    keyboardController?.hide()
                 }
             }
         }
@@ -140,6 +151,9 @@ fun AddIngredientScreen(
                                 pagerState.animateScrollToPage(1)
                             }
                             userScrollEnabled = true
+                        },
+                        onScanClick = {
+                            onScanClick()
                         }
                     )
                 }
@@ -159,7 +173,6 @@ fun AddIngredientScreen(
                 }
 
                 2 -> {
-//                    keyboardController?.hide()
                     AddExpireDate(
                         user = addIngredientViewModel.currentUser?.email ?: "",
                         ingredientName = addIngredientViewModel.type,
@@ -214,10 +227,10 @@ fun AddIngredientScreen(
                 Icon(
                     modifier = Modifier
                         .size(72.dp)
-                        .border(4.dp, MainAccent, CircleShape),
+                        .border(4.dp, Error, CircleShape),
                     imageVector = Icons.Outlined.Close,
                     contentDescription = null,
-                    tint = MainAccent
+                    tint = Error
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -241,7 +254,7 @@ fun AddIngredientScreen(
                         onDone()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MainAccent
+                        containerColor = Error
                     ),
                     shape = RoundedCornerShape(8.dp)
                 ) {

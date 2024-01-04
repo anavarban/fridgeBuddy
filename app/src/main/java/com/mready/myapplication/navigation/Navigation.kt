@@ -1,12 +1,11 @@
 package com.mready.myapplication.navigation
 
-import com.mready.myapplication.ui.fridge.scan.ScanActivity
-import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -20,7 +19,8 @@ import com.mready.myapplication.ui.dashboard.DashboardScreen
 import com.mready.myapplication.ui.fridge.YourFridgeScreen
 import com.mready.myapplication.ui.fridge.addingredient.AddIngredientScreen
 import com.mready.myapplication.ui.fridge.scan.ScanScreen
-import com.mready.myapplication.ui.fridge.scan.ScannedScreen
+import com.mready.myapplication.ui.fridge.scan.ScanViewModel
+import com.mready.myapplication.ui.fridge.scan.ScanResultScreen
 import com.mready.myapplication.ui.onboarding.SplashScreen
 import com.mready.myapplication.ui.onboarding.StartScreen
 import com.mready.myapplication.ui.onboarding.forgotpass.ForgotPassScreen
@@ -169,12 +169,6 @@ fun Navigation(
                         onAddClick = { navController.navigate(Screens.AddIngredientScreen.route) },
                         onBackClick = { navController.popBackStack() },
                         onCardClick = { navController.navigate(Screens.DetailsScreen.route + "/${it}") },
-                        onScanClick = {
-//                            val context = navController.context
-//                            val intent = Intent(context, ScanActivity::class.java)
-//                            context.startActivity(intent)
-                            navController.navigate(Screens.ScanScreen.route)
-                        },
                     )
                 }) {
                 DisplayError()
@@ -183,10 +177,14 @@ fun Navigation(
         }
 
         composable(route = Screens.ScanScreen.route) {
+            val parent = remember(it) { navController.getBackStackEntry(Screens.AddIngredientScreen.route) }
+            val viewModel = hiltViewModel<ScanViewModel>(parent)
+
             NetworkStatus(
                 onNetworkAvailable = {
                     Log.d("DEBUG", "Scan screen")
                     ScanScreen(
+                        viewModel = viewModel,
                         onTextRecognised = {
                             navController.navigate(Screens.ScannedScreen.route + "/${it}")
 
@@ -205,6 +203,8 @@ fun Navigation(
         }
 
         composable(route = Screens.ScannedScreen.route + "/{text}") {
+            val parent = remember(it) { navController.getBackStackEntry(Screens.AddIngredientScreen.route) }
+            val viewModel = hiltViewModel<ScanViewModel>(parent)
             NetworkStatus(
                 onNetworkAvailable = {
                     val text = it.arguments?.getString("text")
@@ -213,12 +213,22 @@ fun Navigation(
 //                    val intent = Intent(navController.context, ScanActivity::class.java)
 //                    intent.putExtra("text", text)
 //                    navController.context.startActivity(intent)
-                    ScannedScreen(text = text ?: "") {
-                        navController.popBackStack(
-                            route = Screens.FridgeScreen.route,
-                            inclusive = false
-                        )
-                    }
+                    ScanResultScreen(
+                        viewModel = viewModel,
+                        text = text ?: "",
+                        onBack = {
+                            navController.popBackStack(
+                                route = Screens.ScanScreen.route,
+                                inclusive = false
+                            )
+                        },
+                        onConfirmClick = {
+                            navController.popBackStack(
+                                route = Screens.AddIngredientScreen.route,
+                                inclusive = false
+                            )
+                        }
+                    )
                 }
             ) {
                 DisplayError()
@@ -229,7 +239,13 @@ fun Navigation(
             NetworkStatus(
                 onNetworkAvailable = {
                     AddIngredientScreen(
-                        onDone = { navController.popBackStack() }
+                        onDone = { navController.popBackStack() },
+                        onScanClick = {
+//                            val context = navController.context
+//                            val intent = Intent(context, ScanActivity::class.java)
+//                            context.startActivity(intent)
+                            navController.navigate(Screens.ScanScreen.route)
+                        },
                     )
                 }
             ) {

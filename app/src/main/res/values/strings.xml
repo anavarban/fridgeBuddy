@@ -103,5 +103,11 @@
     <string name="onboarding_send_reset_email">Send reset link</string>
     <string name="scanned">Scanned the following:</string>
     <string name="title_activity_scan">Scan</string>
+    <string name="scan_screen_title">Scan an ingredient</string>
+    <string name="scan_screen_button">Scan</string>
+    <string name="scanned_screen_title">Scanned Ingredient</string>
+    <string name="scan_screen_guide">For better text recognition and a better image quality of your ingredient, take the picture in good lighting</string>
+    <string name="scanned_screen_button">Confirm</string>
+    <string name="fridge_go_to_scan">Scan an ingredient</string>
 
 </resources>

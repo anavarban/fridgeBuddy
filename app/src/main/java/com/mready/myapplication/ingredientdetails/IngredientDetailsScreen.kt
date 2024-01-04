@@ -1,8 +1,5 @@
 package com.mready.myapplication.ingredientdetails
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -27,29 +24,21 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
-import androidx.compose.material.icons.outlined.KeyboardArrowUp
-import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SelectableDates
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
@@ -97,7 +86,6 @@ import com.mready.myapplication.ui.utils.LoadingAnimation
 import com.mready.myapplication.ui.utils.expiresRatherSoon
 import com.mready.myapplication.ui.utils.isExpired
 import java.util.Calendar
-import java.util.Locale
 
 @Composable
 fun IngredientDetailsScreen(
@@ -459,10 +447,10 @@ fun DeletePopUp(
             Icon(
                 modifier = Modifier
                     .size(72.dp)
-                    .border(4.dp, MainAccent, CircleShape),
+                    .border(4.dp, Error, CircleShape),
                 imageVector = Icons.Outlined.Close,
                 contentDescription = null,
-                tint = MainAccent
+                tint = Error
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -486,7 +474,7 @@ fun DeletePopUp(
                     onDeleteClick(ingredientId)
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MainAccent
+                    containerColor = Error
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
