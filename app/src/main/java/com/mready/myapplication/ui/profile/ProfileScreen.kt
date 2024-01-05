@@ -1,6 +1,5 @@
 package com.mready.myapplication.ui.profile
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,39 +17,28 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.mready.myapplication.R
-import com.mready.myapplication.ui.theme.Background
-import com.mready.myapplication.ui.theme.Error
-import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
+import com.mready.myapplication.ui.utils.FridgeBuddyTextField
 import com.mready.myapplication.ui.utils.LoadingAnimation
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
@@ -84,14 +72,14 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .safeDrawingPadding()
-                    .padding(top = 20.dp, bottom = 16.dp),
+                    .padding(top = 52.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row {
                     Icon(
                         modifier = Modifier
                             .padding(start = 20.dp, end = 8.dp)
-                            .size(40.dp)
+                            .size(32.dp)
                             .clickable(
                                 interactionSource = MutableInteractionSource(),
                                 indication = null,
@@ -107,7 +95,7 @@ fun ProfileScreen(
                     Text(
                         modifier = Modifier,
                         text = stringResource(id = R.string.profile_title),
-                        fontSize = 28.sp,
+                        fontSize = 24.sp,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         color = MainAccent
@@ -129,11 +117,11 @@ fun ProfileScreen(
                         contentScale = ContentScale.Crop
                     )
 
-                    OutlinedTextField(
+                    FridgeBuddyTextField(
                         modifier = Modifier
                             .padding(top = 20.dp)
                             .fillMaxWidth(.8f),
-                        value = TextFieldValue(profileViewModel.user?.displayName ?: ""),
+                        value = profileViewModel.user?.displayName ?: "",
                         onValueChange = {},
                         label = {
                             Text(
@@ -146,23 +134,13 @@ fun ProfileScreen(
                         },
                         readOnly = true,
                         enabled = false,
-                        colors = TextFieldDefaults.colors(
-                            disabledContainerColor = Background,
-                            disabledIndicatorColor = MainAccent
-                        ),
-                        textStyle = TextStyle(
-                            fontFamily = Poppins,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MainText
-                        ),
                     )
 
-                    OutlinedTextField(
+                    FridgeBuddyTextField(
                         modifier = Modifier
                             .padding(top = 20.dp)
                             .fillMaxWidth(.8f),
-                        value = TextFieldValue(profileViewModel.user?.email ?: ""),
+                        value = profileViewModel.user?.email ?: "",
                         onValueChange = {},
                         label = {
                             Text(
@@ -175,16 +153,6 @@ fun ProfileScreen(
                         },
                         readOnly = true,
                         enabled = false,
-                        colors = TextFieldDefaults.colors(
-                            disabledContainerColor = Background,
-                            disabledIndicatorColor = MainAccent
-                        ),
-                        textStyle = TextStyle(
-                            fontFamily = Poppins,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MainText
-                        ),
                     )
                 }
 

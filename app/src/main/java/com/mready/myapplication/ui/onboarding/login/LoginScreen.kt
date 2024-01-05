@@ -26,9 +26,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,15 +35,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,6 +57,7 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.FridgeBuddyTextField
 import com.mready.myapplication.ui.utils.LoadingAnimation
 import com.mready.myapplication.ui.utils.LoginFields
 import com.mready.myapplication.ui.utils.clientId
@@ -185,39 +180,15 @@ fun LoginScreen(
             fontWeight = FontWeight.SemiBold,
             color = SecondaryText
         )
-        OutlinedTextField(
+
+        FridgeBuddyTextField(
             modifier = Modifier
                 .fillMaxWidth(),
             value = email,
-            onValueChange = { email = it },
-            textStyle = TextStyle(
-                fontFamily = Poppins,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MainText
-            ),
-            maxLines = 1,
-            placeholder = {
-                Text(
-                    modifier = Modifier
-                        .alpha(.6f)
-                        .padding(top = 4.dp),
-                    text = stringResource(id = R.string.onboarding_email_example),
-                    textAlign = TextAlign.Left,
-                    fontSize = 16.sp,
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold,
-                    color = SecondaryText
-                )
+            onValueChange = {
+                email = it
             },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Background,
-                unfocusedContainerColor = Background,
-                errorContainerColor = Background,
-                focusedIndicatorColor = MainAccent,
-                unfocusedIndicatorColor = LightAccent,
-                errorIndicatorColor = Error,
-            ),
+            placeholder = stringResource(id = R.string.onboarding_email_example),
             isError = emailError,
             keyboardActions = KeyboardActions {
                 validate(email, LoginFields.EMAIL)
@@ -250,40 +221,23 @@ fun LoginScreen(
             fontWeight = FontWeight.SemiBold,
             color = SecondaryText
         )
-        OutlinedTextField(
+
+        FridgeBuddyTextField(
             modifier = Modifier
                 .fillMaxWidth(),
             value = password,
             onValueChange = { password = it },
-            textStyle = TextStyle(
-                fontFamily = Poppins,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MainText
-            ),
-            maxLines = 1,
-            placeholder = {
-                Text(
-                    modifier = Modifier
-                        .alpha(.6f)
-                        .padding(top = 4.dp),
-                    text = stringResource(id = R.string.onboarding_pass_placeholder),
-                    textAlign = TextAlign.Left,
-                    fontSize = 16.sp,
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold,
-                    color = SecondaryText
-                )
+            placeholder = stringResource(id = R.string.onboarding_pass_placeholder),
+            isError = passwordError,
+            keyboardActions = KeyboardActions {
+                validate(password, LoginFields.PASSWORD)
             },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Background,
-                unfocusedContainerColor = Background,
-                errorContainerColor = Background,
-                focusedIndicatorColor = MainAccent,
-                unfocusedIndicatorColor = LightAccent,
-                errorIndicatorColor = Error,
-            ),
-            visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
+            visualTransformation = if (passwordVisibility) {
+                androidx.compose.ui.text.input.VisualTransformation.None
+            } else {
+                androidx.compose.ui.text.input.PasswordVisualTransformation()
+            },
             trailingIcon = {
                 Icon(
                     modifier = Modifier
@@ -302,11 +256,6 @@ fun LoginScreen(
                     tint = if (!passwordError) MainAccent else Error
                 )
             },
-            isError = passwordError,
-            keyboardActions = KeyboardActions {
-                validate(password, LoginFields.PASSWORD)
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             supportingText = {
                 if (passwordError) {
                     Text(
@@ -320,7 +269,7 @@ fun LoginScreen(
                         color = Error
                     )
                 }
-            },
+            }
         )
 
 

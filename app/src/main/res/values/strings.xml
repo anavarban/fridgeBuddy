@@ -109,5 +109,7 @@
     <string name="scan_screen_guide">For better text recognition and a better image quality of your ingredient, take the picture in good lighting</string>
     <string name="scanned_screen_button">Confirm</string>
     <string name="fridge_go_to_scan">Scan an ingredient</string>
+    <string name="scanned_screen_placeholder">Your ingredient</string>
+    <string name="ingredient_amount_label">Amount</string>
 
 </resources>

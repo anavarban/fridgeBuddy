@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
@@ -37,13 +39,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -53,7 +55,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
@@ -61,8 +62,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -84,6 +85,7 @@ import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.theme.Warning
+import com.mready.myapplication.ui.utils.FridgeBuddyTextField
 import com.mready.myapplication.ui.utils.LoadingAnimation
 import com.mready.myapplication.ui.utils.expiresRatherSoon
 import com.mready.myapplication.ui.utils.isExpired
@@ -588,44 +590,25 @@ fun EditBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                OutlinedTextField(
+                FridgeBuddyTextField(
                     modifier = Modifier
-                        .fillMaxWidth(.5f),
+                        .padding(top = 32.dp, start = 24.dp)
+                        .fillMaxWidth(.4f),
                     value = amountEntered,
                     onValueChange = {
                         amountEntered = it
                     },
-                    textStyle = TextStyle(
-                        fontFamily = Poppins,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MainText
+                    placeholder = "00",
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
                     ),
-                    shape = RoundedCornerShape(8.dp),
-                    maxLines = 1,
-                    placeholder = {
-                        Text(
-                            modifier = Modifier.alpha(.6f),
-                            text = "00",
-                            textAlign = TextAlign.Left,
-                            fontSize = 20.sp,
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.SemiBold,
-                            color = SecondaryText
-                        )
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Background,
-                        unfocusedContainerColor = Background,
-                        errorContainerColor = Background,
-                        focusedIndicatorColor = MainAccent,
-                        unfocusedIndicatorColor = LightAccent,
-                        errorIndicatorColor = Error,
-                    ),
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     isError = amountError,
+                    keyboardActions = KeyboardActions {
+                        validate(amountEntered)
+                    },
                     supportingText = {
                         if (amountError) {
                             Text(
@@ -638,12 +621,20 @@ fun EditBottomSheet(
                             )
                         }
                     },
-                    keyboardActions = KeyboardActions {
-                        validate(amountEntered)
-                    },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.ingredient_amount_label),
+                            textAlign = TextAlign.Left,
+                            fontSize = 12.sp,
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
                 )
 
                 Text(
+                    modifier = Modifier
+                        .padding(top = 8.dp),
                     text = ingredient.unit,
                     textAlign = TextAlign.Left,
                     fontSize = 20.sp,
@@ -653,46 +644,54 @@ fun EditBottomSheet(
                 )
             }
 
-            DatePicker(
-                modifier = Modifier.fillMaxWidth(),
-                state = datePickerState,
-                title = {},
-                headline = {},
-                showModeToggle = false,
-                colors = DatePickerDefaults.colors(
-                    containerColor = Background,
-                    titleContentColor = Background,
-                    headlineContentColor = MainText,
-                    weekdayContentColor = SecondaryText,
-                    subheadContentColor = SecondaryText,
-                    yearContentColor = SecondaryText,
-                    currentYearContentColor = MainAccent,
-                    selectedYearContentColor = Background,
-                    selectedYearContainerColor = MainAccent,
-                    dayContentColor = MainText,
-                    disabledDayContentColor = SecondaryText,
-                    selectedDayContentColor = Background,
-                    disabledSelectedDayContentColor = MainText,
-                    selectedDayContainerColor = MainAccent,
-                    disabledSelectedDayContainerColor = MainAccent,
-                    todayContentColor = MainText,
-                    todayDateBorderColor = MainAccent,
-                    dayInSelectionRangeContentColor = MainText,
-                    dayInSelectionRangeContainerColor = MainAccent,
-                    dateTextFieldColors = TextFieldDefaults.colors(
-                        focusedContainerColor = Background,
-                        unfocusedContainerColor = Background,
-                        errorContainerColor = Background,
-                        focusedIndicatorColor = MainAccent,
-                        unfocusedIndicatorColor = LightAccent,
-                        errorIndicatorColor = Error,
-                        focusedLabelColor = MainAccent,
-                        unfocusedLabelColor = LightAccent,
-                        disabledLabelColor = SecondaryText,
-                        errorLabelColor = Error,
-                    ),
-                ),
+            val customTextSelectionColors = TextSelectionColors(
+                handleColor = MainAccent,
+                backgroundColor = LightAccent
             )
+
+            CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+                DatePicker(
+                    modifier = Modifier.fillMaxWidth(),
+                    state = datePickerState,
+                    title = null,
+                    headline = null,
+                    showModeToggle = false,
+                    colors = DatePickerDefaults.colors(
+                        containerColor = Background,
+                        titleContentColor = Background,
+                        headlineContentColor = MainText,
+                        weekdayContentColor = SecondaryText,
+                        subheadContentColor = SecondaryText,
+                        yearContentColor = SecondaryText,
+                        currentYearContentColor = MainAccent,
+                        selectedYearContentColor = Background,
+                        selectedYearContainerColor = MainAccent,
+                        dayContentColor = MainText,
+                        disabledDayContentColor = SecondaryText,
+                        selectedDayContentColor = Background,
+                        disabledSelectedDayContentColor = MainText,
+                        selectedDayContainerColor = MainAccent,
+                        disabledSelectedDayContainerColor = MainAccent,
+                        todayContentColor = MainText,
+                        todayDateBorderColor = MainAccent,
+                        dayInSelectionRangeContentColor = MainText,
+                        dayInSelectionRangeContainerColor = MainAccent,
+                        dateTextFieldColors = TextFieldDefaults.colors(
+                            focusedContainerColor = Background,
+                            unfocusedContainerColor = Background,
+                            errorContainerColor = Background,
+                            focusedIndicatorColor = MainAccent,
+                            unfocusedIndicatorColor = LightAccent,
+                            errorIndicatorColor = Error,
+                            focusedLabelColor = MainAccent,
+                            unfocusedLabelColor = LightAccent,
+                            disabledLabelColor = SecondaryText,
+                            errorLabelColor = Error,
+                            cursorColor = MainText,
+                        ),
+                    ),
+                )
+            }
 
             FloatingActionButton(
                 modifier = Modifier

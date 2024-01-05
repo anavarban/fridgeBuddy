@@ -134,12 +134,12 @@ fun YourFridgeScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 32.dp, start = 20.dp, end = 20.dp),
+                            .padding(top = 32.dp, start = 12.dp, end = 20.dp),
                     ) {
                         Icon(
                             modifier = Modifier
-                                .padding(end = 8.dp)
-                                .size(40.dp)
+                                .padding(end = 4.dp)
+                                .size(32.dp)
                                 .clickable(
                                     interactionSource = MutableInteractionSource(),
                                     indication = null,
@@ -155,7 +155,7 @@ fun YourFridgeScreen(
                         Text(
                             modifier = Modifier,
                             text = stringResource(id = R.string.fridge_title),
-                            fontSize = 28.sp,
+                            fontSize = 24.sp,
                             fontFamily = Poppins,
                             fontWeight = FontWeight.SemiBold,
                             color = MainText

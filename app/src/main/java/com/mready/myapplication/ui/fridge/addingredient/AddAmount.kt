@@ -19,9 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MenuDefaults
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,25 +29,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mready.myapplication.R
-import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.Error
-import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.theme.Surface
+import com.mready.myapplication.ui.utils.FridgeBuddyTextField
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -59,8 +53,6 @@ fun AddAmount(
     onNextClick: (String, String, String, Int) -> Unit
 ) {
     val measurementUnits = listOf("grams", "milliliters", "pieces")
-
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     var selectedUnit by remember {
         mutableStateOf("")
@@ -118,7 +110,7 @@ fun AddAmount(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedTextField(
+            FridgeBuddyTextField(
                 modifier = Modifier
                     .padding(end = 16.dp)
                     .fillMaxWidth(.5f),
@@ -127,35 +119,15 @@ fun AddAmount(
                     amountEntered = it
                     enteredAmount = it.isNotEmpty()
                 },
-                textStyle = TextStyle(
-                    fontFamily = Poppins,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MainText
-                ),
-                shape = RoundedCornerShape(8.dp),
-                maxLines = 1,
-                placeholder = {
-                    Text(
-                        modifier = Modifier.alpha(.6f),
-                        text = "00",
-                        textAlign = TextAlign.Left,
-                        fontSize = 20.sp,
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        color = SecondaryText
-                    )
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Background,
-                    unfocusedContainerColor = Background,
-                    errorContainerColor = Background,
-                    focusedIndicatorColor = MainAccent,
-                    unfocusedIndicatorColor = LightAccent,
-                    errorIndicatorColor = Error,
-                ),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = androidx.compose.ui.text.input.ImeAction.Done),
+                placeholder = "00",
                 isError = amountError,
+                keyboardActions = KeyboardActions {
+                    validate(amountEntered)
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
                 supportingText = {
                     if (amountError) {
                         Text(
@@ -167,15 +139,7 @@ fun AddAmount(
                             color = Error
                         )
                     }
-                },
-                keyboardActions = KeyboardActions {
-                    validate(amountEntered)
-//                    keyboardController?.hide()
-                },
-//                keyboardActions = KeyboardActions(onDone = {
-//                    validate(amountEntered)
-//                    keyboardController?.hide()
-//                }),
+                }
             )
 
             ExposedDropdownMenuBox(
@@ -183,38 +147,13 @@ fun AddAmount(
                 expanded = expandedMenu,
                 onExpandedChange = { expandedMenu = !expandedMenu }
             ) {
-                OutlinedTextField(
+                FridgeBuddyTextField(
                     modifier = Modifier
                         .menuAnchor(),
                     value = selectedUnit,
                     onValueChange = {},
                     readOnly = true,
-                    textStyle = TextStyle(
-                        fontFamily = Poppins,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MainText
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    placeholder = {
-                        Text(
-                            modifier = Modifier.alpha(.6f),
-                            text = stringResource(id = R.string.fridge_add_amount_unit),
-                            textAlign = TextAlign.Left,
-                            fontSize = 20.sp,
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.SemiBold,
-                            color = SecondaryText
-                        )
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Background,
-                        unfocusedContainerColor = Background,
-                        errorContainerColor = Background,
-                        focusedIndicatorColor = MainAccent,
-                        unfocusedIndicatorColor = LightAccent,
-                        errorIndicatorColor = Error,
-                    ),
+                    placeholder = stringResource(id = R.string.fridge_add_amount_unit),
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedMenu)
                     },

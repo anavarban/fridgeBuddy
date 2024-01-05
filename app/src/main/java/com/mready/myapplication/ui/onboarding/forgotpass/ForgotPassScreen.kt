@@ -21,19 +21,15 @@ import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -41,13 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mready.myapplication.R
-import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.Error
-import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.FridgeBuddyTextField
 
 @Composable
 fun ForgotPassScreen(
@@ -79,13 +74,13 @@ fun ForgotPassScreen(
         modifier = Modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.safeDrawing)
-            .padding(top = 20.dp,end = 32.dp),
+            .padding(top = 20.dp, end = 32.dp),
 
         ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 20.dp, start = 16.dp, ),
+                .padding(top = 20.dp, start = 16.dp),
         ) {
             Icon(
                 modifier = Modifier
@@ -117,7 +112,7 @@ fun ForgotPassScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 56.dp,start = 32.dp),
+                .padding(top = 56.dp, start = 32.dp),
             text = stringResource(id = R.string.forgot_pass_email),
             textAlign = TextAlign.Left,
             fontSize = 16.sp,
@@ -125,40 +120,14 @@ fun ForgotPassScreen(
             fontWeight = FontWeight.SemiBold,
             color = SecondaryText
         )
-        OutlinedTextField(
+
+        FridgeBuddyTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 32.dp),
             value = email,
             onValueChange = { email = it },
-            textStyle = TextStyle(
-                fontFamily = Poppins,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MainText
-            ),
-            maxLines = 1,
-            placeholder = {
-                Text(
-                    modifier = Modifier
-                        .alpha(.6f)
-                        .padding(top = 4.dp),
-                    text = stringResource(id = R.string.onboarding_email_example),
-                    textAlign = TextAlign.Left,
-                    fontSize = 16.sp,
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold,
-                    color = SecondaryText
-                )
-            },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Background,
-                unfocusedContainerColor = Background,
-                errorContainerColor = Background,
-                focusedIndicatorColor = MainAccent,
-                unfocusedIndicatorColor = LightAccent,
-                errorIndicatorColor = Error,
-            ),
+            placeholder = stringResource(id = R.string.onboarding_email_example),
             isError = emailError,
             keyboardActions = KeyboardActions {
                 validate(email)
@@ -178,7 +147,6 @@ fun ForgotPassScreen(
                     )
                 }
             },
-
         )
 
         Button(
