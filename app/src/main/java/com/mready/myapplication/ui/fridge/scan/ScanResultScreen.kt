@@ -64,7 +64,7 @@ fun ScanResultScreen(
         backgroundColor = LightAccent
     )
 
-    val capturedImage by viewModel.capturedImageFlow.collectAsState()
+    val capturedImage by viewModel.capturedImagePathFlow.collectAsState()
 
     Column(
         modifier = Modifier

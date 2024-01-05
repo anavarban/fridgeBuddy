@@ -29,6 +29,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,13 +69,16 @@ fun AddIngredientScreen(
 ) {
     val addIngredientViewModel: AddIngredientViewModel = hiltViewModel()
 
-    if (scanViewModel.getTitle() != "") {
-        addIngredientViewModel.type = scanViewModel.getTitle()
+    val scannedImageTitle by scanViewModel.titleFlow.collectAsState()
+    val scannedImagePath by scanViewModel.capturedImagePathFlow.collectAsState()
+
+    if (scannedImageTitle != "") {
+        addIngredientViewModel.type = scannedImageTitle
         scanViewModel.updateTitle("")
     }
 
-    if (scanViewModel.getCapturedImage() != "") {
-        addIngredientViewModel.picturePath = scanViewModel.getCapturedImage()
+    if (scannedImagePath != "") {
+        addIngredientViewModel.picturePath = scannedImagePath
         scanViewModel.updateCapturedImage("")
     }
 
@@ -108,6 +112,7 @@ fun AddIngredientScreen(
         modifier = Modifier
             .fillMaxWidth()
             .safeDrawingPadding()
+            .padding(top = 20.dp, bottom = 16.dp)
     ) {
         LaunchedEffect(key1 = pagerState.currentPage) {
             when (pagerState.currentPage) {

@@ -29,6 +29,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -92,6 +93,12 @@ fun ScanScreen(
                 mediaPermissionState.launchPermissionRequest()
             }
         }
+    }
+
+    val cameraHandler = remember { CameraHandler(context) }
+    DisposableEffect(cameraHandler) {
+        viewModel.setCameraHandler(cameraHandler)
+        onDispose { }
     }
 
 
@@ -158,9 +165,8 @@ fun ScanScreen(
                                             shouldAnalyse = false
                                             viewModel.takePhoto(
                                                 title = text.replace("\n", " "),
-                                                context = context,
                                                 imageCapture = imageCapture,
-                                                onPhotoTaken = onTextRecognised
+                                                onDoneTakingPhoto =  onTextRecognised
                                             )
                                         }
                                     })

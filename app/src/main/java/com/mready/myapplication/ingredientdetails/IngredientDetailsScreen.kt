@@ -44,6 +44,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -69,6 +70,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.mready.myapplication.R
 import com.mready.myapplication.models.Date
 import com.mready.myapplication.models.Ingredient
@@ -98,6 +100,24 @@ fun IngredientDetailsScreen(
     val detailsUiState = ingredientDetailsViewModel.ingredientDetailsFlow.collectAsState()
 
     val ingredientRecipesState = ingredientDetailsViewModel.ingredientRecipesFlow.collectAsState()
+
+    val systemUiController = rememberSystemUiController()
+
+    DisposableEffect(ingredientDetailsViewModel) {
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = false,
+            isNavigationBarContrastEnforced = true,
+        )
+
+        onDispose {
+            systemUiController.setSystemBarsColor(
+                color = Color.Transparent,
+                darkIcons = true,
+                isNavigationBarContrastEnforced = true,
+            )
+        }
+    }
 
     LaunchedEffect(key1 = ingredientId) {
         ingredientDetailsViewModel.loadIngredientDetails(ingredientId)

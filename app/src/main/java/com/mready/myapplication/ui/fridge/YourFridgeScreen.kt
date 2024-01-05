@@ -123,7 +123,7 @@ fun YourFridgeScreen(
                     .fillMaxSize()
                     .statusBarsPadding()
                     .navigationBarsPadding()
-                    .padding(bottom = 16.dp)
+                    .padding(top = 20.dp, bottom = 16.dp)
             ) {
                 Column(
                     modifier = Modifier

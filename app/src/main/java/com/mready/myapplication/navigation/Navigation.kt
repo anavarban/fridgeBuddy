@@ -18,10 +18,9 @@ import com.mready.myapplication.ingredientdetails.IngredientDetailsScreen
 import com.mready.myapplication.ui.dashboard.DashboardScreen
 import com.mready.myapplication.ui.fridge.YourFridgeScreen
 import com.mready.myapplication.ui.fridge.addingredient.AddIngredientScreen
+import com.mready.myapplication.ui.fridge.scan.ScanResultScreen
 import com.mready.myapplication.ui.fridge.scan.ScanScreen
 import com.mready.myapplication.ui.fridge.scan.ScanViewModel
-import com.mready.myapplication.ui.fridge.scan.ScanResultScreen
-import com.mready.myapplication.ui.onboarding.SplashScreen
 import com.mready.myapplication.ui.onboarding.StartScreen
 import com.mready.myapplication.ui.onboarding.forgotpass.ForgotPassScreen
 import com.mready.myapplication.ui.onboarding.login.LoginScreen
@@ -57,13 +56,13 @@ fun Navigation(
         navController = navController,
         startDestination = Screens.DashboardScreen.route
     ) {
-        composable(route = Screens.SplashScreen.route) {
-            SplashScreen(
-                onSplashEnded = {
-                    navController.navigate(Screens.StartScreen.route)
-                }
-            )
-        }
+//        composable(route = Screens.SplashScreen.route) {
+//            SplashScreen(
+//                onSplashEnded = {
+//                    navController.navigate(Screens.StartScreen.route)
+//                }
+//            )
+//        }
 
         composable(route = Screens.StartScreen.route) {
             StartScreen(
