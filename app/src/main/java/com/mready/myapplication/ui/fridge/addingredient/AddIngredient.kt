@@ -20,8 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,7 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,6 +52,7 @@ import com.mready.myapplication.ui.theme.LightAccent
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import kotlinx.coroutines.launch
 
 @OptIn(
@@ -252,24 +250,14 @@ fun AddIngredientScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
-                    modifier = Modifier,
+                FridgeBuddyButton(
+                    text = stringResource(id = R.string.generic_exit),
+                    containerColor = Error,
                     onClick = {
                         showPopUp = false
                         onDone()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Error
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.generic_exit),
-                        fontSize = 20.sp,
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                }
+                    }
+                )
             }
         }
     }

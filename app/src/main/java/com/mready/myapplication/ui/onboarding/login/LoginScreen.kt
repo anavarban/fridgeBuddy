@@ -19,11 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -57,6 +54,7 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import com.mready.myapplication.ui.utils.FridgeBuddyTextField
 import com.mready.myapplication.ui.utils.LoadingAnimation
 import com.mready.myapplication.ui.utils.LoginFields
@@ -296,10 +294,11 @@ fun LoginScreen(
             modifier = Modifier.height(80.dp)
         )
 
-        Button(
+        FridgeBuddyButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 40.dp),
+            text = stringResource(id = R.string.onboarding_login),
             onClick = {
                 validate(email, LoginFields.EMAIL)
                 validate(password, LoginFields.PASSWORD)
@@ -307,18 +306,7 @@ fun LoginScreen(
                     loginViewModel.login(email, password)
                 }
             },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MainAccent
-            ),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.onboarding_login),
-                fontSize = 20.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-            )
-        }
+        )
 
         Box(
             modifier = Modifier

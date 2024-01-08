@@ -1,4 +1,4 @@
-package com.mready.myapplication.ingredientdetails
+package com.mready.myapplication.ui.ingredientdetails
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,8 +28,6 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DisplayMode
@@ -85,6 +83,7 @@ import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.theme.Warning
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import com.mready.myapplication.ui.utils.FridgeBuddyTextField
 import com.mready.myapplication.ui.utils.LoadingAnimation
 import com.mready.myapplication.ui.utils.expiresRatherSoon
@@ -188,7 +187,7 @@ fun IngredientDetailsScreen(
                     }
 
                     if (ingredient.expireDate.isExpired()) {
-                        Row (
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 16.dp, start = 20.dp),
@@ -213,7 +212,7 @@ fun IngredientDetailsScreen(
                             )
                         }
                     } else if (ingredient.expireDate.expiresRatherSoon()) {
-                        Row (
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 16.dp, start = 20.dp),
@@ -489,24 +488,14 @@ fun DeletePopUp(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                modifier = Modifier,
+            FridgeBuddyButton(
+                text = stringResource(id = R.string.generic_delete),
+                containerColor = Error,
                 onClick = {
                     onDismissRequest()
                     onDeleteClick(ingredientId)
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Error
-                ),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.generic_delete),
-                    fontSize = 20.sp,
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            }
+            )
         }
     }
 }
@@ -693,10 +682,11 @@ fun EditBottomSheet(
                 )
             }
 
-            FloatingActionButton(
+            FridgeBuddyButton(
                 modifier = Modifier
                     .padding(bottom = 32.dp)
-                    .fillMaxWidth(.7f),
+                    .fillMaxWidth(.88f),
+                text = stringResource(id = R.string.generic_save),
                 onClick = {
                     validate(amountEntered)
                     if (!amountError && datePickerState.selectableDates.isSelectableDate(
@@ -719,17 +709,7 @@ fun EditBottomSheet(
                         onDismissRequest()
                     }
                 },
-                containerColor = MainAccent,
-                contentColor = Background,
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.generic_save),
-                    fontSize = 20.sp,
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
+            )
         }
     }
 }

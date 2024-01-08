@@ -19,11 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -57,6 +54,7 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import com.mready.myapplication.ui.utils.FridgeBuddyTextField
 import com.mready.myapplication.ui.utils.LoadingAnimation
 import com.mready.myapplication.ui.utils.clientId
@@ -137,7 +135,7 @@ fun SignUpScreen(
     fun validate(text: String, type: signUpFields) {
         when (type) {
             signUpFields.NAME -> {
-                nameError = text.length < 3 || !text.all {it.isLetterOrDigit()}
+                nameError = text.length < 3 || !text.all { it.isLetterOrDigit() }
             }
 
             signUpFields.EMAIL -> {
@@ -145,7 +143,7 @@ fun SignUpScreen(
             }
 
             signUpFields.PASSWORD -> {
-                passwordError = text.length < 8 || !text.all{it.isLetterOrDigit()}
+                passwordError = text.length < 8 || !text.all { it.isLetterOrDigit() }
             }
         }
     }
@@ -193,7 +191,7 @@ fun SignUpScreen(
             color = SecondaryText
         )
 
-        FridgeBuddyTextField (
+        FridgeBuddyTextField(
             modifier = Modifier
                 .fillMaxWidth(),
             value = name,
@@ -230,7 +228,7 @@ fun SignUpScreen(
             color = SecondaryText
         )
 
-        FridgeBuddyTextField (
+        FridgeBuddyTextField(
             modifier = Modifier
                 .fillMaxWidth(),
             value = email,
@@ -317,14 +315,13 @@ fun SignUpScreen(
             }
         )
 
-        Spacer(
-            modifier = Modifier.height(80.dp)
-        )
+        Spacer(modifier = Modifier.height(80.dp))
 
-        Button(
+        FridgeBuddyButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 40.dp),
+            text = stringResource(id = R.string.onboarding_sign_up),
             onClick = {
                 validate(name, signUpFields.NAME)
                 validate(email, signUpFields.EMAIL)
@@ -333,18 +330,7 @@ fun SignUpScreen(
                     signUpViewModel.signUp(name, email, password)
                 }
             },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MainAccent
-            ),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.onboarding_sign_up),
-                fontSize = 20.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-            )
-        }
+        )
 
         Box(
             modifier = Modifier

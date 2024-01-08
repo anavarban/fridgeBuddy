@@ -13,13 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,10 +35,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mready.myapplication.R
 import com.mready.myapplication.ui.theme.Error
-import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import com.mready.myapplication.ui.utils.FridgeBuddyTextField
 
 @Composable
@@ -149,10 +146,11 @@ fun ForgotPassScreen(
             },
         )
 
-        Button(
+        FridgeBuddyButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 40.dp, start = 32.dp),
+            text = stringResource(id = R.string.onboarding_send_reset_email),
             onClick = {
                 validate(email)
                 if (!emailError) {
@@ -163,18 +161,7 @@ fun ForgotPassScreen(
                     })
                     onSendClick()
                 }
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MainAccent
-            ),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.onboarding_send_reset_email),
-                fontSize = 20.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-            )
-        }
+            }
+        )
     }
 }

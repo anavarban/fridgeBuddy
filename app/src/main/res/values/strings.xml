@@ -83,13 +83,14 @@
     <string name="generic_exit">Exit</string>
     <string name="generic_save">Save</string>
     <string name="generic_delete">Delete</string>
+
     <string name="onboarding_reset_pass_success">Email sent, check inbox!</string>
     <string name="onboarding_reset_pass_failure">An error occurred, try again!</string>
     <string name="details_expires_soon">This ingredient will expire soon!</string>
     <string name="fridge_no_ingredients_expiring">Your ingredients are still good!</string>
     <string name="onboarding_start_title_message_2">This could be you!</string>
     <string name="onboarding_start_intro_message_2">Manage your ingredients and their expiration dates, make sure they stay fresh</string>
-    <string name="onboarding_start_title_message_3">Let nothing go to waste!</string>
+    <string name="onboarding_start_title_message_3">Less waste, more taste!</string>
     <string name="onboarding_start_intro_message_3">Get personalized recipes with each ingredient from your fridge. Ready?</string>
     <string name="recipe_nutrition">Nutrition</string>
     <string name="recipe_nutrition_calories">Calories: %1d kcal</string>

@@ -24,8 +24,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,10 +53,9 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.mready.myapplication.R
-import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.LightAccent
-import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.Poppins
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import java.util.concurrent.Executors
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -117,10 +114,10 @@ fun ScanScreen(
                 .fillMaxSize()
                 .statusBarsPadding()
                 .navigationBarsPadding()
-                .padding(bottom = 16.dp, start = 20.dp, end = 20.dp)
+                .padding(bottom = 16.dp)
         ) {
             Text(
-                modifier = Modifier.padding(top = 40.dp),
+                modifier = Modifier.padding(top = 48.dp,  start = 20.dp, end = 20.dp),
                 text = stringResource(id = R.string.scan_screen_title),
                 fontSize = 24.sp,
                 fontFamily = Poppins,
@@ -130,7 +127,7 @@ fun ScanScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp, start = 8.dp, end = 8.dp)
+                    .padding(top = 24.dp, start = 28.dp, end = 28.dp)
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(8.dp))
             ) {
@@ -166,7 +163,7 @@ fun ScanScreen(
                                             viewModel.takePhoto(
                                                 title = text.replace("\n", " "),
                                                 imageCapture = imageCapture,
-                                                onDoneTakingPhoto =  onTextRecognised
+                                                onDoneTakingPhoto = onTextRecognised
                                             )
                                         }
                                     })
@@ -203,7 +200,7 @@ fun ScanScreen(
             }
 
             Text(
-                modifier = Modifier.padding(top = 16.dp),
+                modifier = Modifier.padding(top = 16.dp, start = 20.dp, end = 20.dp),
                 text = stringResource(id = R.string.scan_screen_guide),
                 fontSize = 16.sp,
                 fontFamily = Poppins,
@@ -213,25 +210,13 @@ fun ScanScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Button(
+            FridgeBuddyButton(
                 modifier = Modifier
                     .fillMaxWidth(.8f)
                     .align(Alignment.CenterHorizontally),
+                text = stringResource(id = R.string.scan_screen_button),
                 onClick = { shouldAnalyse = true },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MainAccent,
-                    contentColor = Background
-                ),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    modifier = Modifier.padding(vertical = 6.dp),
-                    text = stringResource(id = R.string.scan_screen_button),
-                    fontSize = 18.sp,
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
+            )
         }
     }
 

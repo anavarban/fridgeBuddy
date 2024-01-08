@@ -12,11 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +34,7 @@ import com.mready.myapplication.R
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import com.mready.myapplication.ui.utils.FridgeBuddyTextField
 import com.mready.myapplication.ui.utils.LoadingAnimation
 
@@ -156,26 +154,16 @@ fun ProfileScreen(
                     )
                 }
 
-                Button(
+                FridgeBuddyButton(
                     modifier = Modifier
                         .fillMaxWidth(.8f)
                         .padding(top = 40.dp)
                         .align(CenterHorizontally),
+                    text = stringResource(id = R.string.onboarding_logout),
                     onClick = {
                         profileViewModel.logout()
                     },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MainAccent
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.onboarding_logout),
-                        fontSize = 20.sp,
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                }
+                )
             }
         }
 

@@ -1,4 +1,4 @@
-package com.mready.myapplication.ingredientdetails
+package com.mready.myapplication.ui.ingredientdetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

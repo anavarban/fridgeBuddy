@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -30,13 +27,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mready.myapplication.R
-import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.LightAccent
-import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.theme.Surface
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import com.mready.myapplication.ui.utils.FridgeBuddyTextField
 import com.mready.myapplication.ui.utils.ingredientToUrl
 
@@ -147,45 +143,24 @@ fun AddType(
             color = LightAccent
         )
 
-        Button(
+        FridgeBuddyButton (
             modifier = Modifier
                 .fillMaxWidth(.8f)
                 .padding(top = 20.dp),
+            text = stringResource(id = R.string.fridge_go_to_scan),
             onClick = { onScanClick() },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MainAccent,
-                contentColor = Background
-            ),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.fridge_go_to_scan),
-                fontSize = 20.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-            )
-        }
+        )
 
         Spacer(modifier = Modifier.weight(1f))
 
         if (picked) {
-            Button(
+            FridgeBuddyButton(
                 modifier = Modifier
                     .fillMaxWidth(.8f)
                     .padding(bottom = 32.dp),
+                text = stringResource(id = R.string.generic_next),
                 onClick = { onNextClick(user, selectedType) },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MainAccent
-                ),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.generic_next),
-                    fontSize = 20.sp,
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            }
+            )
         }
     }
 }

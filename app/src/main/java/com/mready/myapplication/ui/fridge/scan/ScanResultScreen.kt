@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,9 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.mready.myapplication.R
-import com.mready.myapplication.ui.theme.Background
-import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.Poppins
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import com.mready.myapplication.ui.utils.FridgeBuddyTextField
 
 @Composable
@@ -58,10 +55,10 @@ fun ScanResultScreen(
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding()
-            .padding(bottom = 16.dp, start = 20.dp, end = 20.dp)
+            .padding(bottom = 16.dp)
     ) {
         Text(
-            modifier = Modifier.padding(top = 32.dp),
+            modifier = Modifier.padding(top = 32.dp, start = 20.dp, end = 20.dp),
             text = stringResource(id = R.string.scanned_screen_title),
             fontSize = 24.sp,
             fontFamily = Poppins,
@@ -70,7 +67,7 @@ fun ScanResultScreen(
 
         FridgeBuddyTextField(
             modifier = Modifier
-                .padding(top = 24.dp)
+                .padding(top = 24.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth(.9f)
                 .align(Alignment.CenterHorizontally),
             value = scannedTextFieldValue,
@@ -80,14 +77,14 @@ fun ScanResultScreen(
             maxLines = Int.MAX_VALUE,
             placeholder = stringResource(id = R.string.scanned_screen_placeholder),
             keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            ),
         )
 
         Image(
             modifier = Modifier
-                .padding(top = 32.dp)
+                .padding(top = 32.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth(.9f)
                 .align(Alignment.CenterHorizontally)
                 .clip(RoundedCornerShape(8.dp)),
@@ -97,27 +94,15 @@ fun ScanResultScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Button(
+        FridgeBuddyButton(
             modifier = Modifier
                 .fillMaxWidth(.8f)
                 .align(Alignment.CenterHorizontally),
+            text = stringResource(id = R.string.scanned_screen_button),
             onClick = {
                 viewModel.updateTitle(scannedTextFieldValue)
                 onConfirmClick(scannedTextFieldValue)
             },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MainAccent,
-                contentColor = Background
-            ),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                modifier = Modifier.padding(vertical = 6.dp),
-                text = stringResource(id = R.string.scanned_screen_button),
-                fontSize = 18.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
+        )
     }
 }

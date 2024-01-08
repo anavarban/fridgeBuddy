@@ -35,8 +35,6 @@ import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -76,6 +74,7 @@ import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import com.mready.myapplication.ui.utils.LoadingAnimation
 import com.mready.myapplication.ui.utils.getShareableRecipe
 import com.mready.myapplication.ui.utils.shareText
@@ -331,11 +330,12 @@ fun RecipeScreen(
 
                             "video" -> {
                                 if (!recipe.videoUrl.isNullOrEmpty()) {
-                                    Button(
+                                    FridgeBuddyButton(
                                         modifier = Modifier
                                             .align(Alignment.CenterHorizontally)
                                             .fillMaxWidth(.8f)
                                             .padding(top = 32.dp, bottom = 16.dp),
+                                        text = stringResource(id = R.string.details_go_to_video),
                                         onClick = {
                                             val intent = Intent(
                                                 Intent.ACTION_VIEW,
@@ -343,18 +343,7 @@ fun RecipeScreen(
                                             )
                                             context.startActivity(intent)
                                         },
-                                        colors = ButtonDefaults.buttonColors(
-                                            containerColor = MainAccent
-                                        ),
-                                        shape = RoundedCornerShape(8.dp)
-                                    ) {
-                                        Text(
-                                            text = stringResource(id = R.string.details_go_to_video),
-                                            fontSize = 20.sp,
-                                            fontFamily = Poppins,
-                                            fontWeight = FontWeight.SemiBold,
-                                        )
-                                    }
+                                    )
                                 }
                             }
                         }
@@ -384,7 +373,7 @@ fun RecipeScreen(
                         .padding(top = 32.dp, end = 20.dp)
                         .shadow(4.dp, CircleShape),
                     onClick = {
-                              shareText(getShareableRecipe(recipe), context)
+                        shareText(getShareableRecipe(recipe), context)
                     },
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = Background,
@@ -485,7 +474,7 @@ fun DescriptionCard(text: String) {
             containerColor = Background,
             contentColor = MainText,
 
-        ),
+            ),
     ) {
         Row(
 //            modifier = Modifier.padding(all = 4.dp)

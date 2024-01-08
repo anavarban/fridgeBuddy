@@ -14,13 +14,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mready.myapplication.MainViewModel
 import com.mready.myapplication.StartScreenState
-import com.mready.myapplication.ingredientdetails.IngredientDetailsScreen
 import com.mready.myapplication.ui.dashboard.DashboardScreen
 import com.mready.myapplication.ui.fridge.YourFridgeScreen
 import com.mready.myapplication.ui.fridge.addingredient.AddIngredientScreen
 import com.mready.myapplication.ui.fridge.scan.ScanResultScreen
 import com.mready.myapplication.ui.fridge.scan.ScanScreen
 import com.mready.myapplication.ui.fridge.scan.ScanViewModel
+import com.mready.myapplication.ui.ingredientdetails.IngredientDetailsScreen
 import com.mready.myapplication.ui.onboarding.StartScreen
 import com.mready.myapplication.ui.onboarding.forgotpass.ForgotPassScreen
 import com.mready.myapplication.ui.onboarding.login.LoginScreen
@@ -189,10 +189,7 @@ fun Navigation(
 
                         },
                         onBack = {
-                            navController.popBackStack(
-                                route = Screens.FridgeScreen.route,
-                                inclusive = false
-                            )
+                            navController.popBackStack()
                         }
                     )
                 }
@@ -207,11 +204,6 @@ fun Navigation(
             NetworkStatus(
                 onNetworkAvailable = {
                     val text = it.arguments?.getString("text")
-                    Log.d("DEBUG", "Scanned screen")
-                    Log.d("DEBUG", "Text is $text")
-//                    val intent = Intent(navController.context, ScanActivity::class.java)
-//                    intent.putExtra("text", text)
-//                    navController.context.startActivity(intent)
                     ScanResultScreen(
                         viewModel = viewModel,
                         text = text ?: "",
@@ -240,9 +232,6 @@ fun Navigation(
                     AddIngredientScreen(
                         onDone = { navController.popBackStack() },
                         onScanClick = {
-//                            val context = navController.context
-//                            val intent = Intent(context, ScanActivity::class.java)
-//                            context.startActivity(intent)
                             navController.navigate(Screens.ScanScreen.route)
                         },
                     )

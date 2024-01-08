@@ -1,6 +1,5 @@
 package com.mready.myapplication.ui.fridge.addingredient
 
-import android.widget.DatePicker
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,12 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
@@ -33,8 +28,8 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import java.util.Calendar
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,25 +114,15 @@ fun AddExpireDate(
                 ),
             )
 
-            Button(
+            FridgeBuddyButton (
                 modifier = Modifier
                     .fillMaxWidth(.8f),
+                text = stringResource(id = R.string.generic_done),
                 onClick = {
                     onDateSelected(datePickerState.selectedDateMillis?: 0)
                     onDoneClick()
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MainAccent
-                ),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.generic_done),
-                    fontSize = 18.sp,
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
+            )
         }
     }
 }

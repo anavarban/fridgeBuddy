@@ -9,11 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -38,11 +35,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mready.myapplication.R
 import com.mready.myapplication.ui.theme.Error
-import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.theme.Surface
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import com.mready.myapplication.ui.utils.FridgeBuddyTextField
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -205,30 +202,20 @@ fun AddAmount(
         }
 
         if (pickedUnit && enteredAmount) {
-            Button(
+            FridgeBuddyButton(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(.8f)
                     .padding(bottom = 32.dp),
+                text = stringResource(id = R.string.generic_next),
                 onClick = {
                     validate(amountEntered)
                     Log.d("AddAmount", "amountError: $amountError")
                     if (!amountError) {
                         onNextClick(user, ingredientName, selectedUnit, amountEntered.toInt())
                     }
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MainAccent
-                ),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.generic_next),
-                    fontSize = 20.sp,
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            }
+                }
+            )
         }
     }
 }

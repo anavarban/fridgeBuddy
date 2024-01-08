@@ -14,11 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -51,6 +48,7 @@ import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.utils.BackPress
 import com.mready.myapplication.ui.utils.DotsIndicator
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -210,21 +208,11 @@ fun StartScreenPageOne(onClick: () -> Unit) {
             color = SecondaryText
         )
 
-        Button(
-            modifier = Modifier.fillMaxWidth(.7f),
+        FridgeBuddyButton(
+            modifier = Modifier.fillMaxWidth(.8f),
+            text = stringResource(id = R.string.generic_next),
             onClick = onClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MainAccent
-            ),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.generic_next),
-                fontSize = 18.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
+        )
     }
 }
 
@@ -294,21 +282,11 @@ fun StartScreenPageTwo(onClick: () -> Unit) {
             color = SecondaryText
         )
 
-        Button(
-            modifier = Modifier.fillMaxWidth(.7f),
+        FridgeBuddyButton(
+            modifier = Modifier.fillMaxWidth(.8f),
+            text = stringResource(id = R.string.generic_next),
             onClick = onClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MainAccent
-            ),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.generic_next),
-                fontSize = 18.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
+        )
     }
 }
 
@@ -379,20 +357,10 @@ fun StartScreenPageThree(onClick: () -> Unit) {
             color = SecondaryText
         )
 
-        Button(
-            modifier = Modifier.fillMaxWidth(.7f),
+        FridgeBuddyButton (
+            modifier = Modifier.fillMaxWidth(.8f),
             onClick = onClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MainAccent
-            ),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.onboarding_button_let_s_go),
-                fontSize = 18.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
+            text = stringResource(id = R.string.onboarding_button_let_s_go),
+        )
     }
 }

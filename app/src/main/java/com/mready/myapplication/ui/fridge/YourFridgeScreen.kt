@@ -36,7 +36,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,10 +61,10 @@ import com.mready.myapplication.ui.dashboard.IngredientItem
 import com.mready.myapplication.ui.theme.Background
 import com.mready.myapplication.ui.theme.Error
 import com.mready.myapplication.ui.theme.LightAccent
-import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.theme.SecondaryText
+import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import com.mready.myapplication.ui.utils.LoadingAnimation
 import com.mready.myapplication.ui.utils.getFirstThreeDistinct
 
@@ -123,7 +122,7 @@ fun YourFridgeScreen(
                     .fillMaxSize()
                     .statusBarsPadding()
                     .navigationBarsPadding()
-                    .padding(top = 20.dp, bottom = 16.dp)
+                    .padding(top = 20.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -287,22 +286,14 @@ fun YourFridgeScreen(
                     }
                 }
 
-                FloatingActionButton(
+                FridgeBuddyButton(
                     modifier = Modifier
-                        .fillMaxWidth(.7f)
-                        .align(Alignment.BottomCenter),
+                        .fillMaxWidth(.8f)
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 20.dp),
+                    text = stringResource(id = R.string.fridge_add),
                     onClick = { onAddClick(fridgeViewModel.currentUser?.email ?: "") },
-                    containerColor = MainAccent,
-                    contentColor = Background,
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.fridge_add),
-                        fontSize = 18.sp,
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
+                )
 
                 if (showPopUp && ingredients != null) {
                     FridgeDeletePopUp(
