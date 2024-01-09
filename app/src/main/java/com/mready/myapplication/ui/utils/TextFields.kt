@@ -44,7 +44,7 @@ fun FridgeBuddyTextField(
     supportingText: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
     enabled: Boolean = true,
-    keyboardActions: KeyboardActions = KeyboardActions(),
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     maxLines: Int = 1,
     leadingIcon: @Composable (() -> Unit)? = null,

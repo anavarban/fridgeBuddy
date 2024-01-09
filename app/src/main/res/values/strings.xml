@@ -112,5 +112,6 @@
     <string name="fridge_go_to_scan">Scan an ingredient</string>
     <string name="scanned_screen_placeholder">Your ingredient</string>
     <string name="ingredient_amount_label">Amount</string>
+    <string name="scanned_screen_info">For better recipe recommendations, make sure the name of your ingredient is correct or edit it accordingly</string>
 
 </resources>

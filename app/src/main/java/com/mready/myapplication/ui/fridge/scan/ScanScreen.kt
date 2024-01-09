@@ -14,16 +14,23 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.KeyboardArrowLeft
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,6 +61,7 @@ import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.mready.myapplication.R
 import com.mready.myapplication.ui.theme.LightAccent
+import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.utils.FridgeBuddyButton
 import java.util.concurrent.Executors
@@ -116,13 +124,36 @@ fun ScanScreen(
                 .navigationBarsPadding()
                 .padding(bottom = 16.dp)
         ) {
-            Text(
-                modifier = Modifier.padding(top = 48.dp,  start = 20.dp, end = 20.dp),
-                text = stringResource(id = R.string.scan_screen_title),
-                fontSize = 24.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 42.dp, start = 20.dp, end = 20.dp),
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .padding(end = 4.dp)
+                        .size(32.dp)
+                        .clickable(
+                            interactionSource = MutableInteractionSource(),
+                            indication = null,
+                            onClick = {
+                                onBack()
+                            }
+                        ),
+                    imageVector = Icons.Outlined.KeyboardArrowLeft,
+                    contentDescription = null,
+                    tint = MainText
+                )
+
+                Text(
+                    modifier = Modifier,
+                    text = stringResource(id = R.string.scan_screen_title),
+                    fontSize = 24.sp,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MainText
+                )
+            }
 
             Box(
                 modifier = Modifier
@@ -200,7 +231,7 @@ fun ScanScreen(
             }
 
             Text(
-                modifier = Modifier.padding(top = 16.dp, start = 20.dp, end = 20.dp),
+                modifier = Modifier.padding(top = 16.dp, start = 28.dp, end = 28.dp),
                 text = stringResource(id = R.string.scan_screen_guide),
                 fontSize = 16.sp,
                 fontFamily = Poppins,
