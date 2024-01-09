@@ -219,8 +219,6 @@ fun ScanScreen(
             )
         }
     }
-
-
 }
 
 @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)

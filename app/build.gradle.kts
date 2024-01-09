@@ -146,11 +146,9 @@ dependencies {
     //worker
     implementation("androidx.work:work-runtime-ktx:2.8.1")
 
-    //google scanner
-    implementation ("com.google.android.gms:play-services-code-scanner:16.1.0")
-
     //mlkit
     implementation("com.google.mlkit:text-recognition:16.0.0")
+//    implementation("com.google.mlkit:image-labeling-custom:17.0.2")
 
     //CameraX
     implementation ("androidx.camera:camera-core:1.0.0")

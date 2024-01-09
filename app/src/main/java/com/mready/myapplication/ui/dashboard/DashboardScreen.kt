@@ -8,23 +8,15 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,10 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,12 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.mready.myapplication.R
-import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
-import com.mready.myapplication.ui.theme.SecondaryText
 import com.mready.myapplication.ui.utils.BackPress
 import com.mready.myapplication.ui.utils.LoadingAnimation
 import kotlinx.coroutines.delay
@@ -122,44 +108,47 @@ fun DashboardScreen(
         }
 
         is DashboardState.Success -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .windowInsetsPadding(WindowInsets.safeDrawing)
-                    .padding(top = 20.dp),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 20.dp, start = 20.dp, bottom = 12.dp),
-                    verticalAlignment = CenterVertically
-                ) {
-                    AsyncImage(
-                        modifier = Modifier
-                            .border(1.dp, MainAccent, CircleShape)
-                            .clip(CircleShape)
-                            .size(56.dp)
-                            .clickable(
-                                interactionSource = MutableInteractionSource(),
-                                indication = null,
-                                onClick = onProfileClick
-                            ),
-                        model = dashboardViewModel.currentUser.value?.photoUrl ?: "",
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 12.dp),
-                        text = stringResource(
-                            id = R.string.dashboard_hello_msg,
-                            dashboardViewModel.currentUser.value?.displayName ?: ""
-                        ),
-                        fontSize = 16.sp,
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        color = SecondaryText
-                    )
-                }
+
+            val user = dashboardViewModel.currentUser.collectAsState()
+//
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .windowInsetsPadding(WindowInsets.safeDrawing)
+//                    .padding(top = 20.dp),
+//            ) {
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(top = 20.dp, start = 20.dp, bottom = 12.dp),
+//                    verticalAlignment = CenterVertically
+//                ) {
+//                    AsyncImage(
+//                        modifier = Modifier
+//                            .border(1.dp, MainAccent, CircleShape)
+//                            .clip(CircleShape)
+//                            .size(56.dp)
+//                            .clickable(
+//                                interactionSource = MutableInteractionSource(),
+//                                indication = null,
+//                                onClick = onProfileClick
+//                            ),
+//                        model = dashboardViewModel.currentUser.value?.photoUrl ?: "",
+//                        contentDescription = null,
+//                        contentScale = ContentScale.Crop
+//                    )
+//                    Text(
+//                        modifier = Modifier.padding(start = 12.dp),
+//                        text = stringResource(
+//                            id = R.string.dashboard_hello_msg,
+//                            dashboardViewModel.currentUser.value?.displayName ?: ""
+//                        ),
+//                        fontSize = 16.sp,
+//                        fontFamily = Poppins,
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = SecondaryText
+//                    )
+//                }
 
                 val items = (dashboardState.value as DashboardState.Success).widgets.sortedBy {
                     when (it) {
@@ -170,15 +159,19 @@ fun DashboardScreen(
                 }
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.safeDrawing)
+                        .padding(top = 32.dp),
                     contentPadding = PaddingValues(bottom = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    item { DashboardHeader(user = user.value, onProfileClick = onProfileClick) }
+
                     item {
                         Text(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 20.dp, start = 20.dp),
+                                .padding(top = 16.dp, start = 20.dp),
                             text = stringResource(id = R.string.dashboard_title_prompt),
                             textAlign = TextAlign.Left,
                             fontSize = 24.sp,
@@ -212,7 +205,7 @@ fun DashboardScreen(
                         }
                     }
                 }
-            }
+//            }
         }
 
         DashboardState.Error -> {

@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.google.firebase.auth.FirebaseUser
 import com.mready.myapplication.R
 import com.mready.myapplication.models.Ingredient
 import com.mready.myapplication.models.Recipe
@@ -301,7 +302,44 @@ fun FridgeIngredients(
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
+}
 
-
+@Composable
+fun DashboardHeader(
+    user: FirebaseUser?,
+    onProfileClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp, start = 20.dp, bottom = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AsyncImage(
+            modifier = Modifier
+                .border(1.dp, MainAccent, CircleShape)
+                .clip(CircleShape)
+                .size(56.dp)
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null,
+                    onClick = onProfileClick
+                ),
+            model = user?.photoUrl ?: "",
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+        Text(
+            modifier = Modifier.padding(start = 12.dp),
+            text = stringResource(
+                id = R.string.dashboard_hello_msg,
+                user?.displayName ?: ""
+            ),
+            fontSize = 16.sp,
+            fontFamily = Poppins,
+            fontWeight = FontWeight.SemiBold,
+            color = SecondaryText
+        )
+    }
 }
 
