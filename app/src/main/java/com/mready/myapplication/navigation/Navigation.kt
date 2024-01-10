@@ -56,14 +56,6 @@ fun Navigation(
         navController = navController,
         startDestination = Screens.DashboardScreen.route
     ) {
-//        composable(route = Screens.SplashScreen.route) {
-//            SplashScreen(
-//                onSplashEnded = {
-//                    navController.navigate(Screens.StartScreen.route)
-//                }
-//            )
-//        }
-
         composable(route = Screens.StartScreen.route) {
             StartScreen(
                 onClick = { navController.navigate(Screens.LoginScreen.route) },

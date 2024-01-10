@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -51,6 +49,7 @@ fun ScanResultScreen(
 ) {
     BackHandler {
         onBack()
+        viewModel.updateTitle("")
     }
 
     var scannedTextFieldValue by remember {
@@ -62,14 +61,12 @@ fun ScanResultScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding()
             .padding(bottom = 16.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 42.dp, start = 20.dp, end = 20.dp),
+                .padding(top = 52.dp, start = 12.dp, end = 20.dp),
         ) {
             Icon(
                 modifier = Modifier

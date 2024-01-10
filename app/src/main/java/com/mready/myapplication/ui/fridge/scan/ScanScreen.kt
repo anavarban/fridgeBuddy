@@ -23,10 +23,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
@@ -74,10 +72,6 @@ fun ScanScreen(
     onBack: () -> Unit = {},
     onTextRecognised: (text: String) -> Unit = {}
 ) {
-    BackHandler {
-        onBack()
-    }
-
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     val mediaPermissionState = rememberPermissionState(Manifest.permission.READ_MEDIA_IMAGES)
 
@@ -115,19 +109,31 @@ fun ScanScreen(
         ProcessCameraProvider.getInstance(context)
     }
 
+    fun handleBack() {
+        cameraProviderFuture.addListener({
+            val cameraProvider = cameraProviderFuture.get()
+            cameraProvider.unbindAll()
+        }, ContextCompat.getMainExecutor(context))
+
+        viewModel.updateTitle("")
+        onBack()
+    }
+
+    BackHandler {
+        handleBack()
+    }
+
     Surface(modifier = Modifier.fillMaxSize()) {
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
-                .navigationBarsPadding()
                 .padding(bottom = 16.dp)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 42.dp, start = 20.dp, end = 20.dp),
+                    .padding(top = 52.dp, start = 12.dp, end = 20.dp),
             ) {
                 Icon(
                     modifier = Modifier
@@ -137,7 +143,7 @@ fun ScanScreen(
                             interactionSource = MutableInteractionSource(),
                             indication = null,
                             onClick = {
-                                onBack()
+                                handleBack()
                             }
                         ),
                     imageVector = Icons.Outlined.KeyboardArrowLeft,

@@ -1,37 +1,43 @@
 package com.mready.myapplication.ui.fridge.addingredient
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -53,11 +59,10 @@ import com.mready.myapplication.ui.theme.MainAccent
 import com.mready.myapplication.ui.theme.MainText
 import com.mready.myapplication.ui.theme.Poppins
 import com.mready.myapplication.ui.utils.FridgeBuddyButton
-import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class,
-    ExperimentalComposeUiApi::class
+    ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class
 )
 @Composable
 fun AddIngredientScreen(
@@ -82,66 +87,100 @@ fun AddIngredientScreen(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val pagerState = rememberPagerState(
-        initialPage = 0,
-        initialPageOffsetFraction = 0f
-    ) {
-        3
-    }
-    val coroutineScope = rememberCoroutineScope()
-
-    var userScrollEnabled by remember {
-        mutableStateOf(false)
+    var page by remember {
+        mutableStateOf(0)
     }
 
-    var progress by remember {
-        mutableStateOf(0f)
-    }
+    val progress by animateFloatAsState(
+        targetValue = when (page) {
+            0 -> 0f
+            1 -> 0.33f
+            2 -> 0.66f
+            else -> 1f
+        },
+        animationSpec = tween(500),
+        label = "animate*AsState"
+    )
 
     var showPopUp by remember {
         mutableStateOf(false)
     }
 
-    BackHandler {
-        showPopUp = true
+    fun handleBack() {
+        if (page == 0) {
+            showPopUp = true
+        } else {
+            page -= 1
+        }
     }
 
-    Box(
+    BackHandler {
+        handleBack()
+    }
+
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .safeDrawingPadding()
-            .padding(top = 20.dp, bottom = 16.dp)
+            .padding(top = 52.dp, bottom = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LaunchedEffect(key1 = pagerState.currentPage) {
-            when (pagerState.currentPage) {
-                0 -> progress = 0f
-                1 -> progress = 0.33f
-                2 -> {
-                    progress = 0.66f
-                }
+        Icon(
+            modifier = Modifier
+                .padding(start = 12.dp)
+                .size(32.dp)
+                .align(Alignment.Start)
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null,
+                    onClick = {
+                        handleBack()
+                    }
+                ),
+            imageVector = Icons.Outlined.KeyboardArrowLeft,
+            contentDescription = null,
+            tint = MainAccent
+        )
+
+
+        Column(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .height(4.dp)
+                .fillMaxWidth(),
+        ) {
+            AnimatedVisibility(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                visible = page != 0,
+                enter = fadeIn(
+                    tween(500)
+                ),
+                exit = fadeOut(
+                    tween(500)
+                )
+            ) {
+                LinearProgressIndicator(
+                    progress = progress,
+                    color = MainAccent,
+                    trackColor = LightAccent,
+                )
             }
         }
 
-        LinearProgressIndicator(
+        AnimatedContent(
             modifier = Modifier
-                .padding(top = 48.dp, bottom = 32.dp)
-                .fillMaxWidth()
-                .align(Alignment.TopCenter),
-            progress = progress,
-            color = MainAccent,
-            trackColor = LightAccent,
-        )
-
-        HorizontalPager(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 48.dp),
-            state = pagerState,
-            pageSpacing = 0.dp,
-            userScrollEnabled = userScrollEnabled,
-            reverseLayout = false,
-            beyondBoundsPageCount = 0,
-            key = null,
+                .padding(top = 16.dp)
+                .fillMaxWidth(),
+            targetState = page,
+            label = "",
+            transitionSpec = {
+                if (targetState > 0) {
+                    slideInHorizontally { it }.togetherWith(slideOutHorizontally { -it })
+                } else {
+                    slideInHorizontally { -it }.togetherWith(
+                        slideOutHorizontally { it })
+                }
+            }
         ) {
             when (it) {
                 0 -> {
@@ -150,10 +189,7 @@ fun AddIngredientScreen(
                         user = addIngredientViewModel.currentUser?.email ?: "",
                         onNextClick = { _, type ->
                             addIngredientViewModel.type = type
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(1)
-                            }
-                            userScrollEnabled = true
+                            page = 1
                         },
                         onScanClick = {
                             onScanClick()
@@ -169,9 +205,7 @@ fun AddIngredientScreen(
                         keyboardController?.hide()
                         addIngredientViewModel.unit = unit
                         addIngredientViewModel.amount = amount
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(2)
-                        }
+                        page = 2
                     }
                 }
 
@@ -187,27 +221,11 @@ fun AddIngredientScreen(
                         onDoneClick = {
                             addIngredientViewModel.addIngredient()
                             onDone()
-                            progress = 1f
                         }
                     )
                 }
             }
         }
-
-
-        IconButton(
-            modifier = Modifier
-                .size(48.dp)
-                .align(Alignment.TopEnd),
-            onClick = { showPopUp = true }
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Close,
-                contentDescription = null,
-                tint = MainAccent
-            )
-        }
-
     }
 
     if (showPopUp) {

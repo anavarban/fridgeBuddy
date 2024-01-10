@@ -1,12 +1,11 @@
 package com.mready.myapplication.ui.fridge.addingredient
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,68 +60,66 @@ fun AddExpireDate(
         }
     )
 
-    Box(
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .safeDrawingPadding()
-            .padding(top = 64.dp)
+            .padding(top = 24.dp),
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(
+            modifier = Modifier,
+            text = "Select the expiration date for $ingredientName",
+            textAlign = TextAlign.Center,
+            fontSize = 24.sp,
+            fontFamily = Poppins,
+            fontWeight = FontWeight.SemiBold,
+            color = MainText,
+            minLines = 2
+        )
 
-        Column(
-            modifier = Modifier.align(Alignment.TopCenter),
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                modifier = Modifier,
-                text = "Select the expiration date for $ingredientName",
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.SemiBold,
-                color = MainText,
-                minLines = 2
-            )
-
-            DatePicker(
-                modifier = Modifier.padding(start = 20.dp, end = 20.dp),
-                state = datePickerState,
-                title = {},
-                showModeToggle = false,
-                dateFormatter = remember { DatePickerDefaults.dateFormatter() },
-                colors = DatePickerDefaults.colors(
-                    containerColor = Background,
-                    titleContentColor = Background,
-                    headlineContentColor = MainText,
-                    weekdayContentColor = SecondaryText,
-                    subheadContentColor = SecondaryText,
-                    yearContentColor = SecondaryText,
-                    currentYearContentColor = MainAccent,
-                    selectedYearContentColor = Background,
-                    selectedYearContainerColor = MainAccent,
-                    dayContentColor = MainText,
-                    disabledDayContentColor = SecondaryText,
-                    selectedDayContentColor = Background,
-                    disabledSelectedDayContentColor = MainText,
-                    selectedDayContainerColor = MainAccent,
-                    disabledSelectedDayContainerColor = MainAccent,
-                    todayContentColor = MainText,
-                    todayDateBorderColor = MainAccent,
-                    dayInSelectionRangeContentColor = MainText,
-                    dayInSelectionRangeContainerColor = MainAccent,
-
+        DatePicker(
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+            state = datePickerState,
+            title = null,
+            showModeToggle = false,
+            dateFormatter = remember { DatePickerDefaults.dateFormatter() },
+            colors = DatePickerDefaults.colors(
+                containerColor = Background,
+                titleContentColor = Background,
+                headlineContentColor = MainAccent,
+                weekdayContentColor = SecondaryText,
+                subheadContentColor = SecondaryText,
+                yearContentColor = SecondaryText,
+                currentYearContentColor = MainAccent,
+                selectedYearContentColor = Background,
+                selectedYearContainerColor = MainAccent,
+                dayContentColor = MainText,
+                disabledDayContentColor = SecondaryText,
+                selectedDayContentColor = Background,
+                disabledSelectedDayContentColor = MainText,
+                selectedDayContainerColor = MainAccent,
+                disabledSelectedDayContainerColor = MainAccent,
+                todayContentColor = MainText,
+                todayDateBorderColor = MainAccent,
+                dayInSelectionRangeContentColor = MainText,
+                dayInSelectionRangeContainerColor = MainAccent,
                 ),
-            )
+        )
 
-            FridgeBuddyButton (
-                modifier = Modifier
-                    .fillMaxWidth(.8f),
-                text = stringResource(id = R.string.generic_done),
-                onClick = {
-                    onDateSelected(datePickerState.selectedDateMillis?: 0)
-                    onDoneClick()
-                },
-            )
-        }
+        Spacer(modifier = Modifier.weight(1f))
+
+        FridgeBuddyButton(
+            modifier = Modifier
+                .fillMaxWidth(.8f)
+                .padding(bottom = 32.dp),
+            text = stringResource(id = R.string.generic_done),
+            onClick = {
+                onDateSelected(datePickerState.selectedDateMillis ?: 0)
+                onDoneClick()
+            },
+        )
     }
+
 }

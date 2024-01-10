@@ -1,12 +1,15 @@
 package com.mready.myapplication.ui.fridge.addingredient
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -65,8 +68,7 @@ fun AddType(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .safeDrawingPadding()
-            .padding(top = 64.dp),
+            .padding(top = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
@@ -83,13 +85,12 @@ fun AddType(
 
         ExposedDropdownMenuBox(
             modifier = Modifier
-                .padding(top = 32.dp),
+                .padding(top = 20.dp),
             expanded = expandedMenu,
             onExpandedChange = { expandedMenu = !expandedMenu }
         ) {
             FridgeBuddyTextField(
                 modifier = Modifier
-                    .padding(top = 32.dp)
                     .fillMaxWidth(.8f)
                     .menuAnchor(),
                 value = selectedType,
@@ -153,7 +154,11 @@ fun AddType(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        if (picked) {
+        AnimatedVisibility (
+            visible = picked,
+            enter = fadeIn(tween(500)),
+            exit = fadeOut(tween(500))
+        ) {
             FridgeBuddyButton(
                 modifier = Modifier
                     .fillMaxWidth(.8f)
